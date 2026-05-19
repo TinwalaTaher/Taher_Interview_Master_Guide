@@ -1,0 +1,2216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taher Tinwala — Interview Master Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1f2b;
+    --border: #242938;
+    --accent: #4f8ef7;
+    --accent2: #7c5df9;
+    --accent3: #2dd4a0;
+    --warn: #f0b429;
+    --danger: #f76060;
+    --text: #d8dde8;
+    --text-dim: #7a8299;
+    --text-bright: #eef0f7;
+    --code-bg: #0a0c12;
+    --radius: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  @media print {
+    body { background: #fff; color: #111; font-size: 11px; }
+    :root {
+      --bg: #fff; --surface: #f8f9fc; --surface2: #eef0f5;
+      --border: #d0d5e0; --text: #222; --text-dim: #555;
+      --text-bright: #000; --code-bg: #f3f4f8; --accent: #1a56db;
+      --accent2: #5a35c5; --accent3: #0d7a5e; --warn: #b35c00; --danger: #c42b2b;
+    }
+    .sidebar { display: none !important; }
+    .main-content { margin-left: 0 !important; }
+    .toc-header { display: none; }
+    section { page-break-inside: avoid; }
+    h2 { page-break-before: always; }
+    h2:first-of-type { page-break-before: avoid; }
+  }
+
+  /* Layout */
+  .sidebar {
+    position: fixed; top: 0; left: 0;
+    width: 230px; height: 100vh;
+    background: var(--surface); border-right: 1px solid var(--border);
+    overflow-y: auto; z-index: 100;
+    padding: 0 0 40px;
+  }
+  .sidebar-logo {
+    padding: 20px 18px 14px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, #1a1f2b 0%, #13161e 100%);
+  }
+  .sidebar-logo .name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; color: var(--accent); }
+  .sidebar-logo .role { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .toc-section { padding: 14px 0; }
+  .toc-section-title {
+    font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-dim); padding: 6px 18px 4px;
+  }
+  .toc-link {
+    display: block; padding: 6px 18px; font-size: 12px;
+    color: var(--text-dim); text-decoration: none;
+    transition: all 0.15s; border-left: 2px solid transparent;
+  }
+  .toc-link:hover, .toc-link.active {
+    color: var(--accent); background: rgba(79,142,247,0.07);
+    border-left-color: var(--accent);
+  }
+
+  .main-content { margin-left: 230px; padding: 0 40px 80px; max-width: 1100px; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #13161e 0%, #0f1520 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 0 36px;
+    margin: 0 -40px 40px;
+    padding-left: 40px; padding-right: 40px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(79,142,247,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-name { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--text-bright); }
+  .hero-title { font-size: 15px; color: var(--accent); margin-top: 4px; font-weight: 500; }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .hero-tag {
+    padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 500;
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim);
+  }
+  .hero-formula {
+    margin-top: 20px; padding: 14px 18px;
+    background: rgba(79,142,247,0.08); border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0; font-size: 13px; font-weight: 500; color: var(--text-bright);
+  }
+  .hero-formula span { color: var(--accent); }
+
+  /* Section styling */
+  section { margin-bottom: 56px; }
+  h2 {
+    font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800;
+    color: var(--text-bright); padding-bottom: 12px;
+    border-bottom: 1px solid var(--border); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  h2 .sec-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 6px;
+    background: var(--accent2); color: #fff;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  h3 {
+    font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+    color: var(--accent); margin: 24px 0 10px;
+  }
+  h4 {
+    font-size: 13px; font-weight: 600; color: var(--text-bright);
+    margin: 16px 0 8px;
+  }
+  p { margin-bottom: 10px; }
+
+  /* Cards / boxes */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 14px;
+  }
+  .card-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px; margin-bottom: 16px;
+  }
+  .card-sm {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 16px;
+  }
+  .card-sm .card-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent2); margin-bottom: 6px;
+  }
+
+  /* Code blocks */
+  pre {
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px;
+    overflow-x: auto; margin: 10px 0 16px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    line-height: 1.65; color: #b8c9e8;
+  }
+  code {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    background: var(--code-bg); border: 1px solid var(--border);
+    padding: 1px 6px; border-radius: 4px; color: var(--accent3);
+  }
+  .comment { color: #4a5568; }
+  .kw { color: #7c5df9; }
+  .str { color: #2dd4a0; }
+  .type { color: #4f8ef7; }
+  .num { color: #f0b429; }
+
+  /* Tables */
+  .tbl-wrap { overflow-x: auto; margin: 12px 0 18px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th {
+    background: var(--surface2); color: var(--text-bright);
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.05em; padding: 10px 14px; text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 12px;
+    font-size: 10px; font-weight: 600;
+  }
+  .badge-green { background: rgba(45,212,160,0.12); color: var(--accent3); border: 1px solid rgba(45,212,160,0.25); }
+  .badge-blue  { background: rgba(79,142,247,0.12); color: var(--accent); border: 1px solid rgba(79,142,247,0.25); }
+  .badge-purple{ background: rgba(124,93,249,0.12); color: var(--accent2); border: 1px solid rgba(124,93,249,0.25); }
+  .badge-warn  { background: rgba(240,180,41,0.12); color: var(--warn); border: 1px solid rgba(240,180,41,0.25); }
+  .badge-red   { background: rgba(247,96,96,0.12); color: var(--danger); border: 1px solid rgba(247,96,96,0.25); }
+
+  /* Callouts */
+  .tip { background: rgba(79,142,247,0.08); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 10px 14px; margin: 12px 0; font-size: 13px; }
+  .warn-box { background: rgba(240,180,41,0.08); border-left: 3px solid var(--warn); border-radius: 0 6px 6px 0; padding: 10px 14px; margin: 12px 0; font-size: 13px; }
+  .danger-box { background: rgba(247,96,96,0.08); border-left: 3px solid var(--danger); border-radius: 0 6px 6px 0; padding: 10px 14px; margin: 12px 0; font-size: 13px; }
+  .tip strong, .warn-box strong, .danger-box strong { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .tip strong { color: var(--accent); }
+  .warn-box strong { color: var(--warn); }
+  .danger-box strong { color: var(--danger); }
+
+  /* Pillars */
+  .pillars { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 16px 0; }
+  .pillar {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px; background: var(--surface);
+    border-top: 3px solid var(--accent2);
+  }
+  .pillar .p-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; }
+
+  /* Quick ref chips */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .chip { padding: 5px 12px; border-radius: 20px; font-size: 11.5px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); }
+
+  /* Flow diagram */
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 12px 0; }
+  .flow-step { padding: 6px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; font-size: 12px; color: var(--text-bright); }
+  .flow-arrow { color: var(--accent); font-size: 14px; }
+
+  /* Two col */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* Print-specific */
+  @media print {
+    pre { border: 1px solid #ccc; background: #f7f8fc; color: #1a1a2e; }
+    code { background: #f0f2f8; border-color: #ccc; color: #1a4a2e; }
+    table { border: 1px solid #ccc; }
+    th { background: #eef0f5; color: #222; border-bottom-color: #ccc; }
+    td { border-bottom-color: #e0e3ee; }
+    .tip { background: #eef5ff; border-color: #3b82f6; }
+    .warn-box { background: #fffaec; border-color: #d97706; }
+    .danger-box { background: #fff5f5; border-color: #dc2626; }
+    .pillar { border-color: #ccc; border-top-color: #5a35c5; }
+    .card, .card-sm { background: #f8f9fc; border-color: #dde1ed; }
+    .hero { background: #eef0f7; border-color: #ccc; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="name">Taher Tinwala</div>
+    <div class="role">Senior .NET Dev & Tech Lead</div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Foundation</div>
+    <a class="toc-link" href="#oop">OOP Pillars</a>
+    <a class="toc-link" href="#csharp">C# Core</a>
+    <a class="toc-link" href="#practical">Practical Programs</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">ASP.NET Core</div>
+    <a class="toc-link" href="#lifecycle">Request Lifecycle</a>
+    <a class="toc-link" href="#middleware">Middleware</a>
+    <a class="toc-link" href="#di">Dependency Injection</a>
+    <a class="toc-link" href="#async">Async / Await</a>
+    <a class="toc-link" href="#auth">JWT Auth</a>
+    <a class="toc-link" href="#ef">EF Core</a>
+    <a class="toc-link" href="#dapper">ADO.NET / Dapper</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Architecture</div>
+    <a class="toc-link" href="#solid">SOLID Principles</a>
+    <a class="toc-link" href="#clean">Clean Architecture</a>
+    <a class="toc-link" href="#cqrs">CQRS + MediatR</a>
+    <a class="toc-link" href="#repo">Repository + UoW</a>
+    <a class="toc-link" href="#patterns">Design Patterns</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Advanced</div>
+    <a class="toc-link" href="#caching">Caching</a>
+    <a class="toc-link" href="#microservices">Microservices</a>
+    <a class="toc-link" href="#docker">Docker</a>
+    <a class="toc-link" href="#security">Security</a>
+    <a class="toc-link" href="#logging">Logging</a>
+    <a class="toc-link" href="#api-design">API Design</a>
+    <a class="toc-link" href="#testing">Testing</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">SQL</div>
+    <a class="toc-link" href="#sql-concepts">SQL Concepts</a>
+    <a class="toc-link" href="#sql-triggers">Triggers</a>
+    <a class="toc-link" href="#sql-perf">Performance Tuning</a>
+    <a class="toc-link" href="#sql-queries">Practice Queries</a>
+    <a class="toc-link" href="#sql-schema">Schema & SP</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Frontend</div>
+    <a class="toc-link" href="#html-css-js">HTML / CSS / JS / jQuery</a>
+    <a class="toc-link" href="#angular">Angular</a>
+    <a class="toc-link" href="#mongodb">MongoDB</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Tools & MVC</div>
+    <a class="toc-link" href="#git">Git & Version Control</a>
+    <a class="toc-link" href="#aspnet-mvc">ASP.NET MVC Deep Dive</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Interview</div>
+    <a class="toc-link" href="#powerlines">Power Lines</a>
+    <a class="toc-link" href="#traps">Common Traps</a>
+    <a class="toc-link" href="#cheatsheet">Cheat Sheet</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main-content">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-name">Interview Master Guide</div>
+    <div class="hero-title">Taher Tinwala — Senior .NET Developer & Tech Lead (7+ Years)</div>
+    <div class="hero-tags">
+      <span class="hero-tag">.NET 8 / C#</span>
+      <span class="hero-tag">ASP.NET Core</span>
+      <span class="hero-tag">Clean Architecture</span>
+      <span class="hero-tag">CQRS</span>
+      <span class="hero-tag">Microservices</span>
+      <span class="hero-tag">Angular</span>
+      <span class="hero-tag">SQL Server</span>
+      <span class="hero-tag">Azure DevOps</span>
+      <span class="hero-tag">Entity Framework Core</span>
+      <span class="hero-tag">Git & DevOps</span>
+      <span class="hero-tag">jQuery / JavaScript</span>
+      <span class="hero-tag">SQL Triggers & Tuning</span>
+    </div>
+    <div class="hero-formula">
+      <span>Interview Formula:</span> Definition → Why needed → Code Example → Real-world usage → Tradeoffs
+    </div>
+  </div>
+
+  <!-- ===================== OOP ===================== -->
+  <section id="oop">
+    <h2><span class="sec-num">1</span> OOP — Object Oriented Programming</h2>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="p-title">Abstraction</div>
+        Hides unnecessary internal details and exposes only what the user needs. You interact with a feature without knowing how it is implemented.
+        <pre>public interface ICar { void Start(); }
+public class Tesla : ICar {
+    public void Start() =>
+      Console.WriteLine("Started");
+}</pre>
+      </div>
+      <div class="pillar">
+        <div class="p-title">Encapsulation</div>
+        Wraps data and methods inside a class and restricts direct access using access modifiers.
+        <pre>public class BankAccount {
+    private double balance;
+    public void Deposit(double amount)
+        { balance += amount; }
+    public double GetBalance() => balance;
+}</pre>
+      </div>
+      <div class="pillar">
+        <div class="p-title">Inheritance</div>
+        Allows a child class to acquire properties and methods from a parent class. Promotes code reuse.
+        <pre>public class Animal {
+    public void Eat() => Console.WriteLine("Eating");
+}
+public class Dog : Animal {
+    public void Bark() => Console.WriteLine("Bark");
+}</pre>
+      </div>
+      <div class="pillar">
+        <div class="p-title">Polymorphism</div>
+        "Many forms." Overloading (compile-time, same name different params) and Overriding (runtime, child overrides parent).
+        <pre>public class Animal {
+    public virtual void Sound() => Console.WriteLine("...");
+}
+public class Dog : Animal {
+    public override void Sound() => Console.WriteLine("Woof");
+}</pre>
+      </div>
+    </div>
+
+    <h3>Abstract Class vs Interface</h3>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Feature</th><th>Abstract Class</th><th>Interface</th></tr>
+        <tr><td>Concrete methods</td><td><span class="badge badge-green">✔ Yes</span></td><td><span class="badge badge-red">❌ (default/static in C# 8+)</span></td></tr>
+        <tr><td>Fields / variables</td><td><span class="badge badge-green">✔ Yes</span></td><td><span class="badge badge-red">❌ No</span></td></tr>
+        <tr><td>Constructors</td><td><span class="badge badge-green">✔ Yes</span></td><td><span class="badge badge-red">❌ No</span></td></tr>
+        <tr><td>Multiple inheritance</td><td><span class="badge badge-red">❌ No</span></td><td><span class="badge badge-green">✔ Yes</span></td></tr>
+        <tr><td>Use when</td><td>Share common logic</td><td>Define contract/rules only</td></tr>
+      </table>
+    </div>
+    <div class="tip"><strong>One-Liner</strong> Abstract class = some rules + some common code. Interface = only rules (no code).</div>
+
+    <h3>Other Key OOP Concepts</h3>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">Sealed Class</div>Cannot be inherited. <code>sealed class Payment { }</code></div>
+      <div class="card-sm"><div class="card-label">Static Class</div>Cannot be instantiated. All members static. Used for utilities. <code>public static class MathHelper</code></div>
+      <div class="card-sm"><div class="card-label">Extension Method</div>Adds method to existing class without modifying it. <code>public static string Shout(this string s)</code></div>
+      <div class="card-sm"><div class="card-label">Generics</div>Reusable type-safe code. <code>public class Box&lt;T&gt; { public T Value; }</code></div>
+      <div class="card-sm"><div class="card-label">IDisposable</div>Release unmanaged resources. Use <code>using</code> statement. Implement <code>Dispose()</code>.</div>
+      <div class="card-sm"><div class="card-label">Garbage Collection</div>Auto reclaims memory. Gen 0, 1, 2. Runs in background.</div>
+    </div>
+  </section>
+
+  <!-- ===================== C# CORE ===================== -->
+  <section id="csharp">
+    <h2><span class="sec-num">2</span> C# Core Concepts</h2>
+
+    <h3>const vs readonly vs static</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Keyword</th><th>Meaning</th></tr>
+      <tr><td><code>const</code></td><td>Compile-time constant. Cannot change. Must be assigned at declaration.</td></tr>
+      <tr><td><code>readonly</code></td><td>Runtime constant. Can be set in constructor only.</td></tr>
+      <tr><td><code>static</code></td><td>Belongs to class, not instance. Shared across all objects.</td></tr>
+    </table></div>
+
+    <h3>Value Type vs Reference Type</h3>
+    <div class="two-col">
+      <div class="card">
+        <h4>Value Type (Stack)</h4>
+        <p>Stores actual data. Copying creates independent copy. Examples: int, bool, struct, enum.</p>
+        <pre>int a = 10;
+int b = a; // independent copy
+b = 20;
+Console.WriteLine(a); // still 10</pre>
+      </div>
+      <div class="card">
+        <h4>Reference Type (Heap)</h4>
+        <p>Stores a pointer. Both variables point to same object.</p>
+        <pre>var p1 = new Person { Name = "A" };
+var p2 = p1; // same reference
+p2.Name = "B";
+Console.WriteLine(p1.Name); // "B"</pre>
+      </div>
+    </div>
+
+    <h3>Collections Quick Reference</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Type</th><th>Characteristics</th><th>Use For</th></tr>
+      <tr><td><code>List&lt;T&gt;</code></td><td>Dynamic array, O(1) indexed</td><td>General ordered collection</td></tr>
+      <tr><td><code>Dictionary&lt;K,V&gt;</code></td><td>O(1) average lookup</td><td>Key-value mapping</td></tr>
+      <tr><td><code>HashSet&lt;T&gt;</code></td><td>Unique items, O(1) lookup</td><td>Deduplication, set operations</td></tr>
+      <tr><td><code>Queue&lt;T&gt;</code></td><td>FIFO</td><td>Processing in order</td></tr>
+      <tr><td><code>Stack&lt;T&gt;</code></td><td>LIFO</td><td>Undo, expression parsing</td></tr>
+      <tr><td><code>ConcurrentDictionary</code></td><td>Thread-safe</td><td>Shared caching, thread safety</td></tr>
+    </table></div>
+
+    <h3>Delegates, Func, Action</h3>
+    <pre><span class="comment">// Func&lt;inputs..., output&gt; — returns a value</span>
+Func&lt;int, int, int&gt; multiply = (a, b) =&gt; a * b;
+Func&lt;string, bool&gt;  isLong   = s =&gt; s.Length &gt; 10;
+
+<span class="comment">// Action&lt;inputs&gt; — returns void</span>
+Action&lt;string&gt; log   = msg =&gt; Console.WriteLine($"[LOG] {msg}");
+
+<span class="comment">// Predicate&lt;T&gt; — shorthand for Func&lt;T, bool&gt;</span>
+Predicate&lt;int&gt; isEven = n =&gt; n % 2 == 0;
+
+<span class="comment">// Events</span>
+public event EventHandler&lt;Order&gt;? OrderPlaced;
+OrderPlaced?.Invoke(this, order); <span class="comment">// raise safely</span></pre>
+
+    <h3>Records (C# 9+)</h3>
+    <pre><span class="comment">// Immutable, value-based equality — perfect for DTOs</span>
+public record ProductDto(int Id, string Name, decimal Price);
+
+var p1 = new ProductDto(1, "Laptop", 999);
+var p2 = new ProductDto(1, "Laptop", 999);
+Console.WriteLine(p1 == p2); <span class="comment">// true</span>
+
+var p3 = p1 with { Price = 899 }; <span class="comment">// non-destructive mutation</span></pre>
+
+    <h3>LINQ</h3>
+    <pre>var result = employees
+    .Where(e =&gt; e.Dept == "IT")
+    .OrderBy(e =&gt; e.Name)
+    .Select(e =&gt; new { e.Name, e.Salary });
+
+<span class="comment">// IEnumerable (bad for large DB) — loads ALL to memory then filters</span>
+var r = db.Users.ToList().Where(u =&gt; u.Age &gt; 18);
+
+<span class="comment">// IQueryable (good) — sends filter as SQL to DB</span>
+var r = db.Users.Where(u =&gt; u.Age &gt; 18).ToList();</pre>
+    <div class="warn-box"><strong>Key Difference</strong> IQueryable filters in the database (SQL). IEnumerable filters in memory after fetching ALL rows. Always use IQueryable for database queries.</div>
+  </section>
+
+  <!-- ===================== PRACTICAL PROGRAMS ===================== -->
+  <section id="practical">
+    <h2><span class="sec-num">3</span> Practical C# Programs</h2>
+
+    <h3>String Programs</h3>
+    <div class="two-col">
+      <div>
+        <h4>1. Reverse String (No built-in)</h4>
+        <pre>public static string ReverseString(string input)
+{
+    char[] arr = input.ToCharArray();
+    int left = 0, right = arr.Length - 1;
+    while (left &lt; right) {
+        char temp = arr[left];
+        arr[left] = arr[right];
+        arr[right] = temp;
+        left++; right--;
+    }
+    return new string(arr);
+}</pre>
+
+        <h4>2. Palindrome (Optimized)</h4>
+        <pre>public static bool IsPalindrome(string input)
+{
+    int left = 0, right = input.Length - 1;
+    while (left &lt; right) {
+        if (char.ToLower(input[left]) != char.ToLower(input[right]))
+            return false;
+        left++; right--;
+    }
+    return true;
+}</pre>
+      </div>
+      <div>
+        <h4>3. First Non-Repeating Character</h4>
+        <pre>public static char FirstNonRepeating(string input)
+{
+    var dict = new Dictionary&lt;char, int&gt;();
+    foreach (char c in input)
+        dict[c] = dict.ContainsKey(c) ? dict[c] + 1 : 1;
+    foreach (char c in input)
+        if (dict[c] == 1) return c;
+    return '\0';
+}</pre>
+
+        <h4>4. Reverse Words in Sentence</h4>
+        <pre>public static string ReverseWords(string input)
+{
+    var words = input.Split(' ',
+      StringSplitOptions.RemoveEmptyEntries);
+    int left = 0, right = words.Length - 1;
+    while (left &lt; right) {
+        (words[left], words[right]) = (words[right], words[left]);
+        left++; right--;
+    }
+    return string.Join(" ", words);
+}</pre>
+      </div>
+    </div>
+
+    <h3>Array Programs</h3>
+    <div class="two-col">
+      <div>
+        <h4>5. Find Duplicates</h4>
+        <pre>public static void FindDuplicates(int[] arr)
+{
+    var seen = new HashSet&lt;int&gt;();
+    var dups = new HashSet&lt;int&gt;();
+    foreach (int num in arr)
+        if (!seen.Add(num)) dups.Add(num);
+    foreach (var d in dups) Console.WriteLine(d);
+}</pre>
+
+        <h4>6. Second Largest (No sorting)</h4>
+        <pre>public static int SecondLargest(int[] arr)
+{
+    int first = int.MinValue, second = int.MinValue;
+    foreach (int n in arr) {
+        if (n &gt; first) { second = first; first = n; }
+        else if (n &gt; second &amp;&amp; n != first) second = n;
+    }
+    return second;
+}</pre>
+      </div>
+      <div>
+        <h4>7. Move Zeros to End</h4>
+        <pre>public static void MoveZeros(int[] arr)
+{
+    int index = 0;
+    for (int i = 0; i &lt; arr.Length; i++)
+        if (arr[i] != 0) arr[index++] = arr[i];
+    while (index &lt; arr.Length) arr[index++] = 0;
+}</pre>
+
+        <h4>8. Rotate Array</h4>
+        <pre>public static void Rotate(int[] arr, int k)
+{
+    k = k % arr.Length;
+    Array.Reverse(arr, 0, arr.Length);
+    Array.Reverse(arr, 0, k);
+    Array.Reverse(arr, k, arr.Length - k);
+}</pre>
+      </div>
+    </div>
+
+    <h3>Logic Programs</h3>
+    <div class="two-col">
+      <div>
+        <h4>9. Fibonacci (Iterative)</h4>
+        <pre>public static void Fibonacci(int n)
+{
+    int a = 0, b = 1;
+    for (int i = 0; i &lt; n; i++) {
+        Console.Write(a + " ");
+        int temp = a + b; a = b; b = temp;
+    }
+}</pre>
+
+        <h4>10. Prime Number</h4>
+        <pre>public static bool IsPrime(int n)
+{
+    if (n &lt;= 1) return false;
+    for (int i = 2; i &lt;= Math.Sqrt(n); i++)
+        if (n % i == 0) return false;
+    return true;
+}</pre>
+      </div>
+      <div>
+        <h4>11. Group Anagrams</h4>
+        <pre>public static void GroupAnagrams(string[] words)
+{
+    var dict = new Dictionary&lt;string, List&lt;string&gt;&gt;();
+    foreach (var word in words) {
+        var key = new string(word.OrderBy(c =&gt; c).ToArray());
+        if (!dict.ContainsKey(key))
+            dict[key] = new List&lt;string&gt;();
+        dict[key].Add(word);
+    }
+    foreach (var group in dict.Values)
+        Console.WriteLine(string.Join(", ", group));
+}</pre>
+      </div>
+    </div>
+
+    <h3>LRU Cache (Important)</h3>
+    <pre>class LRUCache
+{
+    private int capacity;
+    private Dictionary&lt;int, LinkedListNode&lt;(int key, int value)&gt;&gt; dict;
+    private LinkedList&lt;(int key, int value)&gt; list;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        dict = new(); list = new();
+    }
+
+    public int Get(int key) {
+        if (!dict.ContainsKey(key)) return -1;
+        var node = dict[key];
+        list.Remove(node); list.AddFirst(node);
+        return node.Value.value;
+    }
+
+    public void Put(int key, int value) {
+        if (dict.ContainsKey(key)) {
+            list.Remove(dict[key]);
+        } else if (dict.Count == capacity) {
+            var last = list.Last;
+            dict.Remove(last.Value.key);
+            list.RemoveLast();
+        }
+        var newNode = new LinkedListNode&lt;(int, int)&gt;((key, value));
+        list.AddFirst(newNode);
+        dict[key] = newNode;
+    }
+}</pre>
+    <div class="tip"><strong>Interview Strategy</strong> Always say: "I will first implement a working solution, then optimize." Start brute force → then optimize.</div>
+  </section>
+
+  <!-- ===================== LIFECYCLE ===================== -->
+  <section id="lifecycle">
+    <h2><span class="sec-num">4</span> ASP.NET Core Request Lifecycle</h2>
+
+    <div class="flow">
+      <div class="flow-step">Client HTTP Request</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Kestrel</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Middleware Pipeline</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Routing</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Model Binding</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Action Filters</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Controller Action</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Service Layer</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Repository</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Database</div>
+    </div>
+
+    <h3>Middleware Order (Critical)</h3>
+    <pre>var app = builder.Build();
+app.UseExceptionHandler("/error");  <span class="comment">// MUST be first</span>
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseCors();                       <span class="comment">// BEFORE Auth</span>
+app.UseAuthentication();             <span class="comment">// BEFORE Authorization</span>
+app.UseAuthorization();
+app.UseRateLimiter();
+app.MapControllers();
+app.Run();</pre>
+    <div class="warn-box"><strong>Interview Trap</strong> Order matters! Authentication MUST come before Authorization. Exception handler MUST be first.</div>
+
+    <h3>Action Filters</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Filter Type</th><th>When It Runs</th></tr>
+      <tr><td>Authorization Filter</td><td>Before everything — check login/roles</td></tr>
+      <tr><td>Action Filter</td><td>Before &amp; after action method</td></tr>
+      <tr><td>Result Filter</td><td>Before &amp; after view rendering</td></tr>
+      <tr><td>Exception Filter</td><td>When an unhandled error occurs</td></tr>
+    </table></div>
+
+    <h3>MVC Concepts</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>ViewBag</th><th>ViewData</th><th>TempData</th></tr>
+      <tr><td>Type</td><td>Dynamic</td><td>Dictionary (requires cast)</td><td>Dictionary</td></tr>
+      <tr><td>Lifetime</td><td>Current request</td><td>Current request</td><td>Survives ONE redirect</td></tr>
+      <tr><td>Use case</td><td>Controller → View</td><td>Controller → View</td><td>POST → Redirect → GET</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== MIDDLEWARE ===================== -->
+  <section id="middleware">
+    <h2><span class="sec-num">5</span> Middleware</h2>
+
+    <h3>Custom Logging Middleware</h3>
+    <pre>public class LoggingMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILogger&lt;LoggingMiddleware&gt; _logger;
+
+    public LoggingMiddleware(RequestDelegate next, ILogger&lt;LoggingMiddleware&gt; logger)
+    { _next = next; _logger = logger; }
+
+    public async Task Invoke(HttpContext context)
+    {
+        var watch = Stopwatch.StartNew();
+        _logger.LogInformation("Request: {Method} {Path}",
+            context.Request.Method, context.Request.Path);
+
+        await _next(context);   <span class="comment">// ← Pass to next middleware</span>
+
+        watch.Stop();
+        _logger.LogInformation("Response: {StatusCode} in {Ms}ms",
+            context.Response.StatusCode, watch.ElapsedMilliseconds);
+    }
+}
+<span class="comment">// Register in Program.cs</span>
+app.UseMiddleware&lt;LoggingMiddleware&gt;();</pre>
+
+    <h3>Middleware vs Filter</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Aspect</th><th>Middleware</th><th>Filter</th></tr>
+      <tr><td>Scope</td><td>Entire pipeline (all requests)</td><td>MVC pipeline only (controllers)</td></tr>
+      <tr><td>Runs on</td><td>Any HTTP request</td><td>Controller/Action level</td></tr>
+      <tr><td>Use for</td><td>Auth, Logging, CORS, Rate Limiting</td><td>Validation, Action logging, Result shaping</td></tr>
+      <tr><td>Access to</td><td>HttpContext only</td><td>ActionContext, ModelState, Result</td></tr>
+    </table></div>
+    <div class="danger-box"><strong>Critical</strong> If _next() is never called, the pipeline short-circuits. The request never reaches the controller. Use this intentionally for auth failures — never accidentally.</div>
+  </section>
+
+  <!-- ===================== DI ===================== -->
+  <section id="di">
+    <h2><span class="sec-num">6</span> Dependency Injection</h2>
+
+    <h3>DI Lifetimes</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Lifetime</th><th>Instance Created</th><th>Shared Across</th><th>Use For</th></tr>
+      <tr><td><span class="badge badge-green">Transient</span></td><td>Every injection</td><td>Nothing — always new</td><td>Stateless, lightweight services, email sender</td></tr>
+      <tr><td><span class="badge badge-blue">Scoped</span></td><td>Once per HTTP request</td><td>All classes in same request</td><td>DbContext, business services, repositories</td></tr>
+      <tr><td><span class="badge badge-purple">Singleton</span></td><td>Once at app start</td><td>All requests, all users</td><td>Caching, configuration, HttpClientFactory</td></tr>
+    </table></div>
+
+    <pre><span class="comment">// Program.cs registration</span>
+builder.Services.AddTransient&lt;IEmailService, EmailService&gt;();
+builder.Services.AddScoped&lt;IUserService, UserService&gt;();
+builder.Services.AddScoped&lt;AppDbContext&gt;();
+builder.Services.AddSingleton&lt;ICacheService, RedisCacheService&gt;();</pre>
+
+    <h3>Captive Dependency Trap</h3>
+    <div class="danger-box"><strong>⚠ Critical Trap</strong> NEVER inject a Scoped or Transient service into a Singleton. The short-lived service gets "captured" and lives for the entire app — causing stale data, threading bugs, or DbContext errors.</div>
+    <pre><span class="comment">// ❌ WRONG — Singleton capturing Scoped DbContext</span>
+services.AddSingleton&lt;MyBadService&gt;();  <span class="comment">// Runtime error!</span>
+
+<span class="comment">// ✅ CORRECT — Use IServiceScopeFactory</span>
+public class MyGoodService {
+    private readonly IServiceScopeFactory _scopeFactory;
+    public MyGoodService(IServiceScopeFactory scopeFactory)
+        =&gt; _scopeFactory = scopeFactory;
+
+    public async Task DoWork() {
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService&lt;AppDbContext&gt;();
+    }
+}</pre>
+  </section>
+
+  <!-- ===================== ASYNC ===================== -->
+  <section id="async">
+    <h2><span class="sec-num">7</span> Async / Await &amp; Task</h2>
+
+    <div class="card">
+      <strong>Key Mental Model:</strong> <code>await</code> releases the thread back to the pool while waiting for I/O. It does NOT create a new thread. More concurrent users with the same thread count.
+    </div>
+
+    <h3>Parallel Execution</h3>
+    <pre><span class="comment">// ❌ Sequential — slow (total = t1 + t2 + t3)</span>
+var users    = await GetUsersAsync();
+var products = await GetProductsAsync();
+var orders   = await GetOrdersAsync();
+
+<span class="comment">// ✅ Parallel — fast (total = max(t1, t2, t3))</span>
+var usersTask    = GetUsersAsync();
+var productsTask = GetProductsAsync();
+var ordersTask   = GetOrdersAsync();
+await Task.WhenAll(usersTask, productsTask, ordersTask);</pre>
+
+    <h3>Common Async Mistakes</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Mistake</th><th>Problem</th><th>Fix</th></tr>
+      <tr><td><code>.Result</code> or <code>.Wait()</code></td><td>Deadlock risk, blocks thread</td><td>Use <code>await</code></td></tr>
+      <tr><td><code>async void</code></td><td>Can't catch exceptions, fire-and-forget leaks</td><td>Use <code>async Task</code></td></tr>
+      <tr><td>Missing <code>await</code></td><td>Method runs synchronously</td><td>Always await async calls</td></tr>
+      <tr><td>No CancellationToken</td><td>Request runs even after client disconnects</td><td>Accept and pass CancellationToken</td></tr>
+    </table></div>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>API</th><th>Description</th></tr>
+      <tr><td><code>Task.WhenAll()</code></td><td>Waits for ALL tasks to complete</td></tr>
+      <tr><td><code>Task.WhenAny()</code></td><td>Returns when FIRST task completes</td></tr>
+      <tr><td><code>Task.Delay()</code></td><td>Non-blocking wait (like async Thread.Sleep)</td></tr>
+      <tr><td><code>Parallel.For()</code></td><td>Runs loop iterations in parallel (CPU-bound)</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== AUTH ===================== -->
+  <section id="auth">
+    <h2><span class="sec-num">8</span> JWT Authentication</h2>
+
+    <div class="flow">
+      <div class="flow-step">Login Request</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Validate Credentials</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Issue JWT Token</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Client Stores Token</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Request + Bearer Token</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Server Validates</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Grant Access</div>
+    </div>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>Session</th><th>JWT</th></tr>
+      <tr><td>Storage</td><td>Server-side</td><td>Client-side</td></tr>
+      <tr><td>Scalable</td><td>❌ No (server state)</td><td>✔ Yes (stateless)</td></tr>
+      <tr><td>Best for</td><td>MVC / server-rendered apps</td><td>REST APIs / Microservices</td></tr>
+    </table></div>
+
+    <div class="tip"><strong>JWT Structure</strong> Header.Payload.Signature — Header contains algorithm, Payload contains claims (userId, role, expiry), Signature verifies integrity.</div>
+  </section>
+
+  <!-- ===================== EF CORE ===================== -->
+  <section id="ef">
+    <h2><span class="sec-num">9</span> Entity Framework Core</h2>
+
+    <h3>DbContext Setup</h3>
+    <pre>public class AppDbContext : DbContext
+{
+    public DbSet&lt;User&gt; Users =&gt; Set&lt;User&gt;();
+    public DbSet&lt;Order&gt; Orders =&gt; Set&lt;Order&gt;();
+
+    public AppDbContext(DbContextOptions&lt;AppDbContext&gt; options) : base(options) { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+    }
+}</pre>
+
+    <h3>Key EF Core Concepts</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Concept</th><th>Description</th></tr>
+      <tr><td><code>AsNoTracking()</code></td><td>Read-only query — faster, no change tracking overhead. Always use for GET endpoints.</td></tr>
+      <tr><td><code>Include()</code></td><td>Eager loading — load related entities in same query.</td></tr>
+      <tr><td><code>Select(x =&gt; new Dto)</code></td><td>Projection — fetch only needed columns, not entire entity.</td></tr>
+      <tr><td><code>IQueryable</code></td><td>Filter translated to SQL — efficient, runs in DB.</td></tr>
+      <tr><td><code>IEnumerable</code></td><td>Filter in memory after fetching all rows — AVOID on DbSets.</td></tr>
+      <tr><td>Lazy Loading</td><td>Related data loaded only when accessed. Requires <code>virtual</code> on nav props. Can cause N+1.</td></tr>
+      <tr><td>Entity States</td><td>Added → INSERT, Modified → UPDATE, Deleted → DELETE, Unchanged/Detached</td></tr>
+    </table></div>
+
+    <div class="warn-box"><strong>N+1 Problem</strong> Loading a list of orders then accessing order.Items in a loop = 1 query for orders + N queries for items. Fix with <code>.Include(o =&gt; o.Items)</code>.</div>
+  </section>
+
+  <!-- ===================== DAPPER ===================== -->
+  <section id="dapper">
+    <h2><span class="sec-num">10</span> ADO.NET, Dapper &amp; Data Access</h2>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>EF Core</th><th>Dapper</th><th>ADO.NET</th></tr>
+      <tr><td>Abstraction</td><td>High (ORM)</td><td>Medium (micro-ORM)</td><td>Low (raw)</td></tr>
+      <tr><td>SQL Writing</td><td>Optional (LINQ)</td><td>Required</td><td>Required</td></tr>
+      <tr><td>Performance</td><td>Good</td><td>Very Fast</td><td>Fastest</td></tr>
+      <tr><td>Best For</td><td>Code-First projects</td><td>DB-First, complex SQL</td><td>Ultra-high performance</td></tr>
+    </table></div>
+
+    <h3>ADO.NET Key Objects</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Object</th><th>Purpose</th></tr>
+      <tr><td><code>SqlConnection</code></td><td>Opens connection to SQL Server database</td></tr>
+      <tr><td><code>SqlCommand</code></td><td>Executes SQL queries or stored procedures</td></tr>
+      <tr><td><code>SqlDataReader</code></td><td>Fast, forward-only, connected mode row reading</td></tr>
+      <tr><td><code>SqlDataAdapter</code></td><td>Disconnected mode. Fills DataTable from query.</td></tr>
+      <tr><td><code>ExecuteReader()</code></td><td>Returns rows (for SELECT queries)</td></tr>
+      <tr><td><code>ExecuteScalar()</code></td><td>Returns single value (COUNT, MAX, etc.)</td></tr>
+      <tr><td><code>ExecuteNonQuery()</code></td><td>Returns rows affected (INSERT/UPDATE/DELETE)</td></tr>
+    </table></div>
+
+    <h3>Dapper Example</h3>
+    <pre><span class="comment">// Query with mapping</span>
+var users = conn.Query&lt;User&gt;("SELECT * FROM Users WHERE Active=1").ToList();
+
+<span class="comment">// Parameterized query</span>
+var user = conn.QueryFirstOrDefault&lt;User&gt;(
+    "SELECT * FROM Users WHERE Id=@Id", new { Id = 5 });</pre>
+  </section>
+
+  <!-- ===================== SOLID ===================== -->
+  <section id="solid">
+    <h2><span class="sec-num">11</span> SOLID Principles</h2>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Principle</th><th>Rule</th><th>Example</th></tr>
+      <tr><td><span class="badge badge-blue">S</span> Single Responsibility</td><td>A class should have only ONE reason to change.</td><td>Separate DB, business logic, and UI into different classes.</td></tr>
+      <tr><td><span class="badge badge-green">O</span> Open / Closed</td><td>Open for extension, closed for modification.</td><td>Add features via new classes, not by changing existing code.</td></tr>
+      <tr><td><span class="badge badge-purple">L</span> Liskov Substitution</td><td>Child class must be substitutable for parent without breaking behavior.</td><td>Override methods must honor the contract of the base class.</td></tr>
+      <tr><td><span class="badge badge-warn">I</span> Interface Segregation</td><td>Don't force a class to implement methods it doesn't need.</td><td>Use small, focused interfaces instead of one big interface.</td></tr>
+      <tr><td><span class="badge badge-red">D</span> Dependency Inversion</td><td>High-level modules should not depend on low-level modules. Both depend on abstractions.</td><td>Inject <code>IUserRepository</code> not <code>UserRepository</code>.</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== CLEAN ARCH ===================== -->
+  <section id="clean">
+    <h2><span class="sec-num">12</span> Clean Architecture</h2>
+
+    <div class="card">
+      <strong>Core Rule:</strong> Dependencies always point INWARD. Outer layers depend on inner layers — never the reverse.
+    </div>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Layer</th><th>Contents</th><th>Can Depend On</th></tr>
+      <tr><td><span class="badge badge-purple">Domain</span></td><td>Entities, Value Objects, Domain Events, Exceptions</td><td>Nothing</td></tr>
+      <tr><td><span class="badge badge-blue">Application</span></td><td>Commands, Queries, DTOs, Interfaces, Behaviors</td><td>Domain only</td></tr>
+      <tr><td><span class="badge badge-green">Infrastructure</span></td><td>DbContext, Repositories, External Services</td><td>Domain + Application (interfaces)</td></tr>
+      <tr><td><span class="badge badge-warn">Presentation</span></td><td>Controllers, Middleware, Filters</td><td>Application only</td></tr>
+    </table></div>
+
+    <div class="tip"><strong>Real Interview Answer</strong> Clean Architecture made our codebase testable because business logic in Application has no EF or HTTP dependencies. We swapped SQL Server for PostgreSQL by only changing the Infrastructure layer — zero changes to Domain or Application.</div>
+  </section>
+
+  <!-- ===================== CQRS ===================== -->
+  <section id="cqrs">
+    <h2><span class="sec-num">13</span> CQRS + MediatR</h2>
+
+    <div class="two-col">
+      <div class="card">
+        <strong>Commands (Write)</strong> — modify data, no return data<br>
+        <code>CreateUserCommand</code>, <code>UpdateOrderCommand</code>
+      </div>
+      <div class="card">
+        <strong>Queries (Read)</strong> — return data, no modification<br>
+        <code>GetUserQuery</code>, <code>SearchProductsQuery</code>
+      </div>
+    </div>
+
+    <h3>Command with Handler Pattern</h3>
+    <pre><span class="comment">// Command</span>
+public record CreateUserCommand(string Name, string Email, string Role) : IRequest&lt;int&gt;;
+
+<span class="comment">// Handler</span>
+public class CreateUserHandler : IRequestHandler&lt;CreateUserCommand, int&gt;
+{
+    private readonly AppDbContext _context;
+    public CreateUserHandler(AppDbContext context) =&gt; _context = context;
+
+    public async Task&lt;int&gt; Handle(CreateUserCommand request, CancellationToken ct)
+    {
+        var user = User.Create(request.Name, request.Email, request.Role);
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync(ct);
+        return user.Id;
+    }
+}
+
+<span class="comment">// Controller</span>
+[HttpPost]
+public async Task&lt;IActionResult&gt; CreateUser(CreateUserCommand command)
+{
+    var id = await _mediator.Send(command);
+    return CreatedAtAction(nameof(GetUser), new { id }, null);
+}</pre>
+
+    <h3>CQRS Trade-offs</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Benefits</th><th>Trade-offs</th></tr>
+      <tr><td>Clear separation of read/write logic</td><td>More classes and files to maintain</td></tr>
+      <tr><td>Read models can be optimized separately</td><td>Increased complexity for simple CRUD</td></tr>
+      <tr><td>Easy to add cross-cutting behavior via pipeline</td><td>Learning curve for team members</td></tr>
+      <tr><td>Excellent testability — handlers are small units</td><td>Overkill for simple applications</td></tr>
+    </table></div>
+    <div class="tip"><strong>Key Point</strong> CQRS ≠ Microservices. You can use CQRS in a monolith. CQRS improves scalability for read-heavy systems, but adds complexity for simple CRUD.</div>
+  </section>
+
+  <!-- ===================== REPO ===================== -->
+  <section id="repo">
+    <h2><span class="sec-num">14</span> Repository Pattern &amp; Unit of Work</h2>
+
+    <pre><span class="comment">// Generic Repository Interface</span>
+public interface IRepository&lt;T&gt; where T : BaseEntity
+{
+    Task&lt;T?&gt; GetByIdAsync(int id, CancellationToken ct = default);
+    Task&lt;List&lt;T&gt;&gt; GetAllAsync(CancellationToken ct = default);
+    Task&lt;List&lt;T&gt;&gt; FindAsync(Expression&lt;Func&lt;T, bool&gt;&gt; predicate, CancellationToken ct = default);
+    void Add(T entity);
+    void Update(T entity);
+    void Remove(T entity);
+}
+
+<span class="comment">// Unit of Work</span>
+public interface IUnitOfWork : IDisposable
+{
+    IRepository&lt;User&gt;    Users    { get; }
+    IRepository&lt;Order&gt;   Orders   { get; }
+    IRepository&lt;Product&gt; Products { get; }
+    Task&lt;int&gt; SaveChangesAsync(CancellationToken ct = default);
+    Task BeginTransactionAsync();
+    Task CommitAsync();
+    Task RollbackAsync();
+}</pre>
+    <div class="tip"><strong>Why Repository?</strong> Abstracts data access. Allows changing data source (SQL → MongoDB) without affecting business logic.</div>
+  </section>
+
+  <!-- ===================== PATTERNS ===================== -->
+  <section id="patterns">
+    <h2><span class="sec-num">15</span> Design Patterns</h2>
+
+    <h3>Strategy Pattern</h3>
+    <pre><span class="comment">// Multiple payment methods — Open/Closed Principle</span>
+public interface IPaymentStrategy {
+    Task&lt;PaymentResult&gt; ProcessAsync(decimal amount, CancellationToken ct);
+}
+public class CreditCardPayment : IPaymentStrategy { ... }
+public class PayPalPayment    : IPaymentStrategy { ... }
+
+<span class="comment">// Add new payment type without changing existing code</span>
+public class PaymentService {
+    public async Task&lt;PaymentResult&gt; Pay(string method, decimal amount) {
+        var strategy = _strategies.First(s =&gt; s.Supports(method));
+        return await strategy.ProcessAsync(amount);
+    }
+}</pre>
+
+    <h3>Decorator Pattern</h3>
+    <pre><span class="comment">// Add caching behavior without modifying original repository</span>
+public class CachedProductRepository : IProductRepository
+{
+    private readonly IProductRepository _inner;
+    private readonly IDistributedCache _cache;
+
+    public async Task&lt;Product?&gt; GetByIdAsync(int id, CancellationToken ct) {
+        var cached = await _cache.GetStringAsync($"product:{id}", ct);
+        if (cached is not null)
+            return JsonSerializer.Deserialize&lt;Product&gt;(cached);
+        var product = await _inner.GetByIdAsync(id, ct);
+        if (product is not null)
+            await _cache.SetStringAsync($"product:{id}", JsonSerializer.Serialize(product), ct);
+        return product;
+    }
+}</pre>
+
+    <h3>Factory Pattern</h3>
+    <pre>public class NotificationSenderFactory {
+    public INotificationSender Create(NotificationType type) =&gt; type switch {
+        NotificationType.Email =&gt; _sp.GetRequiredService&lt;EmailSender&gt;(),
+        NotificationType.Sms   =&gt; _sp.GetRequiredService&lt;SmsSender&gt;(),
+        NotificationType.Push  =&gt; _sp.GetRequiredService&lt;PushSender&gt;(),
+        _ =&gt; throw new ArgumentException($"Unknown type: {type}")
+    };
+}</pre>
+
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">Singleton</div>Only one instance exists in the entire app. Use sealed + private constructor.</div>
+      <div class="card-sm"><div class="card-label">Mediator (MediatR)</div>Routes commands/queries to handlers. Decouples sender and receiver.</div>
+      <div class="card-sm"><div class="card-label">Observer / Domain Events</div>Entity raises events after state change. Handlers react independently.</div>
+    </div>
+  </section>
+
+  <!-- ===================== CACHING ===================== -->
+  <section id="caching">
+    <h2><span class="sec-num">16</span> Caching</h2>
+
+    <h3>In-Memory Cache</h3>
+    <pre>builder.Services.AddMemoryCache();
+
+<span class="comment">// Usage with GetOrCreate</span>
+var products = _cache.GetOrCreate("products", entry =&gt; {
+    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+    return _repo.GetAllAsync();
+});</pre>
+
+    <h3>Redis Distributed Cache</h3>
+    <pre>builder.Services.AddStackExchangeRedisCache(options =&gt; {
+    options.Configuration = builder.Configuration["Redis:ConnectionString"];
+    options.InstanceName = "MyApp:";
+});
+
+<span class="comment">// Usage — Cache-Aside pattern</span>
+var cached = await _distributedCache.GetStringAsync("top-products");
+if (cached is not null)
+    return JsonSerializer.Deserialize&lt;List&lt;Product&gt;&gt;(cached)!;
+
+var products = await _context.Products.OrderByDescending(p =&gt; p.SalesCount).Take(20).ToListAsync();
+await _distributedCache.SetStringAsync("top-products",
+    JsonSerializer.Serialize(products),
+    new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30) });
+return products;</pre>
+
+    <h3>Caching Strategies</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Strategy</th><th>Write Policy</th><th>Best For</th></tr>
+      <tr><td>Cache-Aside</td><td>Write to DB only, invalidate cache</td><td>General purpose — most common</td></tr>
+      <tr><td>Write-Through</td><td>Write to cache AND DB together</td><td>High read/write, strong consistency</td></tr>
+      <tr><td>Write-Behind</td><td>Write to cache, async flush to DB</td><td>High write throughput, eventual consistency</td></tr>
+    </table></div>
+    <div class="tip"><strong>Power Line</strong> "I implemented distributed caching with Redis to reduce database load by 80% on our product catalog. We used Cache-Aside pattern with sliding expiration and invalidated on writes."</div>
+  </section>
+
+  <!-- ===================== MICROSERVICES ===================== -->
+  <section id="microservices">
+    <h2><span class="sec-num">17</span> Microservices</h2>
+
+    <h3>Monolith vs Microservices</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Factor</th><th>Choose Monolith</th><th>Choose Microservices</th></tr>
+      <tr><td>Team size</td><td>&lt; 10 developers</td><td>&gt; 20 developers (teams per service)</td></tr>
+      <tr><td>Scale needs</td><td>Moderate, uniform load</td><td>Specific services need independent scaling</td></tr>
+      <tr><td>Domain complexity</td><td>Simple domain</td><td>Clear bounded contexts exist</td></tr>
+      <tr><td>Budget/ops maturity</td><td>Limited DevOps resources</td><td>Strong DevOps, Kubernetes experience</td></tr>
+    </table></div>
+
+    <h3>Communication Patterns</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Pattern</th><th>Type</th><th>Best For</th><th>Tools</th></tr>
+      <tr><td>REST/HTTP</td><td>Sync</td><td>Simple request-response</td><td>HttpClient, Refit</td></tr>
+      <tr><td>gRPC</td><td>Sync</td><td>High-performance internal calls</td><td>Grpc.AspNetCore</td></tr>
+      <tr><td>Message Queue</td><td>Async</td><td>Fire-and-forget, decoupling</td><td>RabbitMQ, Azure Service Bus</td></tr>
+      <tr><td>Event Streaming</td><td>Async</td><td>Event sourcing, audit log</td><td>Kafka, Azure Event Hub</td></tr>
+    </table></div>
+
+    <h3>Saga Pattern (Distributed Transactions)</h3>
+    <div class="card">
+      Problem: Can't use DB transactions across services.<br>
+      <strong>Choreography:</strong> OrderPlaced → InventoryReserved → PaymentProcessed → OrderConfirmed<br>
+      <strong>Orchestration:</strong> Central coordinator (OrderSaga) orchestrates all steps. On failure, compensates in reverse order.
+    </div>
+
+    <div class="tip"><strong>API Gateway</strong> Single entry point for all clients. Handles auth, rate limiting, SSL termination, routes to downstream services. Tools: Azure API Management, YARP, Ocelot.</div>
+  </section>
+
+  <!-- ===================== DOCKER ===================== -->
+  <section id="docker">
+    <h2><span class="sec-num">18</span> Docker &amp; Containerization</h2>
+
+    <h3>Production Dockerfile</h3>
+    <pre><span class="comment"># Multi-stage build — smaller final image</span>
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["MyApi/MyApi.csproj", "MyApi/"]
+RUN dotnet restore "MyApi/MyApi.csproj"
+COPY . .
+WORKDIR "/src/MyApi"
+RUN dotnet publish -c Release -o /app/publish --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+RUN adduser --disabled-password --gecos '' appuser
+USER appuser
+COPY --from=build /app/publish .
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "MyApi.dll"]</pre>
+
+    <h3>Docker Compose</h3>
+    <pre>services:
+  api:
+    build: .
+    ports: ["5000:8080"]
+    depends_on: [db, redis]
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment: { SA_PASSWORD: "Pass@123", ACCEPT_EULA: "Y" }
+  redis:
+    image: redis:7-alpine</pre>
+  </section>
+
+  <!-- ===================== SECURITY ===================== -->
+  <section id="security">
+    <h2><span class="sec-num">19</span> Security</h2>
+
+    <h3>OWASP Top 10 (What Backend Devs Must Know)</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>#</th><th>Vulnerability</th><th>Fix</th></tr>
+      <tr><td>1</td><td>Broken Access Control</td><td>Always validate user owns the resource</td></tr>
+      <tr><td>2</td><td>Cryptographic Failures</td><td>Never store plain passwords; use bcrypt/Argon2</td></tr>
+      <tr><td>3</td><td>Injection (SQL)</td><td>Use parameterized queries / ORM — never string concat</td></tr>
+      <tr><td>5</td><td>Security Misconfiguration</td><td>Disable Swagger in prod, hide stack traces</td></tr>
+      <tr><td>7</td><td>Identity Failures</td><td>Strong JWT secret, short expiry, refresh tokens</td></tr>
+      <tr><td>9</td><td>Logging Failures</td><td>Log auth events, never log passwords/tokens</td></tr>
+    </table></div>
+
+    <pre><span class="comment">// ❌ VULNERABLE — string concatenation</span>
+var sql = $"SELECT * FROM Users WHERE Email = '{email}'";
+<span class="comment">// Attacker sends: ' OR '1'='1 → returns all users</span>
+
+<span class="comment">// ✅ SAFE — EF Core always parameterizes</span>
+var user = await _context.Users.Where(u =&gt; u.Email == email).FirstOrDefaultAsync();
+
+<span class="comment">// ✅ SAFE — Dapper with parameters</span>
+var user = await conn.QueryFirstOrDefaultAsync&lt;User&gt;(
+    "SELECT * FROM Users WHERE Email = @Email", new { Email = email });</pre>
+  </section>
+
+  <!-- ===================== LOGGING ===================== -->
+  <section id="logging">
+    <h2><span class="sec-num">20</span> Logging &amp; Observability</h2>
+
+    <pre><span class="comment">// ✅ Correct — structured properties (searchable)</span>
+_logger.LogInformation("Processing order {OrderId} for user {UserId}", order.Id, user.Id);
+
+<span class="comment">// ❌ Wrong — loses structured data</span>
+_logger.LogInformation($"Processing order {order.Id} for user {user.Id}");</pre>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Pillar</th><th>What It Tells You</th><th>Tools</th></tr>
+      <tr><td>Logs</td><td>What happened (events, errors, state changes)</td><td>Serilog + Seq, ELK Stack, Azure Monitor</td></tr>
+      <tr><td>Metrics</td><td>How the system is performing</td><td>Prometheus + Grafana, Application Insights</td></tr>
+      <tr><td>Traces</td><td>Where time is spent across services</td><td>Jaeger, Zipkin, Azure App Insights</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== API DESIGN ===================== -->
+  <section id="api-design">
+    <h2><span class="sec-num">21</span> API Design Best Practices</h2>
+
+    <h3>RESTful Rules</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Rule</th><th>Wrong</th><th>Correct</th></tr>
+      <tr><td>Use nouns not verbs</td><td>GET /getUsers</td><td>GET /users</td></tr>
+      <tr><td>Plural resources</td><td>GET /user/1</td><td>GET /users/1</td></tr>
+      <tr><td>HTTP verbs correctly</td><td>POST /users/delete</td><td>DELETE /users/1</td></tr>
+      <tr><td>Nested resources</td><td>GET /getOrdersByUser?userId=1</td><td>GET /users/1/orders</td></tr>
+    </table></div>
+
+    <h3>HTTP Status Codes</h3>
+    <div class="chip-row">
+      <span class="chip">200 OK</span>
+      <span class="chip">201 Created</span>
+      <span class="chip">204 No Content</span>
+      <span class="chip">400 Bad Request</span>
+      <span class="chip">401 Unauthorized</span>
+      <span class="chip">403 Forbidden</span>
+      <span class="chip">404 Not Found</span>
+      <span class="chip">409 Conflict</span>
+      <span class="chip">422 Unprocessable</span>
+      <span class="chip">429 Too Many Requests</span>
+      <span class="chip">500 Internal Server Error</span>
+    </div>
+  </section>
+
+  <!-- ===================== TESTING ===================== -->
+  <section id="testing">
+    <h2><span class="sec-num">22</span> Testing Strategy</h2>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Level</th><th>What Tested</th><th>Coverage Target</th><th>Tools</th></tr>
+      <tr><td>Unit Tests</td><td>Single class/method in isolation</td><td>70%+</td><td>xUnit, Moq, FluentAssertions</td></tr>
+      <tr><td>Integration Tests</td><td>Multiple layers together</td><td>20%</td><td>WebApplicationFactory, TestContainers</td></tr>
+      <tr><td>End-to-End Tests</td><td>Full user flows via HTTP</td><td>10%</td><td>Playwright, RestSharp</td></tr>
+    </table></div>
+
+    <pre><span class="comment">// Unit Test pattern</span>
+[Fact]
+public async Task GetUser_ShouldReturnUser_WhenExists()
+{
+    <span class="comment">// Arrange</span>
+    var mockRepo = new Mock&lt;IUserRepository&gt;();
+    mockRepo.Setup(r =&gt; r.GetByIdAsync(1, default)).ReturnsAsync(user);
+    var service = new UserService(mockRepo.Object, Mock.Of&lt;ICacheService&gt;());
+
+    <span class="comment">// Act</span>
+    var result = await service.GetUserAsync(1);
+
+    <span class="comment">// Assert</span>
+    result.Should().NotBeNull();
+    result!.Name.Should().Be("Alice");
+    mockRepo.Verify(r =&gt; r.GetByIdAsync(1, default), Times.Once);
+}</pre>
+  </section>
+
+  <!-- ===================== SQL CONCEPTS ===================== -->
+  <section id="sql-concepts">
+    <h2><span class="sec-num">23</span> SQL Concepts</h2>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Concept</th><th>Description</th></tr>
+      <tr><td>CTE</td><td>Common Table Expression — temporary named result. Use WITH. Great for deleting duplicates.</td></tr>
+      <tr><td>Window Functions</td><td>ROW_NUMBER(), RANK(), DENSE_RANK() — operate over partition without collapsing rows.</td></tr>
+      <tr><td>PARTITION BY</td><td>Divides result set into groups for window functions. Like GROUP BY but keeps all rows.</td></tr>
+      <tr><td>PIVOT / UNPIVOT</td><td>PIVOT: rows → columns. UNPIVOT: columns → rows.</td></tr>
+      <tr><td>Clustered Index</td><td>Physical sort order of table. Only 1 per table. Primary key by default.</td></tr>
+      <tr><td>Non-Clustered Index</td><td>Separate structure pointing to rows. Many per table. Speeds up WHERE/JOIN.</td></tr>
+      <tr><td>HAVING vs WHERE</td><td>WHERE filters before grouping. HAVING filters after GROUP BY on aggregated results.</td></tr>
+      <tr><td>UNION vs UNION ALL</td><td>UNION removes duplicates. UNION ALL keeps all rows including duplicates.</td></tr>
+    </table></div>
+
+    <h3>ACID Properties</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Property</th><th>Meaning</th></tr>
+      <tr><td><span class="badge badge-blue">A</span> Atomicity</td><td>Transaction is all-or-nothing. If one step fails, the whole transaction rolls back.</td></tr>
+      <tr><td><span class="badge badge-green">C</span> Consistency</td><td>Database remains in a valid state. All constraints satisfied.</td></tr>
+      <tr><td><span class="badge badge-purple">I</span> Isolation</td><td>Concurrent transactions don't interfere with each other.</td></tr>
+      <tr><td><span class="badge badge-warn">D</span> Durability</td><td>Once committed, data is permanent — even after a crash.</td></tr>
+    </table></div>
+
+    <h3>SP vs Function</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>Stored Procedure</th><th>Function</th></tr>
+      <tr><td>RETURNS keyword</td><td>Not required</td><td>Mandatory</td></tr>
+      <tr><td>Can use in SELECT?</td><td>❌ No</td><td>✔ Yes</td></tr>
+      <tr><td>Transaction</td><td>Supported</td><td>Limited</td></tr>
+    </table></div>
+
+    <h3>Window Functions: LEAD()</h3>
+    <pre><span class="comment">-- Get next row value within same group</span>
+SELECT
+    Name,
+    Value,
+    ISNULL(
+        LEAD(Value) OVER (
+            PARTITION BY Name
+            ORDER BY Value
+        ), 0
+    ) AS NextValue
+FROM YourTable
+ORDER BY Name, Value;</pre>
+  </section>
+
+
+  <!-- ===================== SQL TRIGGERS ===================== -->
+  <section id="sql-triggers">
+    <h2><span class="sec-num">23B</span> SQL Triggers</h2>
+
+    <p>A <strong>trigger</strong> is a special stored procedure that automatically fires <em>before</em> or <em>after</em> a DML event (INSERT, UPDATE, DELETE) on a table. You cannot call a trigger manually — SQL Server fires it automatically.</p>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Type</th><th>When It Fires</th><th>Common Use</th></tr>
+      <tr><td>AFTER (FOR)</td><td>After DML completes</td><td>Audit logging, cascade updates</td></tr>
+      <tr><td>INSTEAD OF</td><td>In place of DML</td><td>Updatable views, custom logic replacing default action</td></tr>
+      <tr><td>DDL Trigger</td><td>On schema changes (CREATE/ALTER/DROP)</td><td>Prevent accidental schema drops in prod</td></tr>
+    </table></div>
+
+    <div class="tip"><strong>Magic Tables</strong> Inside a trigger, SQL Server provides two virtual tables: <code>INSERTED</code> (new/updated rows) and <code>DELETED</code> (old/deleted rows). These are your primary tool for reading what changed.</div>
+
+    <h3>AFTER INSERT Trigger — Audit Log</h3>
+    <pre><span class="comment">-- Fires every time a row is inserted into Orders</span>
+CREATE OR ALTER TRIGGER trg_Orders_AfterInsert
+ON Orders
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO AuditLog (TableName, Action, RecordId, ChangedAt)
+    SELECT 'Orders', 'INSERT', Id, GETDATE()
+    FROM INSERTED;   <span class="comment">-- INSERTED holds the newly added row(s)</span>
+END</pre>
+
+    <h3>AFTER UPDATE Trigger — Track Price Changes</h3>
+    <pre>CREATE OR ALTER TRIGGER trg_Product_PriceChange
+ON Product
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    <span class="comment">-- Only fire if Price column was actually changed</span>
+    IF UPDATE(Price)
+    BEGIN
+        INSERT INTO PriceHistory (ProductId, OldPrice, NewPrice, ChangedAt)
+        SELECT d.Id, d.Price, i.Price, GETDATE()
+        FROM DELETED d                  <span class="comment">-- old values</span>
+        INNER JOIN INSERTED i ON d.Id = i.Id   <span class="comment">-- new values</span>
+        WHERE d.Price &lt;&gt; i.Price;
+    END
+END</pre>
+
+    <h3>INSTEAD OF Trigger — Prevent Deletion</h3>
+    <pre>CREATE OR ALTER TRIGGER trg_Customer_PreventDelete
+ON Customer
+INSTEAD OF DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    <span class="comment">-- Soft-delete instead of hard delete</span>
+    UPDATE Customer
+    SET IsDeleted = 1, DeletedAt = GETDATE()
+    WHERE Id IN (SELECT Id FROM DELETED);
+END</pre>
+
+    <h3>DDL Trigger — Prevent Table Drops</h3>
+    <pre>CREATE TRIGGER trg_PreventDrop
+ON DATABASE
+FOR DROP_TABLE, ALTER_TABLE
+AS
+BEGIN
+    PRINT 'Schema changes are not allowed in production!';
+    ROLLBACK;
+END</pre>
+
+    <div class="warn-box"><strong>Interview Trap</strong> Triggers are hard to debug and can silently slow down DML operations. Always mention the tradeoff: triggers add implicit logic that's invisible to the developer writing the INSERT/UPDATE. For audit logging, consider application-layer logging or EF Core interceptors as alternatives.</div>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Benefit</th><th>Drawback</th></tr>
+      <tr><td>Enforces business rules at DB level</td><td>Hidden logic — hard to discover and debug</td></tr>
+      <tr><td>Works for any client (app, SSMS, scripts)</td><td>Adds overhead to every DML operation</td></tr>
+      <tr><td>Great for audit trails</td><td>Cannot pass parameters; relies on INSERTED/DELETED</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== SQL PERFORMANCE TUNING ===================== -->
+  <section id="sql-perf">
+    <h2><span class="sec-num">23C</span> SQL Performance Tuning</h2>
+
+    <p>Performance tuning is the process of finding and fixing slow queries. The main tools are <strong>Execution Plans</strong>, <strong>indexes</strong>, and <strong>query rewriting</strong>.</p>
+
+    <h3>Step 1 — Find the Slow Query</h3>
+    <pre><span class="comment">-- Top 10 most expensive queries by total CPU (SQL Server)</span>
+SELECT TOP 10
+    qs.total_elapsed_time / qs.execution_count AS avg_elapsed_us,
+    qs.execution_count,
+    SUBSTRING(qt.text, (qs.statement_start_offset/2)+1, 200) AS query_text
+FROM sys.dm_exec_query_stats qs
+CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) qt
+ORDER BY avg_elapsed_us DESC;</pre>
+
+    <h3>Step 2 — Read the Execution Plan</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Operator</th><th>Meaning</th><th>Action</th></tr>
+      <tr><td>Table Scan</td><td>No index — reads every row</td><td>Add an index on filtered/joined column</td></tr>
+      <tr><td>Index Scan</td><td>Index exists but reading all rows in it</td><td>Add a more selective index or covering index</td></tr>
+      <tr><td>Index Seek</td><td>Efficient — jumps straight to matching rows</td><td>Good — aim for this</td></tr>
+      <tr><td>Key Lookup</td><td>Index found row but fetches extra columns from heap</td><td>Use INCLUDE columns in index</td></tr>
+      <tr><td>Hash Join / Sort</td><td>Memory-heavy operations</td><td>Can indicate missing index on join column</td></tr>
+    </table></div>
+
+    <h3>Step 3 — Indexing Strategy</h3>
+    <pre><span class="comment">-- Covering index: OrderId is the seek key, extra columns come free</span>
+CREATE NONCLUSTERED INDEX IX_OrderItem_Covering
+ON OrderItem(OrderId)
+INCLUDE (ItemId, Quantity, Price);   <span class="comment">-- eliminates Key Lookup</span>
+
+<span class="comment">-- Composite index: column order matters — put equality first, range last</span>
+CREATE NONCLUSTERED INDEX IX_Orders_Customer_Date
+ON Orders(CustomerId, OrderDate DESC);
+<span class="comment">-- Good for: WHERE CustomerId = 5 ORDER BY OrderDate DESC</span></pre>
+
+    <h3>Common Query Rewrites</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Anti-Pattern</th><th>Problem</th><th>Fix</th></tr>
+      <tr><td><code>SELECT *</code></td><td>Fetches unused columns, breaks covering index</td><td>Select only needed columns</td></tr>
+      <tr><td>Function on column: <code>WHERE YEAR(OrderDate) = 2024</code></td><td>Prevents index seek — scans entire table</td><td><code>WHERE OrderDate &gt;= '2024-01-01' AND OrderDate &lt; '2025-01-01'</code></td></tr>
+      <tr><td>Implicit conversion: <code>WHERE Id = '123'</code> (Id is INT)</td><td>Type mismatch forces scan</td><td>Match parameter type: <code>WHERE Id = 123</code></td></tr>
+      <tr><td>Correlated subquery in SELECT</td><td>Runs once per row</td><td>Rewrite with JOIN or window function</td></tr>
+      <tr><td><code>NOT IN (subquery with NULLs)</code></td><td>Returns zero rows silently</td><td>Use <code>NOT EXISTS</code> instead</td></tr>
+      <tr><td>OR on indexed column</td><td>Often causes scan</td><td>Rewrite as UNION ALL</td></tr>
+    </table></div>
+
+    <h3>Statistics & Maintenance</h3>
+    <pre><span class="comment">-- Update statistics on a specific table</span>
+UPDATE STATISTICS Orders WITH FULLSCAN;
+
+<span class="comment">-- Rebuild fragmented indexes (online = no table lock)</span>
+ALTER INDEX ALL ON Orders REBUILD WITH (ONLINE = ON);
+
+<span class="comment">-- Reorganize lightly fragmented index (&lt;30%)</span>
+ALTER INDEX IX_Orders_Customer_Date ON Orders REORGANIZE;</pre>
+
+    <h3>Execution Plan Tips</h3>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">SET STATISTICS IO ON</div>Shows logical reads per table. Fewer reads = better query. Target: single-digit logical reads for point queries.</div>
+      <div class="card-sm"><div class="card-label">SET STATISTICS TIME ON</div>Shows parse, compile, and execute time in milliseconds. Good for comparing before/after optimization.</div>
+      <div class="card-sm"><div class="card-label">Query Store</div>Built-in SQL Server feature (2016+). Captures query plans over time. Detects plan regression automatically.</div>
+      <div class="card-sm"><div class="card-label">Missing Index DMV</div><code>sys.dm_db_missing_index_details</code> — SQL Server tells you which indexes would help. Review before blindly creating.</div>
+    </div>
+
+    <div class="tip"><strong>Power Line</strong> "I used the Execution Plan to identify a Table Scan caused by a function on a date column. Rewriting the WHERE clause to use a date range converted it to an Index Seek, reducing query time from 4 seconds to 80ms."</div>
+  </section>
+
+  <!-- ===================== SQL QUERIES ===================== -->
+  <section id="sql-queries">
+    <h2><span class="sec-num">24</span> SQL Practice Queries</h2>
+
+    <h3>1. Top 5 Customers by Spending</h3>
+    <pre>SELECT TOP 5
+    c.Name,
+    SUM(oi.Price * oi.Quantity) AS Spent
+FROM Customer c
+JOIN Orders o ON c.Id = o.CustomerId
+JOIN OrderItem oi ON o.Id = oi.OrderId
+GROUP BY c.Name
+ORDER BY Spent DESC</pre>
+
+    <h3>2. Monthly Sales Report</h3>
+    <pre>SELECT
+    FORMAT(o.OrderDate, 'yyyy-MM') AS Month,
+    SUM(oi.Price * oi.Quantity) AS TotalSales
+FROM Orders o
+JOIN OrderItem oi ON o.Id = oi.OrderId
+GROUP BY FORMAT(o.OrderDate, 'yyyy-MM')
+ORDER BY Month</pre>
+
+    <h3>3. Latest Order Per Customer (ROW_NUMBER)</h3>
+    <pre>WITH tt AS (
+    SELECT
+        o.Id AS OrderId, o.CustomerId, o.OrderDate,
+        ROW_NUMBER() OVER (
+            PARTITION BY o.CustomerId
+            ORDER BY o.OrderDate DESC
+        ) AS rn
+    FROM Orders o
+)
+SELECT * FROM tt WHERE rn = 1</pre>
+
+    <h3>4. Categories With No Items</h3>
+    <pre>SELECT * FROM Category c
+LEFT JOIN Item i ON c.Id = i.CategoryId
+WHERE i.Id IS NULL</pre>
+
+    <h3>5. PIVOT — Total Sales Per City</h3>
+    <pre>SELECT * FROM (
+    SELECT c.City, FORMAT(o.OrderDate, 'yyyy-MM') AS Month,
+        (i.Quantity * i.Price) AS Amount
+    FROM Customer c
+    INNER JOIN Orders o ON o.CustomerId = c.Id
+    INNER JOIN OrderItem i ON i.OrderId = o.Id
+) AS s1
+PIVOT (
+    SUM(s1.Amount) FOR City IN ([Ahmedabad], [Surat], [Vadodara])
+) AS pv
+ORDER BY Month</pre>
+
+    <h3>6. Customers With No Orders</h3>
+    <pre>SELECT * FROM Customer c
+WHERE NOT EXISTS (
+    SELECT 1 FROM Orders o WHERE o.CustomerId = c.Id
+)</pre>
+
+    <h3>7. Delete Duplicate Customers (Keep Latest)</h3>
+    <pre>WITH tt AS (
+    SELECT Id,
+        ROW_NUMBER() OVER (PARTITION BY Name ORDER BY Id DESC) AS rn
+    FROM Customer
+)
+DELETE FROM tt WHERE rn > 1</pre>
+
+    <h3>8. Top 3 Selling Items Per Category</h3>
+    <pre>WITH t1 AS (
+    SELECT c.Name AS Cat, i.Name AS itm, SUM(Quantity) AS qty
+    FROM OrderItem oi
+    INNER JOIN Item i ON oi.ItemId = i.Id
+    INNER JOIN Category c ON i.CategoryId = c.Id
+    GROUP BY c.Name, i.Name
+),
+ri AS (
+    SELECT Cat, itm, qty,
+        ROW_NUMBER() OVER (PARTITION BY Cat ORDER BY qty DESC) AS qq
+    FROM t1
+)
+SELECT * FROM ri WHERE qq &lt; 4</pre>
+
+    <h3>9. Second Highest Order Amount (Two Ways)</h3>
+    <pre><span class="comment">-- Method 1: OFFSET</span>
+SELECT oi.OrderId, SUM(oi.Quantity * Price) AS Amount
+FROM Orders o
+INNER JOIN OrderItem oi ON o.Id = oi.OrderId
+GROUP BY oi.OrderId
+ORDER BY Amount DESC
+OFFSET 1 ROWS FETCH NEXT 1 ROW ONLY
+
+<span class="comment">-- Method 2: DENSE_RANK (preferred)</span>
+WITH OrderTotals AS (
+    SELECT o.Id AS OrderId,
+        SUM(oi.Quantity * oi.Price) AS Amount,
+        DENSE_RANK() OVER (ORDER BY SUM(oi.Quantity * oi.Price) DESC) AS rnk
+    FROM Orders o
+    JOIN OrderItem oi ON o.Id = oi.OrderId
+    GROUP BY o.Id
+)
+SELECT * FROM OrderTotals WHERE rnk = 2</pre>
+
+    <h3>10. Index Creation</h3>
+    <pre><span class="comment">-- Basic non-clustered index</span>
+CREATE NONCLUSTERED INDEX IX_OrderItem_OrderId
+ON OrderItem(OrderId);
+
+<span class="comment">-- Covering index (includes extra columns)</span>
+CREATE NONCLUSTERED INDEX IX_OrderItem_OrderId
+ON OrderItem(OrderId) INCLUDE (ItemId, Quantity, Price);</pre>
+
+    <h3>11. Pagination</h3>
+    <pre>SELECT * FROM Customer
+ORDER BY Name
+OFFSET (@page - 1) * 20 ROWS
+FETCH NEXT 20 ROWS ONLY</pre>
+  </section>
+
+  <!-- ===================== SQL SCHEMA ===================== -->
+  <section id="sql-schema">
+    <h2><span class="sec-num">25</span> SQL Schema &amp; Stored Procedures</h2>
+
+    <h3>Table Schema</h3>
+    <pre>CREATE TABLE Customer (
+    Id          INT IDENTITY PRIMARY KEY,
+    Name        VARCHAR(100),
+    City        VARCHAR(50),
+    CreatedDate DATETIME DEFAULT GETDATE()
+)
+
+CREATE TABLE Orders (
+    Id         INT IDENTITY PRIMARY KEY,
+    CustomerId INT,
+    OrderDate  DATETIME DEFAULT GETDATE(),
+    CONSTRAINT FK_Orders_Customer FOREIGN KEY(CustomerId) REFERENCES Customer(Id)
+)
+
+CREATE TABLE OrderItem (
+    Id       INT IDENTITY PRIMARY KEY,
+    OrderId  INT,
+    ItemId   INT,
+    Quantity INT,
+    Price    DECIMAL(10,2),
+    CONSTRAINT FK_OrderItem_Order FOREIGN KEY(OrderId) REFERENCES Orders(Id),
+    CONSTRAINT FK_OrderItem_Item  FOREIGN KEY(ItemId)  REFERENCES Item(Id)
+)</pre>
+
+    <h3>Stored Procedure — Place Order with Transaction</h3>
+    <pre>CREATE OR ALTER PROC PlaceOrder
+    @customerId    INT,
+    @purchasedItems Type_Order_Item READONLY
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        IF @customerId IS NULL OR (SELECT COUNT(*) FROM @purchasedItems) &lt; 1
+            RETURN;
+
+        DECLARE @NewOrderId INT;
+
+        BEGIN TRANSACTION
+            INSERT INTO Orders (CustomerId, OrderDate)
+            VALUES (@customerId, GETDATE());
+
+            SET @NewOrderId = SCOPE_IDENTITY();
+
+            INSERT INTO OrderItem (OrderId, ItemId, Price, Quantity)
+            SELECT @NewOrderId, ItemId, Price, Qty FROM @purchasedItems
+        COMMIT TRANSACTION
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END</pre>
+  </section>
+
+
+  <!-- ===================== HTML / CSS / JS / jQuery ===================== -->
+  <section id="html-css-js">
+    <h2><span class="sec-num">26A</span> HTML, CSS, JavaScript &amp; jQuery</h2>
+
+    <h3>HTML — Key Concepts</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Concept</th><th>Description</th><th>Example</th></tr>
+      <tr><td>Semantic HTML</td><td>Use meaningful tags that describe content. Improves SEO and accessibility.</td><td><code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;footer&gt;</code> instead of generic <code>&lt;div&gt;</code></td></tr>
+      <tr><td>data-* attributes</td><td>Store custom data on HTML elements. Read via JS <code>dataset</code>.</td><td><code>&lt;button data-id="5" data-role="admin"&gt;</code></td></tr>
+      <tr><td>defer vs async</td><td><code>defer</code>: load script after HTML parsed. <code>async</code>: load and execute as soon as available.</td><td><code>&lt;script defer src="app.js"&gt;&lt;/script&gt;</code></td></tr>
+      <tr><td>meta viewport</td><td>Makes page responsive on mobile devices.</td><td><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code></td></tr>
+    </table></div>
+
+    <h3>CSS — Key Concepts</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Concept</th><th>Description</th></tr>
+      <tr><td>Box Model</td><td>Every element = content + padding + border + margin. <code>box-sizing: border-box</code> includes padding and border in width.</td></tr>
+      <tr><td>Flexbox</td><td>1-D layout (row OR column). <code>display: flex</code>. Use <code>justify-content</code> (main axis) and <code>align-items</code> (cross axis).</td></tr>
+      <tr><td>CSS Grid</td><td>2-D layout (rows AND columns). <code>display: grid; grid-template-columns: repeat(3, 1fr)</code>.</td></tr>
+      <tr><td>Specificity</td><td>Inline style &gt; ID (#) &gt; Class (.) &gt; Tag. Higher specificity wins. <code>!important</code> overrides all.</td></tr>
+      <tr><td>Media Queries</td><td>Apply styles at specific breakpoints. <code>@media (max-width: 768px) { ... }</code></td></tr>
+      <tr><td>CSS Variables</td><td>Reusable values. <code>:root { --primary: #4f8ef7; } color: var(--primary);</code></td></tr>
+    </table></div>
+
+    <pre><span class="comment">/* Flexbox — center content both ways */</span>
+.container {
+    display: flex;
+    justify-content: center;  /* horizontal */
+    align-items: center;      /* vertical */
+    gap: 16px;
+}
+
+<span class="comment">/* Responsive grid */</span>
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}</pre>
+
+    <h3>JavaScript — Core Concepts</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Concept</th><th>Description &amp; Example</th></tr>
+      <tr><td><code>var</code> vs <code>let</code> vs <code>const</code></td><td><code>var</code>: function-scoped, hoisted. <code>let</code>: block-scoped, reassignable. <code>const</code>: block-scoped, no reassign. Always prefer <code>const</code> then <code>let</code>.</td></tr>
+      <tr><td>Hoisting</td><td>Variable and function declarations are moved to top of scope. <code>var x;</code> is hoisted but not its value. <code>let/const</code> are in Temporal Dead Zone until declaration.</td></tr>
+      <tr><td>Closure</td><td>Inner function remembers outer function's variables even after outer function returns. Used in counters, data hiding.</td></tr>
+      <tr><td>Event Loop</td><td>JS is single-threaded. Callbacks and Promises go into the queue. The event loop processes them after the call stack is empty.</td></tr>
+      <tr><td>Promises / async-await</td><td>Handle asynchronous operations. <code>async</code> function always returns a Promise.</td></tr>
+      <tr><td>Spread / Rest</td><td>Spread: <code>[...arr1, ...arr2]</code>. Rest: <code>function sum(...nums)</code>.</td></tr>
+      <tr><td>Destructuring</td><td><code>const { name, age } = user;</code> — extracts properties from objects or arrays.</td></tr>
+      <tr><td>Optional Chaining</td><td><code>user?.address?.city</code> — safely access nested props; returns <code>undefined</code> instead of throwing.</td></tr>
+    </table></div>
+
+    <pre><span class="comment">// Closure example — private counter</span>
+function makeCounter() {
+    let count = 0;               // private variable
+    return {
+        increment: () => ++count,
+        get: () => count
+    };
+}
+const c = makeCounter();
+c.increment(); c.increment();
+console.log(c.get()); // 2
+
+<span class="comment">// Promise / async-await</span>
+async function fetchUser(id) {
+    try {
+        const res = await fetch(`/api/users/${id}`);
+        if (!res.ok) throw new Error('Not found');
+        return await res.json();
+    } catch (err) {
+        console.error(err);
+    }
+}</pre>
+
+    <h3>jQuery — Key Concepts</h3>
+    <p>jQuery is a JavaScript library that simplifies DOM manipulation, event handling, and AJAX. You'll see it in legacy ASP.NET MVC projects.</p>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Operation</th><th>jQuery</th><th>Vanilla JS Equivalent</th></tr>
+      <tr><td>Select element</td><td><code>$('#myId')</code></td><td><code>document.getElementById('myId')</code></td></tr>
+      <tr><td>Hide element</td><td><code>$('#el').hide()</code></td><td><code>el.style.display = 'none'</code></td></tr>
+      <tr><td>Click event</td><td><code>$('#btn').on('click', fn)</code></td><td><code>btn.addEventListener('click', fn)</code></td></tr>
+      <tr><td>AJAX GET</td><td><code>$.get('/api/users', callback)</code></td><td><code>fetch('/api/users').then(...)</code></td></tr>
+      <tr><td>Change text</td><td><code>$('#el').text('Hello')</code></td><td><code>el.textContent = 'Hello'</code></td></tr>
+      <tr><td>Add class</td><td><code>$('#el').addClass('active')</code></td><td><code>el.classList.add('active')</code></td></tr>
+    </table></div>
+
+    <pre><span class="comment">// jQuery AJAX — typical in legacy ASP.NET MVC</span>
+$.ajax({
+    url: '/api/products',
+    method: 'GET',
+    success: function(data) {
+        $.each(data, function(i, product) {
+            $('#list').append('&lt;li&gt;' + product.name + '&lt;/li&gt;');
+        });
+    },
+    error: function(xhr) {
+        alert('Error: ' + xhr.status);
+    }
+});
+
+<span class="comment">// $(document).ready — runs after DOM is loaded</span>
+$(document).ready(function() {
+    $('#saveBtn').on('click', function() {
+        var name = $('#nameInput').val();
+        console.log('Saving:', name);
+    });
+});</pre>
+
+    <div class="tip"><strong>Interview Tip</strong> If asked about jQuery vs Angular/React — say: jQuery is a DOM library, good for small interactions in server-rendered pages. Angular/React are full frameworks for building SPAs. In modern projects, jQuery is largely replaced, but it still appears in legacy ASP.NET MVC views.</div>
+  </section>
+
+  <!-- ===================== ANGULAR ===================== -->
+  <section id="angular">
+    <h2><span class="sec-num">26</span> Angular &amp; TypeScript</h2>
+
+    <h3>Core Concepts</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Concept</th><th>Description</th></tr>
+      <tr><td>Component</td><td>Building block of Angular UI. HTML template + TS class + styles. Identified by @Component decorator.</td></tr>
+      <tr><td>Directive</td><td>Structural (*ngIf, *ngFor) change structure. Attribute (ngClass, ngStyle) change appearance.</td></tr>
+      <tr><td>Service</td><td>Shared logic across components. Injected via DI. Used for HTTP calls, business logic, state.</td></tr>
+      <tr><td>Observable</td><td>Streams of data. Subscribe to receive values. Used with HttpClient. Cancellable (unlike Promise).</td></tr>
+      <tr><td>BehaviorSubject</td><td>Like Subject but holds last value. New subscribers immediately get the latest emitted value.</td></tr>
+      <tr><td>Interceptor</td><td>Intercepts every HTTP request/response. Used to add JWT token, handle errors globally.</td></tr>
+    </table></div>
+
+    <h3>Key Angular Q&amp;A</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Question</th><th>Answer</th></tr>
+      <tr><td>JIT vs AOT</td><td>JIT: compiles at runtime (dev). AOT: compiles at build time (prod) — faster, smaller bundle.</td></tr>
+      <tr><td>Observable vs Promise</td><td>Observable: multiple values, cancellable, lazy. Promise: single value, not cancellable, eager.</td></tr>
+      <tr><td>ngOnInit vs Constructor</td><td>Constructor: object creation, DI injection. ngOnInit: initialization logic after data binding.</td></tr>
+      <tr><td>*ngIf vs [hidden]</td><td>*ngIf removes element from DOM. [hidden] keeps element but hides it.</td></tr>
+      <tr><td>Lazy Loading</td><td>Load feature modules only when their route is accessed. Improves initial load time.</td></tr>
+      <tr><td>trackBy in *ngFor</td><td>Tells Angular to track items by unique key — avoids re-rendering unchanged items.</td></tr>
+      <tr><td>Two-way binding</td><td>[(ngModel)] = property binding + event binding. Requires FormsModule.</td></tr>
+    </table></div>
+
+    <h3>Component Communication</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Direction</th><th>How</th></tr>
+      <tr><td>Parent → Child</td><td>@Input() decorator. <code>&lt;child [data]="value"&gt;</code></td></tr>
+      <tr><td>Child → Parent</td><td>@Output() + EventEmitter. <code>&lt;child (dataEvent)="handler($event)"&gt;</code></td></tr>
+      <tr><td>Unrelated Components</td><td>Shared Service with Subject() or BehaviorSubject()</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== MONGODB ===================== -->
+  <section id="mongodb">
+    <h2><span class="sec-num">27</span> MongoDB &amp; NoSQL</h2>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>SQL Server</th><th>MongoDB</th></tr>
+      <tr><td>Type</td><td>Relational</td><td>Non-Relational (Document)</td></tr>
+      <tr><td>Data Storage</td><td>Tables / Rows / Columns</td><td>Collections / Documents (BSON) / Fields</td></tr>
+      <tr><td>Schema</td><td>Predefined (rigid)</td><td>Dynamic (flexible)</td></tr>
+      <tr><td>Relationships</td><td>Foreign keys, JOINs</td><td>Embedded documents or references</td></tr>
+      <tr><td>Scalability</td><td>Vertical (add RAM/CPU)</td><td>Horizontal (add more servers)</td></tr>
+      <tr><td>Transactions</td><td>Full ACID</td><td>CAP theorem</td></tr>
+    </table></div>
+
+    <h3>When to Use</h3>
+    <div class="two-col">
+      <div class="card"><strong>Use SQL when:</strong> Complex relationships, JOINs, transactions required. Government/financial systems requiring strict ACID.</div>
+      <div class="card"><strong>Use MongoDB when:</strong> Flexible schema, hierarchical data, rapid iteration. Unstructured or semi-structured data (logs, catalog).</div>
+    </div>
+
+    <pre><span class="comment">// C# Driver CRUD</span>
+var all  = collection.Find(_ =&gt; true).ToList();
+var user = collection.Find(u =&gt; u.Id == id).FirstOrDefault();
+collection.InsertOne(user);
+collection.ReplaceOne(u =&gt; u.Id == id, updatedUser);
+collection.DeleteOne(u =&gt; u.Id == id);</pre>
+  </section>
+
+
+  <!-- ===================== GIT ===================== -->
+  <section id="git">
+    <h2><span class="sec-num">30A</span> Git &amp; Version Control</h2>
+
+    <p>Git is the industry-standard distributed version control system. Every commit is a snapshot of your entire project, not a diff. You have a full local copy of the repository.</p>
+
+    <h3>Core Concepts</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Concept</th><th>Description</th></tr>
+      <tr><td>Working Directory</td><td>Files you're currently editing. Changes are "unstaged" until you <code>git add</code> them.</td></tr>
+      <tr><td>Staging Area (Index)</td><td>Snapshot of changes ready to be committed. <code>git add file.cs</code> moves changes here.</td></tr>
+      <tr><td>Local Repository</td><td>The full history on your machine. <code>git commit</code> writes to this.</td></tr>
+      <tr><td>Remote Repository</td><td>Shared repo (GitHub, Azure DevOps). <code>git push</code> sends commits here.</td></tr>
+      <tr><td>Branch</td><td>An independent line of development. Cheap and fast in Git. <code>main</code> is the default.</td></tr>
+      <tr><td>HEAD</td><td>Pointer to your current position (usually the latest commit on your branch).</td></tr>
+    </table></div>
+
+    <h3>Essential Commands</h3>
+    <pre><span class="comment"># Daily workflow</span>
+git status                    # see what's changed
+git add .                     # stage all changes
+git add src/Controllers/      # stage specific folder
+git commit -m "feat: add user endpoint"
+git push origin feature/user-api
+
+<span class="comment"># Branching</span>
+git checkout -b feature/payment  # create + switch to new branch
+git checkout main                # switch back
+git merge feature/payment        # merge into current branch
+git branch -d feature/payment    # delete merged branch
+
+<span class="comment"># Syncing with remote</span>
+git fetch origin      # download changes, don't apply yet
+git pull origin main  # fetch + merge in one step
+git push origin main
+
+<span class="comment"># Viewing history</span>
+git log --oneline --graph    # compact history with branch graph
+git diff HEAD~1              # what changed in last commit</pre>
+
+    <h3>Merge vs Rebase</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Command</th><th>What It Does</th><th>When to Use</th></tr>
+      <tr><td><code>git merge</code></td><td>Combines branches, creates a merge commit. Preserves full history.</td><td>Merging feature branches into main. Use in team environments.</td></tr>
+      <tr><td><code>git rebase</code></td><td>Replays your commits on top of target branch. Linear history, no merge commit.</td><td>Cleaning up local commits before PR. Never rebase shared branches.</td></tr>
+      <tr><td><code>git cherry-pick</code></td><td>Apply a specific commit from another branch.</td><td>Hotfix: apply a bug fix to multiple release branches.</td></tr>
+    </table></div>
+
+    <h3>Undoing Changes</h3>
+    <pre><span class="comment"># Undo staged changes (unstage file)</span>
+git restore --staged src/Service.cs
+
+<span class="comment"># Undo uncommitted working directory changes</span>
+git restore src/Service.cs
+
+<span class="comment"># Undo last commit but keep changes staged</span>
+git reset --soft HEAD~1
+
+<span class="comment"># Undo last commit and discard changes (DESTRUCTIVE)</span>
+git reset --hard HEAD~1
+
+<span class="comment"># Revert a commit safely (creates a new commit undoing it)</span>
+git revert abc1234     # safe for shared branches</pre>
+
+    <div class="danger-box"><strong>⚠ Rule</strong> Never force push (<code>git push --force</code>) to a shared branch like <code>main</code>. It rewrites history for everyone and causes data loss. Use <code>git revert</code> instead to safely undo changes on shared branches.</div>
+
+    <h3>Branching Strategy (Gitflow)</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Branch</th><th>Purpose</th></tr>
+      <tr><td><code>main</code></td><td>Always production-ready. Only merge via Pull Request.</td></tr>
+      <tr><td><code>develop</code></td><td>Integration branch for completed features.</td></tr>
+      <tr><td><code>feature/xyz</code></td><td>New feature. Branch from develop, merge back to develop.</td></tr>
+      <tr><td><code>hotfix/xyz</code></td><td>Emergency production fix. Branch from main, merge to main AND develop.</td></tr>
+      <tr><td><code>release/1.2.0</code></td><td>Stabilization before release. Bug fixes only.</td></tr>
+    </table></div>
+
+    <h3>Git in Azure DevOps / CI-CD Context</h3>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">Pull Request (PR)</div>Code review mechanism. Requires approvals before merging. Azure DevOps enforces branch policies here.</div>
+      <div class="card-sm"><div class="card-label">.gitignore</div>Lists files Git should NOT track: <code>bin/</code>, <code>obj/</code>, <code>.env</code>, <code>appsettings.Development.json</code>.</div>
+      <div class="card-sm"><div class="card-label">git stash</div>Temporarily save uncommitted changes so you can switch branch. <code>git stash pop</code> to restore.</div>
+      <div class="card-sm"><div class="card-label">Semantic Commits</div><code>feat:</code>, <code>fix:</code>, <code>refactor:</code>, <code>docs:</code> — standard prefixes for clean commit history.</div>
+    </div>
+
+    <div class="tip"><strong>Power Line</strong> "We followed a trunk-based development strategy with short-lived feature branches and enforced PR reviews in Azure DevOps. Every merge triggered a CI pipeline that ran unit tests and published the Docker image."</div>
+  </section>
+
+  <!-- ===================== ASP.NET MVC DEEP DIVE ===================== -->
+  <section id="aspnet-mvc">
+    <h2><span class="sec-num">30B</span> ASP.NET MVC Deep Dive</h2>
+
+    <p>ASP.NET MVC (Model-View-Controller) is a server-side framework where the server renders HTML. This is different from .NET Core Web API, which returns JSON. Understanding MVC specifics is essential for 7+ year roles.</p>
+
+    <h3>MVC Request Flow</h3>
+    <div class="flow">
+      <div class="flow-step">Browser Request</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Route Table</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Controller</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Model Binding</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Action Method</div><div class="flow-arrow">→</div>
+      <div class="flow-step">View</div><div class="flow-arrow">→</div>
+      <div class="flow-step">HTML Response</div>
+    </div>
+
+    <h3>Routing</h3>
+    <pre><span class="comment">// Convention-based routing (Startup.cs / Program.cs)</span>
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+// URL: /Products/Details/5 → ProductsController.Details(5)
+
+<span class="comment">// Attribute routing (preferred in MVC 5+)</span>
+[Route("products")]
+public class ProductsController : Controller
+{
+    [HttpGet("{id:int}")]     // GET /products/5
+    public IActionResult Details(int id) { ... }
+
+    [HttpPost("create")]      // POST /products/create
+    public IActionResult Create(ProductViewModel model) { ... }
+}</pre>
+
+    <h3>Model Binding &amp; Validation</h3>
+    <pre><span class="comment">// ViewModel with Data Annotations</span>
+public class RegisterViewModel
+{
+    [Required(ErrorMessage = "Name is required")]
+    [StringLength(100, MinimumLength = 2)]
+    public string Name { get; set; }
+
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; }
+
+    [Required]
+    [MinLength(8, ErrorMessage = "Password must be 8+ chars")]
+    [DataType(DataType.Password)]
+    public string Password { get; set; }
+}
+
+<span class="comment">// Controller — check ModelState before processing</span>
+[HttpPost]
+public IActionResult Register(RegisterViewModel model)
+{
+    if (!ModelState.IsValid)
+        return View(model);   // redisplay form with errors
+
+    // process valid model
+    return RedirectToAction("Login");
+}
+
+<span class="comment">// View — display validation errors</span>
+@Html.ValidationSummary(true, "Please fix the errors:")
+@Html.TextBoxFor(m => m.Name)
+@Html.ValidationMessageFor(m => m.Name)</pre>
+
+    <h3>Razor View Syntax</h3>
+    <pre><span class="comment">@* Razor — HTML mixed with C# using @ prefix *@</span>
+
+@model IEnumerable&lt;ProductViewModel&gt;
+
+&lt;h1&gt;Products&lt;/h1&gt;
+@foreach (var p in Model)
+{
+    &lt;div class="card"&gt;
+        &lt;h3&gt;@p.Name&lt;/h3&gt;
+        &lt;p&gt;Price: @p.Price.ToString("C")&lt;/p&gt;
+        @if (p.IsOnSale)
+        {
+            &lt;span class="badge"&gt;SALE!&lt;/span&gt;
+        }
+        &lt;a asp-action="Details" asp-route-id="@p.Id"&gt;View&lt;/a&gt;
+    &lt;/div&gt;
+}
+
+@* Tag Helpers (ASP.NET Core MVC) — preferred over HtmlHelpers *@
+&lt;a asp-controller="Products" asp-action="Details" asp-route-id="@p.Id"&gt;View&lt;/a&gt;
+&lt;form asp-action="Create" method="post"&gt;
+    &lt;input asp-for="Name" class="form-control" /&gt;
+    &lt;span asp-validation-for="Name"&gt;&lt;/span&gt;
+    &lt;button type="submit"&gt;Save&lt;/button&gt;
+&lt;/form&gt;</pre>
+
+    <h3>Partial Views &amp; View Components</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>Partial View</th><th>View Component</th></tr>
+      <tr><td>Purpose</td><td>Reusable HTML fragment</td><td>Reusable UI with own logic &amp; data</td></tr>
+      <tr><td>Has own controller?</td><td>No — uses parent's model</td><td>Yes — has its own Invoke() method</td></tr>
+      <tr><td>When to use</td><td>Header, footer, shared form section</td><td>Shopping cart widget, notification badge</td></tr>
+      <tr><td>Syntax</td><td><code>@await Html.PartialAsync("_Header")</code></td><td><code>@await Component.InvokeAsync("Cart")</code></td></tr>
+    </table></div>
+
+    <h3>Areas</h3>
+    <pre><span class="comment">// Areas: logical grouping of controllers/views for large apps</span>
+// Folder: Areas/Admin/Controllers/DashboardController.cs
+
+[Area("Admin")]
+[Authorize(Roles = "Admin")]
+public class DashboardController : Controller
+{
+    public IActionResult Index() => View();
+}
+
+<span class="comment">// Route registration</span>
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");</pre>
+
+    <h3>Bundling &amp; Minification</h3>
+    <div class="card">
+      Combines multiple CSS/JS files into one and removes whitespace to reduce HTTP requests and page load time. In ASP.NET Core MVC, use <strong>LibMan</strong> for package management and <strong>bundleconfig.json</strong> or <strong>Webpack/Vite</strong> for bundling. The <code>asp-append-version</code> tag helper adds cache-busting hash to static file URLs.
+    </div>
+    <pre><span class="comment">&lt;!-- Cache-busting for static files --&gt;</span>
+&lt;link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /&gt;
+&lt;script src="~/js/site.js" asp-append-version="true"&gt;&lt;/script&gt;</pre>
+
+    <h3>MVC vs Razor Pages vs Web API</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>ASP.NET MVC</th><th>Razor Pages</th><th>Web API</th></tr>
+      <tr><td>Returns</td><td>HTML Views</td><td>HTML Pages (1 file per page)</td><td>JSON / XML</td></tr>
+      <tr><td>Structure</td><td>Controller + View</td><td>PageModel + .cshtml</td><td>Controller only</td></tr>
+      <tr><td>Best for</td><td>Multi-page enterprise apps</td><td>Simple CRUD pages, forms</td><td>APIs consumed by SPA/Mobile</td></tr>
+      <tr><td>Session/TempData</td><td>Full support</td><td>Full support</td><td>Not applicable (stateless)</td></tr>
+    </table></div>
+
+    <div class="tip"><strong>Power Line</strong> "In our enterprise loan management system, we used ASP.NET MVC with Areas to separate Admin, Customer, and Reporting modules. Each Area had its own controllers and views with role-based authorization. We used Partial Views for shared components like the navigation bar and data tables."</div>
+  </section>
+
+  <!-- ===================== POWER LINES ===================== -->
+  <section id="powerlines">
+    <h2><span class="sec-num">28</span> Interview Power Lines</h2>
+
+    <div class="tip"><strong>Senior Answer Formula</strong> 1. Definition — What is it? &nbsp; 2. Why — What problem does it solve? &nbsp; 3. Example — Code or concrete example &nbsp; 4. Real-World — How you used it &nbsp; 5. Tradeoffs — Benefits AND drawbacks</div>
+
+    <div class="card">
+      <h4>On Caching</h4>
+      "I implemented distributed caching with Redis to reduce database load by 80% on our product catalog. We used Cache-Aside pattern with sliding expiration and invalidated on writes."
+    </div>
+    <div class="card">
+      <h4>On Architecture</h4>
+      "We adopted Clean Architecture because it made our domain logic testable without infrastructure dependencies. We could swap SQL Server for PostgreSQL by changing only the Infrastructure layer."
+    </div>
+    <div class="card">
+      <h4>On Performance</h4>
+      "I identified N+1 queries using EF Core logging and fixed them with eager loading and projections, reducing DB calls from 150 to 2 per request."
+    </div>
+    <div class="card">
+      <h4>On Async</h4>
+      "We process all order confirmations asynchronously via RabbitMQ. The API responds in under 100ms; email sending, stock updates, and warehouse notification happen in parallel consumers."
+    </div>
+    <div class="card">
+      <h4>On CQRS</h4>
+      "We implemented CQRS in our reporting module to separate read and write models. Read queries use denormalized views with no-tracking queries, giving us 10x faster report generation."
+    </div>
+    <div class="card">
+      <h4>On DI</h4>
+      "We follow strict DI lifetime rules. We had a production bug where a Singleton captured a Scoped DbContext — fixed using IServiceScopeFactory to create per-operation scopes."
+    </div>
+
+    <div class="tip"><strong>Senior Mindset on Every Answer</strong> Always mention Benefits, Drawbacks, When to use, and When NOT to use. Interviewers love tradeoffs.</div>
+  </section>
+
+  <!-- ===================== TRAPS ===================== -->
+  <section id="traps">
+    <h2><span class="sec-num">29</span> Common Interview Traps</h2>
+
+    <div class="danger-box"><strong>⚠ Trap 1</strong> Scoped inside Singleton — captive dependency causes stale data or runtime errors. Use IServiceScopeFactory.</div>
+    <div class="danger-box"><strong>⚠ Trap 2</strong> IEnumerable for DB filtering — loads entire table into memory, then filters in C#. Use IQueryable.</div>
+    <div class="danger-box"><strong>⚠ Trap 3</strong> Missing await — method returns a Task that nobody awaits; exception swallowed silently.</div>
+    <div class="danger-box"><strong>⚠ Trap 4</strong> async void — exceptions are unobservable and crash the process. Always use async Task.</div>
+    <div class="danger-box"><strong>⚠ Trap 5</strong> SELECT * — fetches unnecessary columns, breaks if schema changes. Always select specific columns.</div>
+    <div class="danger-box"><strong>⚠ Trap 6</strong> No CancellationToken — long operations run even after client disconnects. Always accept and pass CancellationToken.</div>
+    <div class="danger-box"><strong>⚠ Trap 7</strong> Lazy loading in APIs — causes N+1 queries silently, only noticed under load. Use eager loading with Include().</div>
+  </section>
+
+  <!-- ===================== CHEATSHEET ===================== -->
+  <section id="cheatsheet">
+    <h2><span class="sec-num">30</span> Quick Revision Cheat Sheet</h2>
+
+    <h3>DI Lifetimes</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Lifetime</th><th>New Instance</th><th>Dispose</th><th>Use For</th></tr>
+      <tr><td>Transient</td><td>Every injection</td><td>After injection</td><td>Stateless, lightweight</td></tr>
+      <tr><td>Scoped</td><td>Per HTTP request</td><td>End of request</td><td>DbContext, business services</td></tr>
+      <tr><td>Singleton</td><td>App startup</td><td>App shutdown</td><td>Cache, config, HttpClientFactory</td></tr>
+    </table></div>
+
+    <h3>EF Core Quick Reference</h3>
+    <div class="chip-row">
+      <span class="chip">AsNoTracking() → Read-only, faster</span>
+      <span class="chip">.Include() → Eager load relations</span>
+      <span class="chip">.Select(new Dto{}) → Project, fetch needed columns</span>
+      <span class="chip">IQueryable → Filter in DB</span>
+      <span class="chip">IEnumerable → Filter in memory (avoid on DbSets)</span>
+    </div>
+
+    <h3>Middleware Order</h3>
+    <div class="flow">
+      <div class="flow-step">UseExceptionHandler</div><div class="flow-arrow">→</div>
+      <div class="flow-step">UseHttpsRedirection</div><div class="flow-arrow">→</div>
+      <div class="flow-step">UseStaticFiles</div><div class="flow-arrow">→</div>
+      <div class="flow-step">UseRouting</div><div class="flow-arrow">→</div>
+      <div class="flow-step">UseCors</div><div class="flow-arrow">→</div>
+      <div class="flow-step">UseAuthentication</div><div class="flow-arrow">→</div>
+      <div class="flow-step">UseAuthorization</div><div class="flow-arrow">→</div>
+      <div class="flow-step">MapControllers</div>
+    </div>
+
+    <h3>Architecture Layers</h3>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">Domain</div>Entities, Value Objects, Domain Events — <strong>no dependencies</strong></div>
+      <div class="card-sm"><div class="card-label">Application</div>Commands, Queries, DTOs, Interfaces — depends on Domain only</div>
+      <div class="card-sm"><div class="card-label">Infrastructure</div>DbContext, Repositories, External Services — depends on Domain + Application</div>
+      <div class="card-sm"><div class="card-label">Presentation</div>Controllers, Middleware, Filters — depends on Application only</div>
+    </div>
+
+    <h3>HTTP Status Codes</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Code</th><th>Meaning</th><th>When to Use</th></tr>
+      <tr><td>200</td><td>OK</td><td>Successful GET, PUT, PATCH</td></tr>
+      <tr><td>201</td><td>Created</td><td>Successful POST that creates resource</td></tr>
+      <tr><td>204</td><td>No Content</td><td>Successful DELETE</td></tr>
+      <tr><td>400</td><td>Bad Request</td><td>Invalid input, validation failed</td></tr>
+      <tr><td>401</td><td>Unauthorized</td><td>Not authenticated (no/invalid token)</td></tr>
+      <tr><td>403</td><td>Forbidden</td><td>Authenticated but not authorized</td></tr>
+      <tr><td>404</td><td>Not Found</td><td>Resource doesn't exist</td></tr>
+      <tr><td>409</td><td>Conflict</td><td>Duplicate, concurrency conflict</td></tr>
+      <tr><td>422</td><td>Unprocessable Entity</td><td>Business rule violation</td></tr>
+      <tr><td>429</td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+      <tr><td>500</td><td>Internal Server Error</td><td>Unexpected server error</td></tr>
+    </table></div>
+
+    <div class="tip" style="margin-top: 24px; font-size: 14px; padding: 16px 20px;">
+      <strong>Final Confidence Reminder</strong>
+      You already have 7+ years of production experience with .NET, CQRS, Clean Architecture, and Microservices. 
+      Polish your delivery, think in scalability/performance/tradeoffs, and speak with real examples from your projects 
+      (Catina, ICM, SRX Cloud). That's what separates Developer → Senior → Architect. 🚀
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // Highlight active sidebar link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.toc-link');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
