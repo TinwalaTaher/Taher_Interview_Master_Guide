@@ -1,0 +1,2901 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taher Tinwala — Interview Master Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS — DARK & LIGHT THEMES
+═══════════════════════════════════════════════ */
+:root {
+  --sidebar-w: 240px;
+  --topbar-h: 52px;
+  --radius: 8px;
+  --transition: 0.2s ease;
+  --font-body: 'DM Sans', sans-serif;
+  --font-head: 'Syne', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme="dark"] {
+  --bg:          #0d0f14;
+  --surface:     #13161e;
+  --surface2:    #1a1f2b;
+  --surface3:    #222736;
+  --border:      #242938;
+  --border2:     #2e3347;
+  --accent:      #4f8ef7;
+  --accent2:     #7c5df9;
+  --accent3:     #2dd4a0;
+  --warn:        #f0b429;
+  --danger:      #f76060;
+  --text:        #d8dde8;
+  --text-dim:    #7a8299;
+  --text-bright: #eef0f7;
+  --code-bg:     #0a0c12;
+  --shadow:      0 4px 24px rgba(0,0,0,.4);
+  --shadow-sm:   0 2px 8px rgba(0,0,0,.3);
+  --scrollbar:   #2e3347;
+  --scrollbar-thumb: #4a5170;
+  --sidebar-bg:  #0f1219;
+  --topbar-bg:   rgba(13,15,20,.95);
+  --hero-bg:     linear-gradient(135deg,#13161e 0%,#0f1520 100%);
+  --print-bg:    #fff;
+}
+
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --surface:     #ffffff;
+  --surface2:    #eef1f8;
+  --surface3:    #e6eaf4;
+  --border:      #dde2ef;
+  --border2:     #c8cedf;
+  --accent:      #2563eb;
+  --accent2:     #7c3aed;
+  --accent3:     #059669;
+  --warn:        #d97706;
+  --danger:      #dc2626;
+  --text:        #374151;
+  --text-dim:    #6b7280;
+  --text-bright: #111827;
+  --code-bg:     #f1f3fa;
+  --shadow:      0 4px 24px rgba(0,0,0,.08);
+  --shadow-sm:   0 2px 8px rgba(0,0,0,.06);
+  --scrollbar:   #dde2ef;
+  --scrollbar-thumb: #b0b8cc;
+  --sidebar-bg:  #ffffff;
+  --topbar-bg:   rgba(244,246,251,.96);
+  --hero-bg:     linear-gradient(135deg,#eff3ff 0%,#e8eeff 100%);
+}
+
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.7;
+  transition: background var(--transition), color var(--transition);
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+
+/* ═══════════════════════════════════════════════
+   TOP BAR
+═══════════════════════════════════════════════ */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--topbar-h);
+  background: var(--topbar-bg);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex; align-items: center;
+  padding: 0 16px 0 0;
+  z-index: 200;
+  gap: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.topbar-brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 18px;
+  border-right: 1px solid var(--border);
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.topbar-logo {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-head); font-weight: 800; color: #fff; font-size: 14px;
+  flex-shrink: 0;
+}
+
+.topbar-name {
+  font-family: var(--font-head); font-weight: 700; font-size: 14px;
+  color: var(--text-bright);
+  white-space: nowrap;
+}
+
+.topbar-name span { color: var(--accent); font-size: 11px; font-weight: 400; display: block; margin-top: -2px; }
+
+.topbar-actions {
+  display: flex; align-items: center; gap: 8px;
+  margin-left: auto; padding-right: 4px;
+}
+
+/* ─── Sidebar Toggle ─── */
+.btn-sidebar-toggle {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface2);
+  color: var(--text-dim); cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.btn-sidebar-toggle:hover { background: var(--surface3); color: var(--text-bright); }
+.btn-sidebar-toggle svg { transition: transform var(--transition); }
+
+/* ─── Theme Toggle ─── */
+.btn-theme {
+  display: flex; align-items: center; gap: 7px;
+  padding: 0 12px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface2);
+  color: var(--text-dim); cursor: pointer; font-size: 12px; font-weight: 500;
+  transition: all var(--transition); white-space: nowrap;
+}
+.btn-theme:hover { background: var(--surface3); color: var(--text-bright); }
+.btn-theme .icon-sun, .btn-theme .icon-moon { display: none; }
+[data-theme="dark"] .btn-theme .icon-moon { display: inline; }
+[data-theme="light"] .btn-theme .icon-sun { display: inline; }
+
+/* ─── Print Button ─── */
+.btn-print {
+  display: flex; align-items: center; gap: 7px;
+  padding: 0 14px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--accent); background: transparent;
+  color: var(--accent); cursor: pointer; font-size: 12px; font-weight: 600;
+  transition: all var(--transition); white-space: nowrap;
+  font-family: var(--font-body);
+}
+.btn-print:hover { background: var(--accent); color: #fff; }
+
+/* ─── Search ─── */
+.topbar-search {
+  flex: 1; max-width: 340px; margin: 0 8px;
+  position: relative;
+}
+.topbar-search input {
+  width: 100%; height: 36px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0 12px 0 36px;
+  font-family: var(--font-body); font-size: 13px;
+  color: var(--text-bright); outline: none;
+  transition: all var(--transition);
+}
+.topbar-search input::placeholder { color: var(--text-dim); }
+.topbar-search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,142,247,.12); }
+.topbar-search .search-icon {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); pointer-events: none;
+}
+
+/* ─── Progress ─── */
+.read-progress {
+  position: absolute; bottom: -2px; left: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  width: 0%; transition: width 0.1s linear;
+  border-radius: 1px;
+}
+
+/* ═══════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════ */
+.sidebar {
+  position: fixed; top: var(--topbar-h); left: 0;
+  width: var(--sidebar-w); height: calc(100vh - var(--topbar-h));
+  background: var(--sidebar-bg); border-right: 1px solid var(--border);
+  overflow-y: auto; z-index: 100;
+  padding: 0 0 40px;
+  transition: transform var(--transition), width var(--transition), opacity var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebar.collapsed {
+  transform: translateX(calc(-1 * var(--sidebar-w)));
+}
+
+.toc-section { padding: 8px 0; }
+.toc-section + .toc-section { border-top: 1px solid var(--border); }
+
+.toc-section-title {
+  font-family: var(--font-head); font-size: 9px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-dim); padding: 10px 16px 4px;
+}
+
+.toc-link {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 16px; font-size: 12px;
+  color: var(--text-dim); text-decoration: none;
+  transition: all 0.12s; border-left: 2px solid transparent;
+  line-height: 1.4;
+}
+.toc-link:hover { color: var(--accent); background: rgba(79,142,247,.06); border-left-color: var(--accent); }
+.toc-link.active { color: var(--accent); background: rgba(79,142,247,.1); border-left-color: var(--accent); font-weight: 500; }
+.toc-link .toc-num { font-size: 10px; color: var(--text-dim); flex-shrink: 0; min-width: 18px; }
+
+/* ═══════════════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════════════ */
+.main-content {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--topbar-h);
+  padding: 0 40px 80px;
+  max-width: calc(1100px + var(--sidebar-w));
+  transition: margin-left var(--transition);
+}
+
+.main-content.sidebar-collapsed {
+  margin-left: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+.hero {
+  background: var(--hero-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 48px 0 36px;
+  margin: 0 -40px 44px;
+  padding-left: 40px; padding-right: 40px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 360px; height: 360px;
+  background: radial-gradient(circle, rgba(79,142,247,.1) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute; bottom: -40px; left: 30%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(124,93,249,.07) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  background: rgba(79,142,247,.1); border: 1px solid rgba(79,142,247,.25);
+  color: var(--accent); margin-bottom: 14px; letter-spacing: 0.04em;
+}
+.hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent3); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+.hero-name {
+  font-family: var(--font-head); font-size: 30px; font-weight: 800;
+  color: var(--text-bright); line-height: 1.15;
+}
+.hero-title { font-size: 14px; color: var(--accent); margin-top: 4px; font-weight: 500; }
+.hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.hero-tag {
+  padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim);
+  transition: all var(--transition);
+}
+.hero-tag:hover { border-color: var(--accent); color: var(--accent); }
+.hero-formula {
+  margin-top: 20px; padding: 14px 18px;
+  background: rgba(79,142,247,.08); border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0; font-size: 13px; font-weight: 500; color: var(--text-bright);
+  max-width: 680px;
+}
+.hero-formula span { color: var(--accent); }
+
+/* ═══════════════════════════════════════════════
+   SECTIONS & HEADINGS
+═══════════════════════════════════════════════ */
+section { margin-bottom: 56px; scroll-margin-top: calc(var(--topbar-h) + 20px); }
+
+h2 {
+  font-family: var(--font-head); font-size: 20px; font-weight: 800;
+  color: var(--text-bright); padding-bottom: 12px;
+  border-bottom: 1px solid var(--border); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+  scroll-margin-top: calc(var(--topbar-h) + 20px);
+}
+h2 .sec-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 6px;
+  background: var(--accent2); color: #fff;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+h3 {
+  font-family: var(--font-head); font-size: 14px; font-weight: 700;
+  color: var(--accent); margin: 24px 0 10px;
+}
+h4 { font-size: 13px; font-weight: 600; color: var(--text-bright); margin: 14px 0 8px; }
+p { margin-bottom: 10px; }
+
+/* ═══════════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════════ */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 20px; margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.card:hover { border-color: var(--border2); }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 16px; }
+
+.card-sm {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 16px;
+  transition: border-color var(--transition);
+}
+.card-sm:hover { border-color: var(--border2); }
+.card-sm .card-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--accent2); margin-bottom: 6px;
+}
+
+/* ═══════════════════════════════════════════════
+   CODE BLOCKS
+═══════════════════════════════════════════════ */
+pre {
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 18px;
+  overflow-x: auto; margin: 10px 0 16px;
+  font-family: var(--font-mono); font-size: 12px;
+  line-height: 1.65; color: #b8c9e8;
+  position: relative;
+}
+[data-theme="light"] pre { color: #1e2a4a; }
+
+code {
+  font-family: var(--font-mono); font-size: 12px;
+  background: var(--code-bg); border: 1px solid var(--border);
+  padding: 1px 6px; border-radius: 4px; color: var(--accent3);
+}
+.comment { color: #4a5568; }
+[data-theme="light"] .comment { color: #6b7280; }
+.kw { color: var(--accent2); }
+.str { color: var(--accent3); }
+.type { color: var(--accent); }
+.num { color: var(--warn); }
+
+/* ─── Copy button ─── */
+pre { position: relative; }
+.copy-btn {
+  position: absolute; top: 8px; right: 8px;
+  padding: 3px 9px; border-radius: 5px; font-size: 10px; font-weight: 600;
+  border: 1px solid var(--border2); background: var(--surface2);
+  color: var(--text-dim); cursor: pointer;
+  opacity: 0; transition: opacity var(--transition), background var(--transition);
+  font-family: var(--font-body);
+}
+pre:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: var(--surface3); color: var(--text-bright); }
+.copy-btn.copied { color: var(--accent3); border-color: var(--accent3); }
+
+/* ═══════════════════════════════════════════════
+   TABLES
+═══════════════════════════════════════════════ */
+.tbl-wrap { overflow-x: auto; margin: 12px 0 18px; border-radius: var(--radius); border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th {
+  background: var(--surface2); color: var(--text-bright);
+  font-family: var(--font-head); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.05em; padding: 10px 14px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+td { padding: 8px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); transition: background 0.1s; }
+
+/* ─── Badges ─── */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+.badge-green  { background: rgba(45,212,160,.12); color: var(--accent3); border: 1px solid rgba(45,212,160,.25); }
+.badge-blue   { background: rgba(79,142,247,.12); color: var(--accent); border: 1px solid rgba(79,142,247,.25); }
+.badge-purple { background: rgba(124,93,249,.12); color: var(--accent2); border: 1px solid rgba(124,93,249,.25); }
+.badge-warn   { background: rgba(240,180,41,.12); color: var(--warn); border: 1px solid rgba(240,180,41,.25); }
+.badge-red    { background: rgba(247,96,96,.12); color: var(--danger); border: 1px solid rgba(247,96,96,.25); }
+
+/* ═══════════════════════════════════════════════
+   CALLOUTS
+═══════════════════════════════════════════════ */
+.tip, .warn-box, .danger-box {
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 10px 14px; margin: 12px 0; font-size: 13px;
+}
+.tip       { background: rgba(79,142,247,.08);  border-left: 3px solid var(--accent); }
+.warn-box  { background: rgba(240,180,41,.08);  border-left: 3px solid var(--warn); }
+.danger-box{ background: rgba(247,96,96,.08);   border-left: 3px solid var(--danger); }
+.tip strong, .warn-box strong, .danger-box strong {
+  display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.tip strong { color: var(--accent); }
+.warn-box strong { color: var(--warn); }
+.danger-box strong { color: var(--danger); }
+
+/* ═══════════════════════════════════════════════
+   PILLARS / FLOW / CHIPS
+═══════════════════════════════════════════════ */
+.pillars { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin: 16px 0; }
+.pillar {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px; background: var(--surface);
+  border-top: 3px solid var(--accent2);
+  transition: border-color var(--transition);
+}
+.pillar:hover { border-color: var(--accent2); box-shadow: var(--shadow-sm); }
+.pillar .p-title { font-family: var(--font-head); font-size: 13px; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; }
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.chip { padding: 5px 12px; border-radius: 20px; font-size: 11.5px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); }
+
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 12px 0; }
+.flow-step { padding: 6px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; font-size: 12px; color: var(--text-bright); }
+.flow-arrow { color: var(--accent); font-size: 14px; }
+
+/* ═══════════════════════════════════════════════
+   TWO COLUMN
+═══════════════════════════════════════════════ */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ═══════════════════════════════════════════════
+   BACK TO TOP
+═══════════════════════════════════════════════ */
+.back-to-top {
+  position: fixed; bottom: 24px; right: 24px;
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--accent); color: #fff;
+  border: none; cursor: pointer; z-index: 300;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(79,142,247,.4);
+  opacity: 0; transform: translateY(8px);
+  transition: all var(--transition);
+  pointer-events: none;
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.back-to-top:hover { background: var(--accent2); transform: translateY(-2px); }
+
+/* ═══════════════════════════════════════════════
+   SEARCH HIGHLIGHT
+═══════════════════════════════════════════════ */
+.search-highlight { background: rgba(240,180,41,.3); border-radius: 2px; padding: 0 2px; }
+
+/* ═══════════════════════════════════════════════
+   SECTION ANCHOR LINK
+═══════════════════════════════════════════════ */
+h2 .anchor-link, h3 .anchor-link {
+  opacity: 0; margin-left: 6px; font-size: 14px; color: var(--text-dim);
+  text-decoration: none; transition: opacity var(--transition);
+  font-family: var(--font-mono); font-weight: 400;
+}
+h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
+.anchor-link:hover { color: var(--accent); }
+
+/* ═══════════════════════════════════════════════
+   PRINT STYLES
+═══════════════════════════════════════════════ */
+@media print {
+  :root {
+    --bg: #fff; --surface: #fff; --surface2: #f5f7fc; --surface3: #eef1f8;
+    --border: #d0d5e0; --border2: #b8bfd0;
+    --text: #1a1a2e; --text-dim: #555; --text-bright: #000;
+    --code-bg: #f3f4f8; --accent: #1a56db; --accent2: #5a35c5;
+    --accent3: #0d7a5e; --warn: #b35c00; --danger: #c42b2b;
+    --sidebar-bg: #fff; --hero-bg: linear-gradient(135deg,#eef1ff,#e8ecff);
+  }
+
+  .topbar, .sidebar, .back-to-top, .copy-btn,
+  .btn-print, .btn-theme, .btn-sidebar-toggle,
+  .topbar-search, .read-progress { display: none !important; }
+
+  .main-content {
+    margin: 0 !important; padding: 20px 32px !important;
+    max-width: 100% !important;
+  }
+
+  .hero { margin: 0 -32px 32px; padding: 32px; border-bottom: 2px solid #ccc; }
+  .hero::before, .hero::after { display: none; }
+
+  body { font-size: 10px; line-height: 1.6; color: #111; background: #fff; }
+  
+  h2 { page-break-after: avoid; font-size: 16px; margin-top: 24px; border-bottom: 2px solid #333; }
+  h2:first-of-type { page-break-before: avoid; }
+  h3 { font-size: 12px; color: #333; }
+  h4 { font-size: 11px; }
+  
+  section { page-break-inside: avoid; }
+  
+  pre {
+    background: #f5f7fc !important; border: 1px solid #ccc;
+    color: #1a1a2e !important; font-size: 9px; padding: 10px 12px;
+    page-break-inside: avoid;
+    white-space: pre-wrap; word-break: break-all;
+  }
+  
+  code { background: #f0f2f8; border-color: #ccc; color: #1a4a2e; font-size: 9px; }
+  
+  .tbl-wrap { border: 1px solid #ccc; }
+  th { background: #eef1f8 !important; color: #111 !important; font-size: 9px; }
+  td { font-size: 9px; border-color: #ddd; }
+  
+  .tip { background: #eef5ff !important; border-color: #3b82f6 !important; }
+  .warn-box { background: #fffaec !important; border-color: #d97706 !important; }
+  .danger-box { background: #fff5f5 !important; border-color: #dc2626 !important; }
+  
+  .pillar { border-color: #ccc !important; break-inside: avoid; }
+  .card, .card-sm { background: #f8f9fc !important; border-color: #dde1ed !important; break-inside: avoid; }
+  
+  .card-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .pillars { grid-template-columns: repeat(2, 1fr) !important; }
+  .two-col { grid-template-columns: 1fr 1fr !important; }
+  
+  a[href]::after { content: none !important; }
+  
+  .hero-tag { border: 1px solid #ccc !important; }
+  
+  .print-page-break { page-break-before: always; }
+  
+  @page {
+    margin: 18mm 16mm;
+    size: A4;
+  }
+  @page :first { margin-top: 12mm; }
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 220px; }
+  .main-content { padding: 0 20px 60px; }
+  .hero { margin: 0 -20px 32px; padding: 32px 20px; }
+}
+
+@media (max-width: 640px) {
+  .sidebar { transform: translateX(calc(-1 * var(--sidebar-w))); }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .main-content { margin-left: 0 !important; }
+  .topbar-name span { display: none; }
+  .btn-print span { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP BAR ═══ -->
+<header class="topbar" role="banner">
+  <div class="topbar-brand">
+    <div class="topbar-logo">TT</div>
+    <div class="topbar-name">
+      Interview Guide
+      <span>Taher Tinwala · Senior .NET Lead</span>
+    </div>
+  </div>
+
+  <div class="topbar-search">
+    <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" placeholder="Search topics, concepts, code…" autocomplete="off" spellcheck="false">
+  </div>
+
+  <div class="topbar-actions">
+    <button class="btn-sidebar-toggle" id="sidebarToggle" title="Toggle sidebar" aria-label="Toggle sidebar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+    </button>
+
+    <button class="btn-theme" id="themeToggle" aria-label="Toggle theme">
+      <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <span id="themeLabel">Light</span>
+    </button>
+
+    <button class="btn-print" id="printBtn" onclick="window.print()" aria-label="Print guide">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      <span>Print / PDF</span>
+    </button>
+  </div>
+
+  <div class="read-progress" id="readProgress"></div>
+</header>
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar" id="sidebar" aria-label="Table of contents">
+  <div class="toc-section">
+    <div class="toc-section-title">Foundation</div>
+    <a class="toc-link" href="#oop"><span class="toc-num">01</span>OOP Pillars</a>
+    <a class="toc-link" href="#csharp"><span class="toc-num">02</span>C# Core</a>
+    <a class="toc-link" href="#practical"><span class="toc-num">03</span>Practical Programs</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">ASP.NET Core</div>
+    <a class="toc-link" href="#lifecycle"><span class="toc-num">04</span>Request Lifecycle</a>
+    <a class="toc-link" href="#middleware"><span class="toc-num">05</span>Middleware</a>
+    <a class="toc-link" href="#di"><span class="toc-num">06</span>Dependency Injection</a>
+    <a class="toc-link" href="#async"><span class="toc-num">07</span>Async / Await</a>
+    <a class="toc-link" href="#auth"><span class="toc-num">08</span>JWT Auth</a>
+    <a class="toc-link" href="#ef"><span class="toc-num">09</span>EF Core</a>
+    <a class="toc-link" href="#dapper"><span class="toc-num">10</span>ADO.NET / Dapper</a>
+    <a class="toc-link" href="#json"><span class="toc-num">10B</span>JSON</a>
+    <a class="toc-link" href="#fluent"><span class="toc-num">10C</span>FluentValidation</a>
+    <a class="toc-link" href="#webhooks"><span class="toc-num">10D</span>Webhooks</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Architecture</div>
+    <a class="toc-link" href="#solid"><span class="toc-num">11</span>SOLID Principles</a>
+    <a class="toc-link" href="#clean"><span class="toc-num">12</span>Clean Architecture</a>
+    <a class="toc-link" href="#cqrs"><span class="toc-num">13</span>CQRS + MediatR</a>
+    <a class="toc-link" href="#repo"><span class="toc-num">14</span>Repository + UoW</a>
+    <a class="toc-link" href="#patterns"><span class="toc-num">15</span>Design Patterns</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Advanced</div>
+    <a class="toc-link" href="#caching"><span class="toc-num">16</span>Caching</a>
+    <a class="toc-link" href="#microservices"><span class="toc-num">17</span>Microservices</a>
+    <a class="toc-link" href="#docker"><span class="toc-num">18</span>Docker</a>
+    <a class="toc-link" href="#azure"><span class="toc-num">18B</span>Azure</a>
+    <a class="toc-link" href="#security"><span class="toc-num">19</span>Security</a>
+    <a class="toc-link" href="#logging"><span class="toc-num">20</span>Logging</a>
+    <a class="toc-link" href="#api-design"><span class="toc-num">21</span>API Design</a>
+    <a class="toc-link" href="#testing"><span class="toc-num">22</span>Testing</a>
+    <a class="toc-link" href="#quickdefs"><span class="toc-num">22B</span>Quick Definitions</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">SQL</div>
+    <a class="toc-link" href="#sql-concepts"><span class="toc-num">23</span>SQL Concepts</a>
+    <a class="toc-link" href="#sql-datatypes"><span class="toc-num">23A</span>char/varchar/nvarchar</a>
+    <a class="toc-link" href="#sql-triggers"><span class="toc-num">23B</span>Triggers</a>
+    <a class="toc-link" href="#sql-perf"><span class="toc-num">23C</span>Performance Tuning</a>
+    <a class="toc-link" href="#sql-queries"><span class="toc-num">24</span>Practice Queries</a>
+    <a class="toc-link" href="#sql-schema"><span class="toc-num">25</span>Schema & SP</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Frontend</div>
+    <a class="toc-link" href="#html-css-js"><span class="toc-num">26A</span>HTML / CSS / JS / jQuery</a>
+    <a class="toc-link" href="#angular"><span class="toc-num">26</span>Angular Complete</a>
+    <a class="toc-link" href="#mongodb"><span class="toc-num">27</span>MongoDB</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Tools & MVC</div>
+    <a class="toc-link" href="#git"><span class="toc-num">30A</span>Git & Version Control</a>
+    <a class="toc-link" href="#aspnet-mvc"><span class="toc-num">30B</span>ASP.NET MVC Deep Dive</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Lead / Strategy</div>
+    <a class="toc-link" href="#auth-basics"><span class="toc-num">31</span>Basic Auth & OAuth2</a>
+    <a class="toc-link" href="#cicd"><span class="toc-num">32</span>CI/CD & Jenkins</a>
+    <a class="toc-link" href="#third-party"><span class="toc-num">33</span>3rd Party Integration</a>
+    <a class="toc-link" href="#new-project"><span class="toc-num">34</span>New Project Strategy</a>
+    <a class="toc-link" href="#db-design"><span class="toc-num">35</span>DB Design Strategy</a>
+    <a class="toc-link" href="#new-feature"><span class="toc-num">36</span>New Feature Strategy</a>
+    <a class="toc-link" href="#task-management"><span class="toc-num">36B</span>Task Management</a>
+    <a class="toc-link" href="#client-delivery"><span class="toc-num">36C</span>Client Delivery</a>
+    <a class="toc-link" href="#crisis"><span class="toc-num">37</span>Crisis Management</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Performance & Resilience</div>
+    <a class="toc-link" href="#performance"><span class="toc-num">38</span>.NET Performance</a>
+    <a class="toc-link" href="#resilience"><span class="toc-num">39</span>Polly & Resilience</a>
+    <a class="toc-link" href="#bg-jobs"><span class="toc-num">40</span>Background Jobs</a>
+    <a class="toc-link" href="#signalr"><span class="toc-num">41</span>SignalR / Real-Time</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">System Design</div>
+    <a class="toc-link" href="#system-design"><span class="toc-num">42</span>System Design</a>
+    <a class="toc-link" href="#scalability"><span class="toc-num">43</span>Scalability</a>
+    <a class="toc-link" href="#message-queues"><span class="toc-num">44</span>Message Queues</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Angular Deep Dive</div>
+    <a class="toc-link" href="#angular-deep"><span class="toc-num">45</span>Angular Core</a>
+    <a class="toc-link" href="#rxjs"><span class="toc-num">46</span>RxJS & Observables</a>
+    <a class="toc-link" href="#angular-perf"><span class="toc-num">47</span>Angular Performance</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Soft Skills & Career</div>
+    <a class="toc-link" href="#agile"><span class="toc-num">48</span>Agile / Scrum</a>
+    <a class="toc-link" href="#behavioral"><span class="toc-num">49</span>Behavioral Questions</a>
+    <a class="toc-link" href="#salary"><span class="toc-num">50</span>Salary Negotiation</a>
+    <a class="toc-link" href="#questions-to-ask"><span class="toc-num">51</span>Questions to Ask</a>
+  </div>
+  <div class="toc-section">
+    <div class="toc-section-title">Interview Prep</div>
+    <a class="toc-link" href="#powerlines"><span class="toc-num">28</span>Power Lines</a>
+    <a class="toc-link" href="#traps"><span class="toc-num">29</span>Common Traps</a>
+    <a class="toc-link" href="#cheatsheet"><span class="toc-num">30</span>Cheat Sheet</a>
+  </div>
+</nav>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div class="main-content" id="mainContent">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      7+ Years Experience · Senior .NET Developer & Tech Lead
+    </div>
+    <div class="hero-name">Interview Master Guide</div>
+    <div class="hero-title">Taher Tinwala — .NET 8 · Clean Architecture · CQRS · Angular · Azure · SQL Server</div>
+    <div class="hero-tags">
+      <span class="hero-tag">.NET 8 / C#</span>
+      <span class="hero-tag">ASP.NET Core</span>
+      <span class="hero-tag">Clean Architecture</span>
+      <span class="hero-tag">CQRS + MediatR</span>
+      <span class="hero-tag">Microservices</span>
+      <span class="hero-tag">Angular 17+</span>
+      <span class="hero-tag">SQL Server</span>
+      <span class="hero-tag">Azure DevOps</span>
+      <span class="hero-tag">Entity Framework Core</span>
+      <span class="hero-tag">Git & DevOps</span>
+      <span class="hero-tag">jQuery / JavaScript</span>
+      <span class="hero-tag">SQL Triggers & Tuning</span>
+      <span class="hero-tag">Docker & Kubernetes</span>
+      <span class="hero-tag">Redis & Caching</span>
+    </div>
+    <div class="hero-formula">
+      <span>Interview Formula:</span> Definition → Why needed → Code Example → Real-world usage → Tradeoffs
+    </div>
+  </div>
+
+  <!-- ===================== OOP ===================== -->
+  <section id="oop">
+    <h2><span class="sec-num">1</span> OOP — Object Oriented Programming</h2>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="p-title">Abstraction</div>
+        Hides unnecessary internal details and exposes only what the user needs. You interact with a feature without knowing how it is implemented.
+        <pre><code>public interface ICar { void Start(); }
+public class Tesla : ICar {
+    public void Start() =>
+      Console.WriteLine("Started");
+}</code></pre>
+      </div>
+      <div class="pillar">
+        <div class="p-title">Encapsulation</div>
+        Wraps data and methods inside a class and restricts direct access using access modifiers.
+        <pre><code>public class BankAccount {
+    private double balance;
+    public void Deposit(double a)
+        { balance += a; }
+    public double GetBalance() => balance;
+}</code></pre>
+      </div>
+      <div class="pillar">
+        <div class="p-title">Inheritance</div>
+        Allows a child class to acquire properties and methods from a parent class. Promotes code reuse.
+        <pre><code>public class Animal {
+    public void Eat() => Console.WriteLine("Eating");
+}
+public class Dog : Animal {
+    public void Bark() => Console.WriteLine("Bark");
+}</code></pre>
+      </div>
+      <div class="pillar">
+        <div class="p-title">Polymorphism</div>
+        "Many forms." Overloading (compile-time) and Overriding (runtime, child overrides parent).
+        <pre><code>public class Animal {
+    public virtual void Sound() => Console.WriteLine("...");
+}
+public class Dog : Animal {
+    public override void Sound() => Console.WriteLine("Woof");
+}</code></pre>
+      </div>
+    </div>
+
+    <h3>Abstract Class vs Interface</h3>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Feature</th><th>Abstract Class</th><th>Interface</th></tr>
+        <tr><td>Concrete methods</td><td><span class="badge badge-green">✔ Yes</span></td><td><span class="badge badge-red">❌ (default/static in C# 8+)</span></td></tr>
+        <tr><td>Fields / variables</td><td><span class="badge badge-green">✔ Yes</span></td><td><span class="badge badge-red">❌ No</span></td></tr>
+        <tr><td>Constructors</td><td><span class="badge badge-green">✔ Yes</span></td><td><span class="badge badge-red">❌ No</span></td></tr>
+        <tr><td>Multiple inheritance</td><td><span class="badge badge-red">❌ No</span></td><td><span class="badge badge-green">✔ Yes</span></td></tr>
+        <tr><td>Use when</td><td>Share common logic</td><td>Define contract/rules only</td></tr>
+      </table>
+    </div>
+    <div class="tip"><strong>One-Liner</strong> Abstract class = some rules + some common code. Interface = only rules (no code).</div>
+
+    <h3>Other Key OOP Concepts</h3>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">Sealed Class</div>Cannot be inherited. <code>sealed class Payment { }</code></div>
+      <div class="card-sm"><div class="card-label">Static Class</div>Cannot be instantiated. All members static. Used for utilities. <code>public static class MathHelper</code></div>
+      <div class="card-sm"><div class="card-label">Extension Method</div>Adds method to existing class without modifying it. <code>public static string Shout(this string s)</code></div>
+      <div class="card-sm"><div class="card-label">Generics</div>Reusable type-safe code. <code>public class Box&lt;T&gt; { public T Value; }</code></div>
+      <div class="card-sm"><div class="card-label">IDisposable</div>Release unmanaged resources. Use <code>using</code> statement. Implement <code>Dispose()</code>.</div>
+      <div class="card-sm"><div class="card-label">Garbage Collection</div>Auto reclaims memory. Gen 0, 1, 2. Runs in background.</div>
+    </div>
+  </section>
+
+  <!-- ===================== C# CORE ===================== -->
+  <section id="csharp">
+    <h2><span class="sec-num">2</span> C# Core Concepts</h2>
+
+    <h3>const vs readonly vs static</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Keyword</th><th>Meaning</th></tr>
+      <tr><td><code>const</code></td><td>Compile-time constant. Cannot change. Must be assigned at declaration.</td></tr>
+      <tr><td><code>readonly</code></td><td>Runtime constant. Can be set in constructor only.</td></tr>
+      <tr><td><code>static</code></td><td>Belongs to class, not instance. Shared across all objects.</td></tr>
+    </table></div>
+
+    <h3>Value Type vs Reference Type</h3>
+    <div class="two-col">
+      <div class="card">
+        <h4>Value Type (Stack)</h4>
+        <p>Stores actual data. Copying creates independent copy. Examples: int, bool, struct, enum.</p>
+        <pre><code>int a = 10;
+int b = a; // independent copy
+b = 20;
+Console.WriteLine(a); // still 10</code></pre>
+      </div>
+      <div class="card">
+        <h4>Reference Type (Heap)</h4>
+        <p>Stores a pointer. Both variables point to same object.</p>
+        <pre><code>var p1 = new Person { Name = "A" };
+var p2 = p1; // same reference
+p2.Name = "B";
+Console.WriteLine(p1.Name); // "B"</code></pre>
+      </div>
+    </div>
+
+    <h3>Collections Quick Reference</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Type</th><th>Characteristics</th><th>Use For</th></tr>
+      <tr><td><code>List&lt;T&gt;</code></td><td>Dynamic array, O(1) indexed</td><td>General ordered collection</td></tr>
+      <tr><td><code>Dictionary&lt;K,V&gt;</code></td><td>O(1) average lookup</td><td>Key-value mapping</td></tr>
+      <tr><td><code>HashSet&lt;T&gt;</code></td><td>Unique items, O(1) lookup</td><td>Deduplication, set operations</td></tr>
+      <tr><td><code>Queue&lt;T&gt;</code></td><td>FIFO</td><td>Processing in order</td></tr>
+      <tr><td><code>Stack&lt;T&gt;</code></td><td>LIFO</td><td>Undo, expression parsing</td></tr>
+      <tr><td><code>ConcurrentDictionary</code></td><td>Thread-safe</td><td>Shared caching</td></tr>
+    </table></div>
+
+    <h3>Delegates, Func, Action</h3>
+    <pre><code>// Func&lt;inputs..., output&gt; — returns a value
+Func&lt;int, int, int&gt; multiply = (a, b) =&gt; a * b;
+Func&lt;string, bool&gt;  isLong   = s =&gt; s.Length &gt; 10;
+
+// Action&lt;inputs&gt; — returns void
+Action&lt;string&gt; log = msg =&gt; Console.WriteLine($"[LOG] {msg}");
+
+// Predicate&lt;T&gt; — shorthand for Func&lt;T, bool&gt;
+Predicate&lt;int&gt; isEven = n =&gt; n % 2 == 0;
+
+// Events
+public event EventHandler&lt;Order&gt;? OrderPlaced;
+OrderPlaced?.Invoke(this, order); // raise safely</code></pre>
+
+    <h3>Records (C# 9+)</h3>
+    <pre><code>// Immutable, value-based equality — perfect for DTOs
+public record ProductDto(int Id, string Name, decimal Price);
+
+var p1 = new ProductDto(1, "Laptop", 999);
+var p2 = new ProductDto(1, "Laptop", 999);
+Console.WriteLine(p1 == p2); // true
+
+var p3 = p1 with { Price = 899 }; // non-destructive mutation</code></pre>
+
+    <h3>LINQ</h3>
+    <pre><code>var result = employees
+    .Where(e =&gt; e.Dept == "IT")
+    .OrderBy(e =&gt; e.Name)
+    .Select(e =&gt; new { e.Name, e.Salary });
+
+// IEnumerable (bad for large DB) — loads ALL to memory then filters
+var r = db.Users.ToList().Where(u =&gt; u.Age &gt; 18);
+
+// IQueryable (good) — sends filter as SQL to DB
+var r = db.Users.Where(u =&gt; u.Age &gt; 18).ToList();</code></pre>
+    <div class="warn-box"><strong>Key Difference</strong> IQueryable filters in the database (SQL). IEnumerable filters in memory after fetching ALL rows. Always use IQueryable for database queries.</div>
+
+    <h3>Modern C# Features (8–12) — Interview Gold</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>Version</th><th>What It Does</th></tr>
+      <tr><td>Nullable Reference Types</td><td>8</td><td>Compiler warns on potential null dereference. <code>string? name = null;</code></td></tr>
+      <tr><td>Switch Expressions</td><td>8</td><td>Concise pattern-based switch. <code>var fee = status switch { "Gold" =&gt; 0, _ =&gt; 10 };</code></td></tr>
+      <tr><td>Records</td><td>9</td><td>Immutable, value-equality types — ideal for DTOs. <code>public record UserDto(int Id, string Name);</code></td></tr>
+      <tr><td>Init-only properties</td><td>9</td><td>Set in object initializer only. <code>public string Name { get; init; }</code></td></tr>
+      <tr><td>Pattern matching</td><td>9</td><td>Rich type + property patterns. <code>if (obj is Order { Status: "Paid" } o)</code></td></tr>
+      <tr><td>Minimal APIs</td><td>.NET 6</td><td>Routes directly without controller. <code>app.MapGet("/users", () =&gt; ...);</code></td></tr>
+      <tr><td>Required members</td><td>11</td><td>Must be set or compile error. <code>public required string Email { get; set; }</code></td></tr>
+      <tr><td>Primary Constructors</td><td>12</td><td>Constructor params in class body. <code>public class UserService(IUserRepo repo) { ... }</code></td></tr>
+    </table></div>
+
+    <pre><code>// Pattern matching — replace complex if-else chains
+public string GetDiscount(Customer c) =&gt; c switch
+{
+    { Tier: "Gold",   Orders.Count: &gt; 10 } =&gt; "30% off",
+    { Tier: "Silver"                      } =&gt; "15% off",
+    { IsNewCustomer: true                 } =&gt; "10% welcome",
+    _                                        =&gt; "No discount"
+};
+
+// Primary constructor (C# 12) — cleaner service classes
+public class OrderService(IOrderRepository repo, ILogger&lt;OrderService&gt; logger)
+{
+    public async Task&lt;Order?&gt; GetByIdAsync(int id, CancellationToken ct)
+    {
+        logger.LogInformation("Fetching order {Id}", id);
+        return await repo.GetByIdAsync(id, ct);
+    }
+}</code></pre>
+  </section>
+
+  <!-- ===================== PRACTICAL PROGRAMS ===================== -->
+  <section id="practical">
+    <h2><span class="sec-num">3</span> Practical C# Programs</h2>
+
+    <h3>String Programs</h3>
+    <div class="two-col">
+      <div>
+        <h4>1. Reverse String</h4>
+        <pre><code>public static string ReverseString(string input)
+{
+    char[] arr = input.ToCharArray();
+    int left = 0, right = arr.Length - 1;
+    while (left &lt; right) {
+        char temp = arr[left];
+        arr[left] = arr[right];
+        arr[right] = temp;
+        left++; right--;
+    }
+    return new string(arr);
+}</code></pre>
+        <h4>2. Palindrome</h4>
+        <pre><code>public static bool IsPalindrome(string input)
+{
+    int left = 0, right = input.Length - 1;
+    while (left &lt; right) {
+        if (char.ToLower(input[left]) != char.ToLower(input[right]))
+            return false;
+        left++; right--;
+    }
+    return true;
+}</code></pre>
+      </div>
+      <div>
+        <h4>3. First Non-Repeating Character</h4>
+        <pre><code>public static char FirstNonRepeating(string input)
+{
+    var dict = new Dictionary&lt;char, int&gt;();
+    foreach (char c in input)
+        dict[c] = dict.ContainsKey(c) ? dict[c] + 1 : 1;
+    foreach (char c in input)
+        if (dict[c] == 1) return c;
+    return '\0';
+}</code></pre>
+        <h4>4. Reverse Words in Sentence</h4>
+        <pre><code>public static string ReverseWords(string input)
+{
+    var words = input.Split(' ',
+      StringSplitOptions.RemoveEmptyEntries);
+    int left = 0, right = words.Length - 1;
+    while (left &lt; right) {
+        (words[left], words[right]) = (words[right], words[left]);
+        left++; right--;
+    }
+    return string.Join(" ", words);
+}</code></pre>
+      </div>
+    </div>
+
+    <h3>Array Programs</h3>
+    <div class="two-col">
+      <div>
+        <h4>5. Find Duplicates</h4>
+        <pre><code>public static void FindDuplicates(int[] arr)
+{
+    var seen = new HashSet&lt;int&gt;();
+    var dups = new HashSet&lt;int&gt;();
+    foreach (int num in arr)
+        if (!seen.Add(num)) dups.Add(num);
+    foreach (var d in dups) Console.WriteLine(d);
+}</code></pre>
+        <h4>6. Second Largest</h4>
+        <pre><code>public static int SecondLargest(int[] arr)
+{
+    int first = int.MinValue, second = int.MinValue;
+    foreach (int n in arr) {
+        if (n &gt; first) { second = first; first = n; }
+        else if (n &gt; second &amp;&amp; n != first) second = n;
+    }
+    return second;
+}</code></pre>
+      </div>
+      <div>
+        <h4>7. Move Zeros to End</h4>
+        <pre><code>public static void MoveZeros(int[] arr)
+{
+    int index = 0;
+    for (int i = 0; i &lt; arr.Length; i++)
+        if (arr[i] != 0) arr[index++] = arr[i];
+    while (index &lt; arr.Length) arr[index++] = 0;
+}</code></pre>
+        <h4>8. Rotate Array</h4>
+        <pre><code>public static void Rotate(int[] arr, int k)
+{
+    k = k % arr.Length;
+    Array.Reverse(arr, 0, arr.Length);
+    Array.Reverse(arr, 0, k);
+    Array.Reverse(arr, k, arr.Length - k);
+}</code></pre>
+      </div>
+    </div>
+
+    <h3>LRU Cache</h3>
+    <pre><code>class LRUCache
+{
+    private int capacity;
+    private Dictionary&lt;int, LinkedListNode&lt;(int key, int value)&gt;&gt; dict;
+    private LinkedList&lt;(int key, int value)&gt; list;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        dict = new(); list = new();
+    }
+
+    public int Get(int key) {
+        if (!dict.ContainsKey(key)) return -1;
+        var node = dict[key];
+        list.Remove(node); list.AddFirst(node);
+        return node.Value.value;
+    }
+
+    public void Put(int key, int value) {
+        if (dict.ContainsKey(key)) {
+            list.Remove(dict[key]);
+        } else if (dict.Count == capacity) {
+            var last = list.Last;
+            dict.Remove(last.Value.key);
+            list.RemoveLast();
+        }
+        var newNode = new LinkedListNode&lt;(int, int)&gt;((key, value));
+        list.AddFirst(newNode);
+        dict[key] = newNode;
+    }
+}</code></pre>
+    <div class="tip"><strong>Interview Strategy</strong> Always say: "I will first implement a working solution, then optimize." Start brute force → then optimize.</div>
+  </section>
+
+  <!-- ===================== LIFECYCLE ===================== -->
+  <section id="lifecycle">
+    <h2><span class="sec-num">4</span> ASP.NET Core Request Lifecycle</h2>
+    <div class="flow">
+      <div class="flow-step">HTTP Request</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Kestrel</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Middleware Pipeline</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Routing</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Model Binding</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Action Filters</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Controller Action</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Service Layer</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Repository</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Database</div>
+    </div>
+
+    <h3>Middleware Order (Critical)</h3>
+    <pre><code>var app = builder.Build();
+app.UseExceptionHandler("/error");  // MUST be first
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseCors();                       // BEFORE Auth
+app.UseAuthentication();             // BEFORE Authorization
+app.UseAuthorization();
+app.UseRateLimiter();
+app.MapControllers();
+app.Run();</code></pre>
+    <div class="warn-box"><strong>Interview Trap</strong> Order matters! Authentication MUST come before Authorization. Exception handler MUST be first.</div>
+
+    <h3>ViewBag / ViewData / TempData</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>ViewBag</th><th>ViewData</th><th>TempData</th></tr>
+      <tr><td>Type</td><td>Dynamic</td><td>Dictionary (requires cast)</td><td>Dictionary</td></tr>
+      <tr><td>Lifetime</td><td>Current request</td><td>Current request</td><td>Survives ONE redirect</td></tr>
+      <tr><td>Use case</td><td>Controller → View</td><td>Controller → View</td><td>POST → Redirect → GET</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== MIDDLEWARE ===================== -->
+  <section id="middleware">
+    <h2><span class="sec-num">5</span> Middleware</h2>
+    <pre><code>public class LoggingMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILogger&lt;LoggingMiddleware&gt; _logger;
+
+    public LoggingMiddleware(RequestDelegate next, ILogger&lt;LoggingMiddleware&gt; logger)
+    { _next = next; _logger = logger; }
+
+    public async Task Invoke(HttpContext context)
+    {
+        var watch = Stopwatch.StartNew();
+        _logger.LogInformation("Request: {Method} {Path}",
+            context.Request.Method, context.Request.Path);
+
+        await _next(context);   // ← Pass to next middleware
+
+        watch.Stop();
+        _logger.LogInformation("Response: {StatusCode} in {Ms}ms",
+            context.Response.StatusCode, watch.ElapsedMilliseconds);
+    }
+}
+// Register in Program.cs
+app.UseMiddleware&lt;LoggingMiddleware&gt;();</code></pre>
+
+    <h3>Middleware vs Filter</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Aspect</th><th>Middleware</th><th>Filter</th></tr>
+      <tr><td>Scope</td><td>Entire pipeline (all requests)</td><td>MVC pipeline only (controllers)</td></tr>
+      <tr><td>Use for</td><td>Auth, Logging, CORS, Rate Limiting</td><td>Validation, Action logging, Result shaping</td></tr>
+    </table></div>
+    <div class="danger-box"><strong>Critical</strong> If _next() is never called, the pipeline short-circuits. The request never reaches the controller. Use this intentionally for auth failures — never accidentally.</div>
+  </section>
+
+  <!-- ===================== DI ===================== -->
+  <section id="di">
+    <h2><span class="sec-num">6</span> Dependency Injection</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Lifetime</th><th>Instance Created</th><th>Shared Across</th><th>Use For</th></tr>
+      <tr><td><span class="badge badge-green">Transient</span></td><td>Every injection</td><td>Nothing — always new</td><td>Stateless, lightweight services</td></tr>
+      <tr><td><span class="badge badge-blue">Scoped</span></td><td>Once per HTTP request</td><td>All classes in same request</td><td>DbContext, business services</td></tr>
+      <tr><td><span class="badge badge-purple">Singleton</span></td><td>Once at app start</td><td>All requests, all users</td><td>Caching, config, HttpClientFactory</td></tr>
+    </table></div>
+
+    <pre><code>// Program.cs registration
+builder.Services.AddTransient&lt;IEmailService, EmailService&gt;();
+builder.Services.AddScoped&lt;IUserService, UserService&gt;();
+builder.Services.AddScoped&lt;AppDbContext&gt;();
+builder.Services.AddSingleton&lt;ICacheService, RedisCacheService&gt;();</code></pre>
+
+    <div class="danger-box"><strong>⚠ Captive Dependency Trap</strong> NEVER inject a Scoped or Transient service into a Singleton. The short-lived service gets "captured" and lives for the entire app — causing stale data or DbContext errors. Use IServiceScopeFactory instead.</div>
+    <pre><code>// ✅ CORRECT — Use IServiceScopeFactory in Singleton
+public class MyGoodService {
+    private readonly IServiceScopeFactory _scopeFactory;
+    public MyGoodService(IServiceScopeFactory f) => _scopeFactory = f;
+
+    public async Task DoWork() {
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService&lt;AppDbContext&gt;();
+    }
+}</code></pre>
+  </section>
+
+  <!-- ===================== ASYNC ===================== -->
+  <section id="async">
+    <h2><span class="sec-num">7</span> Async / Await &amp; Task</h2>
+    <div class="card"><strong>Key Mental Model:</strong> <code>await</code> releases the thread back to the pool while waiting for I/O. It does NOT create a new thread. More concurrent users with the same thread count.</div>
+
+    <pre><code>// ❌ Sequential — slow (total = t1 + t2 + t3)
+var users    = await GetUsersAsync();
+var products = await GetProductsAsync();
+
+// ✅ Parallel — fast (total = max(t1, t2))
+var usersTask    = GetUsersAsync();
+var productsTask = GetProductsAsync();
+await Task.WhenAll(usersTask, productsTask);</code></pre>
+
+    <h3>Common Async Mistakes</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Mistake</th><th>Problem</th><th>Fix</th></tr>
+      <tr><td><code>.Result</code> or <code>.Wait()</code></td><td>Deadlock risk, blocks thread</td><td>Use <code>await</code></td></tr>
+      <tr><td><code>async void</code></td><td>Can't catch exceptions</td><td>Use <code>async Task</code></td></tr>
+      <tr><td>Missing <code>await</code></td><td>Method runs synchronously</td><td>Always await async calls</td></tr>
+      <tr><td>No CancellationToken</td><td>Runs even after client disconnects</td><td>Accept and pass CancellationToken</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== JWT AUTH ===================== -->
+  <section id="auth">
+    <h2><span class="sec-num">8</span> JWT Authentication</h2>
+    <div class="card">
+      <p><strong>JWT (JSON Web Token)</strong> is a compact, self-contained token. After login, the server issues a JWT containing the user's ID and roles. The client sends it as <code>Authorization: Bearer &lt;token&gt;</code> on every API call. The server validates the signature — no database lookup needed on every request, making it stateless and scalable.</p>
+    </div>
+    <div class="flow">
+      <div class="flow-step">Login</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Validate Credentials</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Issue JWT</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Client Stores Token</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Request + Bearer</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Validate Signature</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Grant Access</div>
+    </div>
+
+    <pre><code>// Generate JWT
+public string GenerateToken(User user)
+{
+    var key    = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Secret"]));
+    var creds  = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+    var claims = new[] {
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.Role),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
+    var token = new JwtSecurityToken(
+        issuer: _config["Jwt:Issuer"], audience: _config["Jwt:Audience"],
+        claims: claims, expires: DateTime.UtcNow.AddMinutes(60),
+        signingCredentials: creds);
+    return new JwtSecurityTokenHandler().WriteToken(token);
+}</code></pre>
+
+    <div class="warn-box"><strong>Security Trap</strong> Never store JWT tokens in localStorage — XSS attacks can steal them. Store access tokens in memory (Angular service) and refresh tokens in HttpOnly cookies.</div>
+    <div class="tip"><strong>Power Line</strong> "We use 15-minute JWT access tokens with 30-day refresh tokens in HttpOnly cookies. The Angular app intercepts 401 responses via an HTTP interceptor, silently calls the refresh endpoint, and retries the original request — the user never sees a logout."</div>
+  </section>
+
+  <!-- ===================== EF CORE ===================== -->
+  <section id="ef">
+    <h2><span class="sec-num">9</span> Entity Framework Core</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Concept</th><th>Description</th></tr>
+      <tr><td><code>AsNoTracking()</code></td><td>Read-only query — faster, no change tracking. Always use for GET endpoints.</td></tr>
+      <tr><td><code>Include()</code></td><td>Eager loading — load related entities in same query. Fixes N+1.</td></tr>
+      <tr><td><code>Select(x =&gt; new Dto)</code></td><td>Projection — fetch only needed columns.</td></tr>
+      <tr><td><code>IQueryable</code></td><td>Filter translated to SQL — efficient, runs in DB.</td></tr>
+      <tr><td><code>IEnumerable</code></td><td>Filter in memory after fetching all rows — AVOID on DbSets.</td></tr>
+      <tr><td>Lazy Loading</td><td>Loaded only when accessed. Requires <code>virtual</code>. Can cause N+1.</td></tr>
+    </table></div>
+    <div class="warn-box"><strong>N+1 Problem</strong> Loading 100 orders then accessing order.Customer in a loop = 101 queries. Fix: <code>.Include(o =&gt; o.Customer)</code> — 1 SQL JOIN.</div>
+  </section>
+
+  <!-- ===================== DAPPER ===================== -->
+  <section id="dapper">
+    <h2><span class="sec-num">10</span> ADO.NET, Dapper &amp; Data Access</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>EF Core</th><th>Dapper</th><th>ADO.NET</th></tr>
+      <tr><td>Abstraction</td><td>High (ORM)</td><td>Medium (micro-ORM)</td><td>Low (raw)</td></tr>
+      <tr><td>SQL Writing</td><td>Optional (LINQ)</td><td>Required</td><td>Required</td></tr>
+      <tr><td>Performance</td><td>Good</td><td>Very Fast</td><td>Fastest</td></tr>
+      <tr><td>Best For</td><td>Code-First projects</td><td>DB-First, complex SQL</td><td>Ultra-high performance</td></tr>
+    </table></div>
+    <pre><code>// Dapper — Parameterized query
+var user = conn.QueryFirstOrDefault&lt;User&gt;(
+    "SELECT * FROM Users WHERE Id=@Id", new { Id = 5 });
+
+// ADO.NET Key Objects
+// SqlConnection → open DB, SqlCommand → execute SQL
+// ExecuteReader() → rows, ExecuteScalar() → single value
+// ExecuteNonQuery() → rows affected (INSERT/UPDATE/DELETE)</code></pre>
+  </section>
+
+  <!-- ===================== JSON ===================== -->
+  <section id="json">
+    <h2><span class="sec-num">10B</span> JSON</h2>
+    <pre><code>// System.Text.Json (built-in, .NET 6+) — preferred
+// Serialize: object → JSON string
+string json = JsonSerializer.Serialize(user);
+
+// Deserialize: JSON string → object
+var userFromJson = JsonSerializer.Deserialize&lt;User&gt;(json);
+
+// Options
+var options = new JsonSerializerOptions {
+    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    WriteIndented = true
+};
+
+// Control property names
+public class OrderDto
+{
+    [JsonPropertyName("order_id")]
+    public int OrderId { get; set; }
+    [JsonIgnore]
+    public string InternalNotes { get; set; }
+}</code></pre>
+    <div class="tip"><strong>Power Line</strong> "All our .NET API responses use System.Text.Json with camelCase naming policy to match Angular's expectations."</div>
+  </section>
+
+  <!-- ===================== FLUENT VALIDATION ===================== -->
+  <section id="fluent">
+    <h2><span class="sec-num">10C</span> FluentValidation</h2>
+    <pre><code>// Validator — all rules in one place
+public class CreateCustomerValidator : AbstractValidator&lt;CreateCustomerRequest&gt;
+{
+    public CreateCustomerValidator()
+    {
+        RuleFor(x =&gt; x.Name)
+            .NotEmpty().WithMessage("Name is required.")
+            .MinimumLength(2).MaximumLength(100);
+
+        RuleFor(x =&gt; x.Email)
+            .NotEmpty().EmailAddress();
+
+        RuleFor(x =&gt; x.Age)
+            .InclusiveBetween(18, 120);
+
+        // Conditional
+        RuleFor(x =&gt; x.CompanyName)
+            .NotEmpty().When(x =&gt; x.CustomerType == "Business");
+
+        // Async — check DB
+        RuleFor(x =&gt; x.Email)
+            .MustAsync(async (email, ct) =&gt; !await _userRepo.EmailExistsAsync(email))
+            .WithMessage("Email already registered.");
+    }
+}
+
+// Register: builder.Services.AddFluentValidationAutoValidation();
+// builder.Services.AddValidatorsFromAssemblyContaining&lt;CreateCustomerValidator&gt;();</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>Data Annotations</th><th>FluentValidation</th></tr>
+      <tr><td>Location</td><td>On model properties</td><td>Separate validator class</td></tr>
+      <tr><td>Async validation</td><td>❌ No</td><td>✅ MustAsync()</td></tr>
+      <tr><td>Unit testable</td><td>❌ Not easily</td><td>✅ Just new up the validator</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== WEBHOOKS ===================== -->
+  <section id="webhooks">
+    <h2><span class="sec-num">10D</span> Webhooks</h2>
+    <div class="card"><p><strong>A webhook is an HTTP callback</strong> — instead of polling every few seconds, the external service calls YOUR endpoint the moment something happens. Event-driven, push-based communication.</p></div>
+
+    <pre><code>[HttpPost("stripe")]
+public async Task&lt;IActionResult&gt; StripeWebhook()
+{
+    var json = await new StreamReader(Request.Body).ReadToEndAsync();
+    var sig  = Request.Headers["Stripe-Signature"];
+    try
+    {
+        // Step 1: Verify signature — reject if invalid
+        var stripeEvent = EventUtility.ConstructEvent(
+            json, sig, _config["Stripe:WebhookSecret"]);
+
+        // Step 2: Handle event type
+        if (stripeEvent.Type == Events.PaymentIntentSucceeded)
+        {
+            var pi = stripeEvent.Data.Object as PaymentIntent;
+            await _backgroundQueue.EnqueueAsync(new OrderPaidJob(pi.Id));
+        }
+
+        // Step 3: Return 200 immediately — Stripe retries if you don't
+        return Ok();
+    }
+    catch (StripeException) { return BadRequest(); }
+}</code></pre>
+    <div class="tip"><strong>4 Rules</strong> (1) Always verify signature. (2) Return 200 fast. (3) Make handler idempotent. (4) Enqueue heavy work to background queue.</div>
+  </section>
+
+  <!-- ===================== SOLID ===================== -->
+  <section id="solid">
+    <h2><span class="sec-num">11</span> SOLID Principles</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Principle</th><th>Rule</th><th>Example</th></tr>
+      <tr><td><span class="badge badge-blue">S</span> Single Responsibility</td><td>A class should have only ONE reason to change.</td><td>Separate DB, business logic, and UI into different classes.</td></tr>
+      <tr><td><span class="badge badge-green">O</span> Open / Closed</td><td>Open for extension, closed for modification.</td><td>Add features via new classes, not by changing existing code.</td></tr>
+      <tr><td><span class="badge badge-purple">L</span> Liskov Substitution</td><td>Child class must be substitutable for parent without breaking behavior.</td><td>Override methods must honor the base class contract.</td></tr>
+      <tr><td><span class="badge badge-warn">I</span> Interface Segregation</td><td>Don't force a class to implement methods it doesn't need.</td><td>Use small, focused interfaces instead of one big interface.</td></tr>
+      <tr><td><span class="badge badge-red">D</span> Dependency Inversion</td><td>Depend on abstractions, not concretions.</td><td>Inject <code>IUserRepository</code> not <code>UserRepository</code>.</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== CLEAN ARCH ===================== -->
+  <section id="clean">
+    <h2><span class="sec-num">12</span> Clean Architecture</h2>
+    <div class="card"><strong>Core Rule:</strong> Dependencies always point INWARD. Outer layers depend on inner layers — never the reverse.</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Layer</th><th>Contents</th><th>Can Depend On</th></tr>
+      <tr><td><span class="badge badge-purple">Domain</span></td><td>Entities, Value Objects, Domain Events</td><td>Nothing</td></tr>
+      <tr><td><span class="badge badge-blue">Application</span></td><td>Commands, Queries, DTOs, Interfaces</td><td>Domain only</td></tr>
+      <tr><td><span class="badge badge-green">Infrastructure</span></td><td>DbContext, Repositories, External Services</td><td>Domain + Application</td></tr>
+      <tr><td><span class="badge badge-warn">Presentation</span></td><td>Controllers, Middleware, Filters</td><td>Application only</td></tr>
+    </table></div>
+    <div class="tip"><strong>Power Line</strong> "Clean Architecture made our codebase testable because business logic in Application has no EF or HTTP dependencies. We swapped SQL Server for PostgreSQL by only changing the Infrastructure layer."</div>
+  </section>
+
+  <!-- ===================== CQRS ===================== -->
+  <section id="cqrs">
+    <h2><span class="sec-num">13</span> CQRS + MediatR</h2>
+    <pre><code>// Command
+public record CreateUserCommand(string Name, string Email, string Role) : IRequest&lt;int&gt;;
+
+// Handler
+public class CreateUserHandler : IRequestHandler&lt;CreateUserCommand, int&gt;
+{
+    public async Task&lt;int&gt; Handle(CreateUserCommand request, CancellationToken ct)
+    {
+        var user = User.Create(request.Name, request.Email, request.Role);
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync(ct);
+        return user.Id;
+    }
+}
+
+// Controller
+[HttpPost]
+public async Task&lt;IActionResult&gt; CreateUser(CreateUserCommand command)
+{
+    var id = await _mediator.Send(command);
+    return CreatedAtAction(nameof(GetUser), new { id }, null);
+}</code></pre>
+    <div class="tip"><strong>Key Point</strong> CQRS ≠ Microservices. You can use CQRS in a monolith. It improves scalability for read-heavy systems but adds complexity for simple CRUD.</div>
+  </section>
+
+  <!-- ===================== REPO ===================== -->
+  <section id="repo">
+    <h2><span class="sec-num">14</span> Repository Pattern &amp; Unit of Work</h2>
+    <pre><code>// Generic Repository Interface
+public interface IRepository&lt;T&gt; where T : BaseEntity
+{
+    Task&lt;T?&gt; GetByIdAsync(int id, CancellationToken ct = default);
+    Task&lt;List&lt;T&gt;&gt; GetAllAsync(CancellationToken ct = default);
+    void Add(T entity);
+    void Update(T entity);
+    void Remove(T entity);
+}
+
+// Unit of Work
+public interface IUnitOfWork : IDisposable
+{
+    IRepository&lt;User&gt;    Users    { get; }
+    IRepository&lt;Order&gt;   Orders   { get; }
+    Task&lt;int&gt; SaveChangesAsync(CancellationToken ct = default);
+    Task BeginTransactionAsync();
+    Task CommitAsync();
+    Task RollbackAsync();
+}</code></pre>
+  </section>
+
+  <!-- ===================== PATTERNS ===================== -->
+  <section id="patterns">
+    <h2><span class="sec-num">15</span> Design Patterns</h2>
+    <h3>Strategy Pattern</h3>
+    <pre><code>public interface IPaymentStrategy {
+    Task&lt;PaymentResult&gt; ProcessAsync(decimal amount, CancellationToken ct);
+}
+public class CreditCardPayment : IPaymentStrategy { ... }
+public class PayPalPayment    : IPaymentStrategy { ... }
+
+// Add new payment type without changing existing code (Open/Closed)</code></pre>
+
+    <h3>Decorator Pattern</h3>
+    <pre><code>// Add caching without modifying original repository
+public class CachedProductRepository : IProductRepository
+{
+    public async Task&lt;Product?&gt; GetByIdAsync(int id, CancellationToken ct) {
+        var cached = await _cache.GetStringAsync($"product:{id}", ct);
+        if (cached is not null)
+            return JsonSerializer.Deserialize&lt;Product&gt;(cached);
+        var product = await _inner.GetByIdAsync(id, ct);
+        if (product is not null)
+            await _cache.SetStringAsync($"product:{id}", JsonSerializer.Serialize(product), ct);
+        return product;
+    }
+}</code></pre>
+
+    <h3>Factory Pattern</h3>
+    <pre><code>public class NotificationSenderFactory {
+    public INotificationSender Create(NotificationType type) =&gt; type switch {
+        NotificationType.Email =&gt; _sp.GetRequiredService&lt;EmailSender&gt;(),
+        NotificationType.Sms   =&gt; _sp.GetRequiredService&lt;SmsSender&gt;(),
+        _ =&gt; throw new ArgumentException($"Unknown type: {type}")
+    };
+}</code></pre>
+  </section>
+
+  <!-- ===================== CACHING ===================== -->
+  <section id="caching">
+    <h2><span class="sec-num">16</span> Caching</h2>
+    <pre><code>// Redis Distributed Cache — Cache-Aside pattern
+var cached = await _distributedCache.GetStringAsync("top-products");
+if (cached is not null)
+    return JsonSerializer.Deserialize&lt;List&lt;Product&gt;&gt;(cached)!;
+
+var products = await _context.Products
+    .OrderByDescending(p =&gt; p.SalesCount).Take(20).ToListAsync();
+    
+await _distributedCache.SetStringAsync("top-products",
+    JsonSerializer.Serialize(products),
+    new DistributedCacheEntryOptions { 
+        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30) 
+    });
+return products;</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>Strategy</th><th>Write Policy</th><th>Best For</th></tr>
+      <tr><td>Cache-Aside</td><td>Write to DB only, invalidate cache</td><td>General purpose — most common</td></tr>
+      <tr><td>Write-Through</td><td>Write to cache AND DB together</td><td>Strong consistency</td></tr>
+      <tr><td>Write-Behind</td><td>Write to cache, async flush to DB</td><td>High write throughput</td></tr>
+    </table></div>
+    <div class="tip"><strong>Power Line</strong> "I implemented Redis caching to reduce database load by 80% on our product catalog using Cache-Aside pattern with sliding expiration."</div>
+  </section>
+
+  <!-- ===================== MICROSERVICES ===================== -->
+  <section id="microservices">
+    <h2><span class="sec-num">17</span> Microservices</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Factor</th><th>Choose Monolith</th><th>Choose Microservices</th></tr>
+      <tr><td>Team size</td><td>&lt; 10 developers</td><td>&gt; 20 developers</td></tr>
+      <tr><td>Scale needs</td><td>Moderate, uniform load</td><td>Specific services need independent scaling</td></tr>
+      <tr><td>Domain complexity</td><td>Simple domain</td><td>Clear bounded contexts</td></tr>
+    </table></div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Pattern</th><th>Type</th><th>Best For</th><th>Tools</th></tr>
+      <tr><td>REST/HTTP</td><td>Sync</td><td>Simple request-response</td><td>HttpClient, Refit</td></tr>
+      <tr><td>gRPC</td><td>Sync</td><td>High-performance internal</td><td>Grpc.AspNetCore</td></tr>
+      <tr><td>Message Queue</td><td>Async</td><td>Fire-and-forget, decoupling</td><td>RabbitMQ, Azure Service Bus</td></tr>
+      <tr><td>Event Streaming</td><td>Async</td><td>Event sourcing, audit log</td><td>Kafka, Azure Event Hub</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== DOCKER ===================== -->
+  <section id="docker">
+    <h2><span class="sec-num">18</span> Docker &amp; Containerization</h2>
+    <pre><code># Multi-stage build — smaller final image
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["MyApi/MyApi.csproj", "MyApi/"]
+RUN dotnet restore "MyApi/MyApi.csproj"
+COPY . .
+WORKDIR "/src/MyApi"
+RUN dotnet publish -c Release -o /app/publish --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+RUN adduser --disabled-password --gecos '' appuser
+USER appuser
+COPY --from=build /app/publish .
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "MyApi.dll"]</code></pre>
+    <pre><code># docker-compose.yml
+services:
+  api:
+    build: .
+    ports: ["5000:8080"]
+    depends_on: [db, redis]
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment: { SA_PASSWORD: "Pass@123", ACCEPT_EULA: "Y" }
+  redis:
+    image: redis:7-alpine</code></pre>
+  </section>
+
+  <!-- ===================== AZURE ===================== -->
+  <section id="azure">
+    <h2><span class="sec-num">18B</span> Azure — Cloud Services for .NET Developers</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Service</th><th>What It Is</th><th>Real-Life Use</th></tr>
+      <tr><td><strong>App Service</strong></td><td>PaaS — Host .NET APIs without managing servers. Auto-scales, built-in SSL, deployment slots.</td><td>Deploy .NET 8 API with zero-downtime swap.</td></tr>
+      <tr><td><strong>Azure SQL Database</strong></td><td>Managed SQL Server. Automatic backups, geo-replication.</td><td>Production DB — same T-SQL as on-prem.</td></tr>
+      <tr><td><strong>Blob Storage</strong></td><td>Store unstructured data — images, PDFs, videos.</td><td>User-uploaded profile photos, invoice PDFs.</td></tr>
+      <tr><td><strong>Service Bus</strong></td><td>Enterprise message broker. Queues + Topics for async messaging.</td><td>Decouple Order API from Email service.</td></tr>
+      <tr><td><strong>Key Vault</strong></td><td>Secure secret, key, and certificate storage.</td><td>Store Stripe keys, connection strings.</td></tr>
+      <tr><td><strong>Redis Cache</strong></td><td>Managed Redis for session, data caching.</td><td>Cache product catalog, reduce SQL load by 80%.</td></tr>
+      <tr><td><strong>Container Apps / AKS</strong></td><td>Run Docker containers. AKS = Kubernetes.</td><td>Deploy 12 microservices, auto-scale.</td></tr>
+      <tr><td><strong>Azure DevOps</strong></td><td>Git repos, CI/CD Pipelines, Boards, Artifacts.</td><td>Code push → build → test → deploy automatically.</td></tr>
+      <tr><td><strong>Application Insights</strong></td><td>APM — logs, traces, metrics, alerts.</td><td>Track API response times, alert on error spikes.</td></tr>
+      <tr><td><strong>API Management</strong></td><td>API Gateway — rate limiting, auth, throttling.</td><td>Single gateway for all microservices.</td></tr>
+      <tr><td><strong>Azure Functions</strong></td><td>Serverless — runs on triggers without servers.</td><td>Process uploads, scheduled email digests.</td></tr>
+    </table></div>
+    <div class="tip"><strong>Power Line</strong> "Our platform runs entirely on Azure: .NET 8 APIs on App Service with deployment slots for zero-downtime releases, SQL Database, Redis Cache, Service Bus for async processing, Key Vault for secrets, and Application Insights for monitoring."</div>
+  </section>
+
+  <!-- ===================== SECURITY ===================== -->
+  <section id="security">
+    <h2><span class="sec-num">19</span> Security</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>#</th><th>Vulnerability</th><th>Fix</th></tr>
+      <tr><td>1</td><td>Broken Access Control</td><td>Always filter by <code>userId == currentUser.Id</code> — not just that they're logged in</td></tr>
+      <tr><td>2</td><td>Cryptographic Failures</td><td>Use BCrypt/Argon2. Never MD5 for passwords.</td></tr>
+      <tr><td>3</td><td>SQL Injection</td><td>Use parameterized queries — NEVER string concatenation</td></tr>
+      <tr><td>5</td><td>Security Misconfiguration</td><td>Disable Swagger in prod, hide stack traces, enforce HTTPS</td></tr>
+      <tr><td>7</td><td>Identity Failures</td><td>Short JWT expiry, refresh tokens, MFA for admin</td></tr>
+    </table></div>
+    <pre><code>// ❌ VULNERABLE — string concatenation
+var sql = $"SELECT * FROM Users WHERE Email = '{email}'";
+// Attacker: ' OR '1'='1 → returns ALL users!
+
+// ✅ SAFE — EF Core parameterizes automatically
+var user = await _ctx.Users.Where(u =&gt; u.Email == email).FirstAsync();
+
+// ✅ SAFE — Dapper with named parameters
+var user = await conn.QueryFirstOrDefaultAsync&lt;User&gt;(
+    "SELECT * FROM Users WHERE Email = @Email", new { Email = email });</code></pre>
+  </section>
+
+  <!-- ===================== LOGGING ===================== -->
+  <section id="logging">
+    <h2><span class="sec-num">20</span> Logging &amp; Observability</h2>
+    <pre><code>// ✅ CORRECT — structured properties (searchable in Seq/App Insights)
+_logger.LogInformation("Processing order {OrderId} for user {UserId} amount {Amount}",
+    order.Id, user.Id, order.Amount);
+
+// ❌ WRONG — string interpolation loses structured data
+_logger.LogInformation($"Processing order {order.Id}");
+
+// Serilog setup
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.Seq("http://seq-server:5341")
+    .WriteTo.ApplicationInsights(connectionString, TelemetryConverter.Traces)
+    .CreateLogger();</code></pre>
+    <div class="tip"><strong>Power Line</strong> "We use Serilog with Correlation IDs on every request. When a client reports an issue, I take the CorrelationId and search Application Insights — I see the entire request trace from API → Service → DB → 3rd party in one view."</div>
+  </section>
+
+  <!-- ===================== API DESIGN ===================== -->
+  <section id="api-design">
+    <h2><span class="sec-num">21</span> API Design Best Practices</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Rule</th><th>Wrong</th><th>Correct</th></tr>
+      <tr><td>Use nouns, not verbs</td><td>GET /getUsers</td><td>GET /users</td></tr>
+      <tr><td>Plural resources</td><td>GET /user/1</td><td>GET /users/1</td></tr>
+      <tr><td>HTTP verbs correctly</td><td>POST /users/delete/1</td><td>DELETE /users/1</td></tr>
+      <tr><td>Nested resources</td><td>GET /getOrdersByUser?userId=1</td><td>GET /users/1/orders</td></tr>
+      <tr><td>Filter with query params</td><td>GET /activeUsers</td><td>GET /users?status=active</td></tr>
+    </table></div>
+    <pre><code>// Consistent API response wrapper
+public class ApiResponse&lt;T&gt;
+{
+    public bool    Success   { get; set; }
+    public T?      Data      { get; set; }
+    public string? Message   { get; set; }
+    public string? ErrorCode { get; set; }
+
+    public static ApiResponse&lt;T&gt; Ok(T data) =&gt; new() { Success = true, Data = data };
+    public static ApiResponse&lt;T&gt; Fail(string message, string errorCode = null)
+        =&gt; new() { Success = false, Message = message, ErrorCode = errorCode };
+}
+
+// API Versioning
+[Route("api/v{version:apiVersion}/users")]
+[ApiVersion("1.0")]
+public class UsersV1Controller : ControllerBase { ... }</code></pre>
+  </section>
+
+  <!-- ===================== TESTING ===================== -->
+  <section id="testing">
+    <h2><span class="sec-num">22</span> Testing Strategy</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Level</th><th>What</th><th>Coverage Target</th><th>Tools</th></tr>
+      <tr><td>Unit Tests</td><td>Single class/method, mocked dependencies</td><td>70%+ on Application layer</td><td>xUnit, Moq, FluentAssertions</td></tr>
+      <tr><td>Integration Tests</td><td>Multiple real layers, real DB</td><td>20% — key flows</td><td>WebApplicationFactory, TestContainers</td></tr>
+      <tr><td>End-to-End Tests</td><td>Full user journey via HTTP</td><td>10% — happy paths</td><td>Playwright, RestSharp</td></tr>
+    </table></div>
+    <pre><code>// Arrange / Act / Assert Pattern
+[Fact]
+public async Task CreateOrder_ShouldReturnOrder_WhenProductIsAvailable()
+{
+    // Arrange
+    var mockProduct = new Mock&lt;IProductRepository&gt;();
+    mockProduct.Setup(r =&gt; r.GetByIdAsync(1, default))
+               .ReturnsAsync(new Product { Id = 1, Stock = 10, Price = 999 });
+    var service = new OrderService(mockRepo.Object, mockProduct.Object);
+
+    // Act
+    var result = await service.CreateOrderAsync(new CreateOrderRequest { ProductId = 1, Qty = 2 });
+
+    // Assert
+    result.Should().NotBeNull();
+    result.TotalAmount.Should().Be(1998);
+    result.Status.Should().Be(OrderStatus.Pending);
+}</code></pre>
+    <div class="tip"><strong>Power Line</strong> "I enforce 70% unit test coverage gate in CI. In our project, this investment saved us from 3 production incidents last year that our tests caught in CI."</div>
+  </section>
+
+  <!-- ===================== QUICK DEFINITIONS ===================== -->
+  <section id="quickdefs">
+    <h2><span class="sec-num">22B</span> Quick Definitions — One-Liners</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Term</th><th>One-Line Definition</th><th>Real Context</th></tr>
+      <tr><td><strong>Idempotency</strong></td><td>Calling the same operation multiple times produces the same result as once.</td><td>Stripe Idempotency-Key prevents double charges on retried requests.</td></tr>
+      <tr><td><strong>Correlation ID</strong></td><td>A GUID assigned to every request, passed through all logs, enabling full request tracing across services.</td><td>Search Application Insights by CorrelationId to trace a payment failure.</td></tr>
+      <tr><td><strong>SPA</strong></td><td>Single Page App — loads once, dynamically updates content without full page reloads.</td><td>Gmail, your Angular app — browser never fully reloads.</td></tr>
+      <tr><td><strong>Circuit Breaker</strong></td><td>Stops calling a failing service, returns fast fallback, preventing cascading failures.</td><td>After 5 Stripe failures, stop calling Stripe for 30s.</td></tr>
+      <tr><td><strong>Eventual Consistency</strong></td><td>All nodes become consistent over time — not necessarily immediately.</td><td>Order placed, inventory &amp; notification catch up via Service Bus.</td></tr>
+      <tr><td><strong>N+1 Problem</strong></td><td>Fetching N records then querying related data for each = N+1 DB round trips.</td><td>100 orders, loop accesses order.Customer = 101 queries. Fix: .Include()</td></tr>
+      <tr><td><strong>Feature Flag</strong></td><td>Runtime switch to enable/disable a feature without deploying code.</td><td>Deploy disabled, enable for 10% of users, monitor, then roll out.</td></tr>
+      <tr><td><strong>Technical Debt</strong></td><td>Future cost of rework caused by choosing a quick solution now instead of a better approach.</td><td>Skipping tests = 3x time fixing bugs later that tests would have caught.</td></tr>
+      <tr><td><strong>Bus Factor</strong></td><td>Min team members whose absence would halt the project.</td><td>"Bus factor of 1 on payment module" = only one dev understands it.</td></tr>
+      <tr><td><strong>Load Balancer</strong></td><td>Distributes HTTP requests across multiple instances.</td><td>Azure App Service auto-scales to 5 instances; LB round-robins requests.</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== SQL CONCEPTS ===================== -->
+  <section id="sql-concepts">
+    <h2><span class="sec-num">23</span> SQL Concepts — Complete Guide</h2>
+
+    <h3>JOINs</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>JOIN Type</th><th>Returns</th><th>Use When</th></tr>
+      <tr><td>INNER JOIN</td><td>Rows matching in BOTH tables</td><td>Only records with matching data on both sides</td></tr>
+      <tr><td>LEFT JOIN</td><td>All rows from left + matching from right (NULL if no match)</td><td>All customers, even those with no orders</td></tr>
+      <tr><td>FULL OUTER JOIN</td><td>All rows from both tables, NULLs where no match</td><td>Find unmatched records on either side</td></tr>
+      <tr><td>CROSS JOIN</td><td>Cartesian product — every row × every row</td><td>Generate combinations</td></tr>
+      <tr><td>SELF JOIN</td><td>Table joined to itself</td><td>Employee → Manager hierarchy</td></tr>
+    </table></div>
+
+    <h3>Window Functions</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Function</th><th>Ties?</th><th>Gaps?</th><th>Result (100,100,90)</th></tr>
+      <tr><td><code>ROW_NUMBER()</code></td><td>Unique number</td><td>—</td><td>1, 2, 3</td></tr>
+      <tr><td><code>RANK()</code></td><td>Same rank for tied</td><td>Yes</td><td>1, 1, 3</td></tr>
+      <tr><td><code>DENSE_RANK()</code></td><td>Same rank for tied</td><td>No</td><td>1, 1, 2</td></tr>
+    </table></div>
+
+    <pre><code>-- ROW_NUMBER: latest order per customer
+WITH ranked AS (
+    SELECT *, ROW_NUMBER() OVER (PARTITION BY CustomerId ORDER BY OrderDate DESC) AS rn
+    FROM Orders
+)
+SELECT * FROM ranked WHERE rn = 1;
+
+-- LAG: compare month's sales to previous month
+SELECT FORMAT(OrderDate,'yyyy-MM') AS Month,
+    SUM(Amount) AS Sales,
+    LAG(SUM(Amount), 1, 0) OVER (ORDER BY FORMAT(OrderDate,'yyyy-MM')) AS PrevSales
+FROM Orders GROUP BY FORMAT(OrderDate,'yyyy-MM');
+
+-- Running total
+SELECT OrderDate, Amount,
+    SUM(Amount) OVER (ORDER BY OrderDate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS RunningTotal
+FROM Orders;</code></pre>
+
+    <h3>CTEs — Common Table Expressions</h3>
+    <pre><code>-- Recursive CTE: employee hierarchy
+WITH OrgChart AS (
+    SELECT Id, Name, ManagerId, 0 AS Level
+    FROM Employee WHERE ManagerId IS NULL     -- anchor
+    UNION ALL
+    SELECT e.Id, e.Name, e.ManagerId, oc.Level + 1
+    FROM Employee e
+    INNER JOIN OrgChart oc ON e.ManagerId = oc.Id  -- recursive
+)
+SELECT * FROM OrgChart ORDER BY Level;</code></pre>
+
+    <h3>Transactions &amp; Isolation Levels</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Isolation Level</th><th>Dirty Read</th><th>Non-Repeatable Read</th><th>Use When</th></tr>
+      <tr><td>READ UNCOMMITTED</td><td>✔</td><td>✔</td><td>Reporting, fastest</td></tr>
+      <tr><td>READ COMMITTED (default)</td><td>❌</td><td>✔</td><td>Most apps</td></tr>
+      <tr><td>SERIALIZABLE</td><td>❌</td><td>❌</td><td>Financial, max safety</td></tr>
+      <tr><td>SNAPSHOT</td><td>❌</td><td>❌</td><td>Optimistic concurrency, no locks</td></tr>
+    </table></div>
+
+    <h3>ACID Properties</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Property</th><th>Meaning</th></tr>
+      <tr><td><span class="badge badge-blue">A</span> Atomicity</td><td>Transaction is all-or-nothing.</td></tr>
+      <tr><td><span class="badge badge-green">C</span> Consistency</td><td>DB moves from one valid state to another.</td></tr>
+      <tr><td><span class="badge badge-purple">I</span> Isolation</td><td>Concurrent transactions don't interfere.</td></tr>
+      <tr><td><span class="badge badge-warn">D</span> Durability</td><td>Committed data survives crashes.</td></tr>
+    </table></div>
+
+    <h3>Indexes Deep Dive</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Index Type</th><th>Description</th><th>Use When</th></tr>
+      <tr><td>Clustered</td><td>Data rows physically sorted by key. Only 1 per table.</td><td>Primary key</td></tr>
+      <tr><td>Non-Clustered</td><td>Separate B-tree pointing to data rows.</td><td>WHERE / JOIN / ORDER BY columns</td></tr>
+      <tr><td>Covering Index</td><td>Non-clustered with INCLUDEd columns — eliminates Key Lookup.</td><td>Query selects columns not in key</td></tr>
+      <tr><td>Filtered Index</td><td>Index on subset of rows with WHERE clause.</td><td>Active = 1 only — smaller, faster</td></tr>
+      <tr><td>Columnstore</td><td>Column-oriented. Huge compression, batch execution.</td><td>Data warehouse, reporting, millions of rows</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== SQL DATA TYPES ===================== -->
+  <section id="sql-datatypes">
+    <h2><span class="sec-num">23A</span> char vs varchar vs nvarchar</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Type</th><th>Storage</th><th>Unicode?</th><th>Bytes Per Char</th><th>Max Length</th></tr>
+      <tr><td><code>char(n)</code></td><td>Fixed — always n chars (padded)</td><td>❌ ASCII</td><td>1 byte</td><td>8,000</td></tr>
+      <tr><td><code>varchar(n)</code></td><td>Variable — actual length + 2 bytes</td><td>❌ ASCII</td><td>1 byte</td><td>8,000 / MAX</td></tr>
+      <tr><td><code>nchar(n)</code></td><td>Fixed — always n chars (padded)</td><td>✅ Unicode</td><td>2 bytes</td><td>4,000</td></tr>
+      <tr><td><code>nvarchar(n)</code></td><td>Variable — actual length + 2 bytes</td><td>✅ Unicode</td><td>2 bytes</td><td>4,000 / MAX</td></tr>
+    </table></div>
+    <div class="tip"><strong>Rule of Thumb</strong> Use <code>char</code> for fixed codes (country 'IN', flag 'Y'/'N'). Use <code>varchar</code> for English-only variable text. Use <code>nvarchar</code> for ALL user-input text — names, addresses, descriptions. Any language, any script.</div>
+    <div class="tip"><strong>Power Line</strong> "We had a bug where Arabic customer names appeared as '??????'. The Name column was varchar instead of nvarchar. Lesson: for any user-input text field, always default to nvarchar."</div>
+  </section>
+
+  <!-- ===================== SQL TRIGGERS ===================== -->
+  <section id="sql-triggers">
+    <h2><span class="sec-num">23B</span> SQL Triggers</h2>
+    <pre><code>-- AFTER UPDATE Trigger — Track Price Changes
+CREATE OR ALTER TRIGGER trg_Product_PriceChange
+ON Product
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF UPDATE(Price)
+    BEGIN
+        INSERT INTO PriceHistory (ProductId, OldPrice, NewPrice, ChangedAt)
+        SELECT d.Id, d.Price, i.Price, GETDATE()
+        FROM DELETED d                         -- old values
+        INNER JOIN INSERTED i ON d.Id = i.Id   -- new values
+        WHERE d.Price &lt;&gt; i.Price;
+    END
+END
+
+-- INSTEAD OF: Soft-delete instead of hard delete
+CREATE OR ALTER TRIGGER trg_Customer_PreventDelete ON Customer
+INSTEAD OF DELETE AS
+BEGIN
+    UPDATE Customer SET IsDeleted = 1, DeletedAt = GETDATE()
+    WHERE Id IN (SELECT Id FROM DELETED);
+END</code></pre>
+    <div class="warn-box"><strong>Tradeoff</strong> Triggers add hidden logic invisible to the developer writing the INSERT/UPDATE. Hard to debug, adds DML overhead. Consider app-layer interceptors as alternatives.</div>
+  </section>
+
+  <!-- ===================== SQL PERFORMANCE ===================== -->
+  <section id="sql-perf">
+    <h2><span class="sec-num">23C</span> SQL Performance Tuning</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Anti-Pattern</th><th>Problem</th><th>Fix</th></tr>
+      <tr><td><code>SELECT *</code></td><td>Fetches unused columns</td><td>Select only needed columns</td></tr>
+      <tr><td><code>WHERE YEAR(OrderDate)=2024</code></td><td>Function prevents index seek</td><td><code>WHERE OrderDate &gt;= '2024-01-01'</code></td></tr>
+      <tr><td>Implicit conversion <code>WHERE Id='123'</code></td><td>Type mismatch forces scan</td><td>Match parameter type: <code>WHERE Id=123</code></td></tr>
+      <tr><td>NOT IN with NULLs</td><td>Returns zero rows silently</td><td>Use <code>NOT EXISTS</code> instead</td></tr>
+      <tr><td>Correlated subquery in SELECT</td><td>Runs once per row</td><td>Rewrite with JOIN or window function</td></tr>
+    </table></div>
+    <div class="tip"><strong>Power Line</strong> "I identified a Table Scan caused by a function on a date column. Rewriting the WHERE clause to use a date range converted it to an Index Seek, reducing query time from 4 seconds to 80ms."</div>
+  </section>
+
+  <!-- ===================== SQL QUERIES ===================== -->
+  <section id="sql-queries">
+    <h2><span class="sec-num">24</span> SQL Practice Queries</h2>
+    <pre><code>-- 1. Top 5 Customers by Spending
+SELECT TOP 5 c.Name, SUM(oi.Price * oi.Quantity) AS Spent
+FROM Customer c
+JOIN Orders o ON c.Id = o.CustomerId
+JOIN OrderItem oi ON o.Id = oi.OrderId
+GROUP BY c.Name ORDER BY Spent DESC
+
+-- 2. Latest Order Per Customer (ROW_NUMBER)
+WITH tt AS (
+    SELECT o.Id AS OrderId, o.CustomerId, o.OrderDate,
+        ROW_NUMBER() OVER (PARTITION BY o.CustomerId ORDER BY o.OrderDate DESC) AS rn
+    FROM Orders o
+)
+SELECT * FROM tt WHERE rn = 1
+
+-- 3. Customers With No Orders (EXISTS)
+SELECT * FROM Customer c
+WHERE NOT EXISTS (SELECT 1 FROM Orders o WHERE o.CustomerId = c.Id)
+
+-- 4. Delete Duplicate Customers (Keep Latest)
+WITH tt AS (
+    SELECT Id, ROW_NUMBER() OVER (PARTITION BY Name ORDER BY Id DESC) AS rn
+    FROM Customer
+)
+DELETE FROM tt WHERE rn > 1
+
+-- 5. Second Highest Order Amount (DENSE_RANK)
+WITH OrderTotals AS (
+    SELECT o.Id, SUM(oi.Quantity * oi.Price) AS Amount,
+        DENSE_RANK() OVER (ORDER BY SUM(oi.Quantity * oi.Price) DESC) AS rnk
+    FROM Orders o JOIN OrderItem oi ON o.Id = oi.OrderId GROUP BY o.Id
+)
+SELECT * FROM OrderTotals WHERE rnk = 2
+
+-- 6. Pagination
+SELECT * FROM Customer
+ORDER BY Name
+OFFSET (@page - 1) * 20 ROWS FETCH NEXT 20 ROWS ONLY</code></pre>
+  </section>
+
+  <!-- ===================== SQL SCHEMA ===================== -->
+  <section id="sql-schema">
+    <h2><span class="sec-num">25</span> SQL Schema &amp; Stored Procedures</h2>
+    <pre><code>CREATE TABLE Customer (
+    Id          INT IDENTITY PRIMARY KEY,
+    Name        NVARCHAR(100) NOT NULL,
+    Email       NVARCHAR(255) NOT NULL UNIQUE,
+    City        NVARCHAR(50),
+    CreatedDate DATETIME2 DEFAULT GETUTCDATE()
+)
+
+-- Stored Procedure with Transaction
+CREATE OR ALTER PROC PlaceOrder
+    @customerId INT, @purchasedItems Type_Order_Item READONLY
+AS BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION
+            INSERT INTO Orders (CustomerId, OrderDate) VALUES (@customerId, GETDATE());
+            DECLARE @NewOrderId INT = SCOPE_IDENTITY();
+            INSERT INTO OrderItem (OrderId, ItemId, Price, Quantity)
+            SELECT @NewOrderId, ItemId, Price, Qty FROM @purchasedItems
+        COMMIT TRANSACTION
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION; THROW;
+    END CATCH
+END</code></pre>
+  </section>
+
+  <!-- ===================== HTML/CSS/JS ===================== -->
+  <section id="html-css-js">
+    <h2><span class="sec-num">26A</span> HTML, CSS, JavaScript &amp; jQuery</h2>
+
+    <h3>HTML Semantic Structure</h3>
+    <pre><code>&lt;!-- Semantic HTML5 — better SEO, accessibility, screen readers --&gt;
+&lt;header&gt;&lt;nav&gt;...&lt;/nav&gt;&lt;/header&gt;
+&lt;main&gt;
+  &lt;section aria-labelledby="products-title"&gt;
+    &lt;h1 id="products-title"&gt;Products&lt;/h1&gt;
+    &lt;article data-id="1"&gt;Product card&lt;/article&gt;
+  &lt;/section&gt;
+&lt;/main&gt;
+&lt;footer&gt;...&lt;/footer&gt;
+
+&lt;!-- defer vs async for scripts --&gt;
+&lt;script defer src="app.js"&gt;&lt;/script&gt;   &lt;!-- after HTML parsed, in order --&gt;
+&lt;script async src="analytics.js"&gt;&lt;/script&gt; &lt;!-- ASAP, order not guaranteed --&gt;</code></pre>
+
+    <h3>CSS Flexbox &amp; Grid</h3>
+    <pre><code>/* Flexbox — 1D layout */
+.container { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.item { flex: 1; }
+
+/* CSS Grid — 2D layout */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+.header { grid-column: 1 / -1; }  /* span all columns */
+
+/* CSS Variables */
+:root { --primary: #4f8ef7; --radius: 8px; }
+.btn { background: var(--primary); border-radius: var(--radius); }
+
+/* Mobile-First Responsive */
+.container { padding: 16px; }
+@media (min-width: 768px) { .container { padding: 32px; } }</code></pre>
+
+    <h3>JavaScript — Key Concepts</h3>
+    <pre><code>// Closures — function + its lexical environment
+function createMultiplier(factor) {
+    return (num) => num * factor;  // factor is "closed over"
+}
+const double = createMultiplier(2);
+console.log(double(5)); // 10
+
+// Event Loop — microtasks before macrotasks
+setTimeout(() => console.log("4"), 0);          // macrotask
+Promise.resolve().then(() => console.log("2")); // microtask
+console.log("1"); // Output: 1, 2, 4
+
+// Array pipeline
+const topEarners = employees
+    .filter(e => e.dept === "IT")
+    .sort((a, b) => b.salary - a.salary)
+    .slice(0, 5)
+    .map(e => ({ name: e.name, salary: e.salary }));
+
+// Optional chaining + nullish coalescing
+const city = user?.address?.city ?? "Unknown";</code></pre>
+
+    <h3>jQuery — Essential Reference</h3>
+    <pre><code>// Selectors &amp; DOM
+$('#myId').text('Hello');           // set text
+$('.card').html('&lt;b&gt;Bold&lt;/b&gt;'); // set HTML
+$('#logo').attr('src', 'logo.png');// set attribute
+$('input').val('Taher');            // set input value
+
+// Events — delegation for dynamic elements
+$(document).on('click', '.dynamic-btn', function() {
+    alert($(this).data('id'));  // read data-* attribute
+});
+
+// AJAX
+$.ajax({
+    url: '/api/products', method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ name: 'Widget' }),
+    headers: { 'Authorization': 'Bearer ' + token },
+    success: data => console.log(data),
+    error: xhr => console.error(xhr.status)
+});</code></pre>
+  </section>
+
+  <!-- ===================== ANGULAR ===================== -->
+  <section id="angular">
+    <h2><span class="sec-num">26</span> Angular &amp; TypeScript — Complete Guide</h2>
+
+    <h3>Component Lifecycle Hooks</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Hook</th><th>When</th><th>Use For</th></tr>
+      <tr><td><code>ngOnChanges</code></td><td>Before ngOnInit, on @Input change</td><td>React to parent sending new data</td></tr>
+      <tr><td><code>ngOnInit</code></td><td>Once after first ngOnChanges</td><td>Data fetching, initialization</td></tr>
+      <tr><td><code>ngAfterViewInit</code></td><td>After view + child views initialized</td><td>Access @ViewChild; call chart/DOM libraries</td></tr>
+      <tr><td><code>ngOnDestroy</code></td><td>Before component destroyed</td><td>Unsubscribe observables, clear timers</td></tr>
+    </table></div>
+
+    <h3>Data Binding</h3>
+    <pre><code>&lt;!-- Property binding --&gt;
+&lt;img [src]="user.photoUrl"&gt;
+&lt;button [disabled]="isLoading"&gt;Save&lt;/button&gt;
+
+&lt;!-- Event binding --&gt;
+&lt;button (click)="save()"&gt;Save&lt;/button&gt;
+&lt;input (input)="onSearch($event.target.value)"&gt;
+
+&lt;!-- Two-way binding --&gt;
+&lt;input [(ngModel)]="searchTerm"&gt;
+
+&lt;!-- *ngFor with trackBy (performance) --&gt;
+&lt;li *ngFor="let user of users; trackBy: trackByUserId"&gt;{{ user.name }}&lt;/li&gt;
+trackByUserId = (i: number, u: User) =&gt; u.id;</code></pre>
+
+    <h3>HTTP Interceptor — JWT + Error Handling</h3>
+    <pre><code>@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+    intercept(req: HttpRequest&lt;any&gt;, next: HttpHandler): Observable&lt;HttpEvent&lt;any&gt;&gt; {
+        const token = this.auth.getToken();
+        const authReq = token
+            ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+            : req;
+
+        return next.handle(authReq).pipe(
+            catchError((err: HttpErrorResponse) =&gt; {
+                if (err.status === 401) { this.auth.logout(); this.router.navigate(['/login']); }
+                return throwError(() =&gt; err);
+            })
+        );
+    }
+}</code></pre>
+
+    <h3>RxJS Essential Operators</h3>
+    <pre><code>// switchMap — search: cancel previous, use latest
+this.searchControl.valueChanges.pipe(
+    debounceTime(300),
+    distinctUntilChanged(),
+    switchMap(term =&gt; this.productService.search(term).pipe(catchError(() =&gt; of([])))),
+    takeUntil(this.destroy$)
+).subscribe(results =&gt; this.results = results);
+
+// forkJoin — parallel loads (like Promise.all)
+forkJoin({
+    user: this.userService.getUser(id),
+    roles: this.roleService.getRoles()
+}).subscribe(({ user, roles }) =&gt; { this.user = user; this.roles = roles; });
+
+// Auto-unsubscribe pattern
+private destroy$ = new Subject&lt;void&gt;();
+ngOnDestroy() { this.destroy$.next(); this.destroy$.complete(); }</code></pre>
+
+    <h3>Reactive Forms</h3>
+    <pre><code>form = this.fb.group({
+    name:  ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.email]],
+    phones: this.fb.array([])
+});
+get phones() { return this.form.get('phones') as FormArray; }
+addPhone() { this.phones.push(this.fb.control('', Validators.required)); }
+onSubmit() {
+    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+}</code></pre>
+
+    <h3>Change Detection — OnPush</h3>
+    <pre><code>// OnPush — only re-renders when @Input reference changes
+@Component({
+    selector: 'app-product-card',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    template: `&lt;div&gt;{{ product.name }}&lt;/div&gt;`
+})
+export class ProductCardComponent {
+    @Input() product!: Product;
+}
+
+// async pipe — auto subscribe/unsubscribe + triggers OnPush
+@Component({ template: `&lt;div *ngFor="let u of users$ | async"&gt;{{ u.name }}&lt;/div&gt;` })
+export class UsersComponent {
+    users$ = this.userService.getUsers(); // no manual subscribe!
+}</code></pre>
+  </section>
+
+  <!-- ===================== MONGODB ===================== -->
+  <section id="mongodb">
+    <h2><span class="sec-num">27</span> MongoDB &amp; NoSQL</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>SQL Server</th><th>MongoDB</th></tr>
+      <tr><td>Type</td><td>Relational</td><td>Document (BSON)</td></tr>
+      <tr><td>Schema</td><td>Predefined (rigid)</td><td>Dynamic (flexible)</td></tr>
+      <tr><td>Relationships</td><td>Foreign keys, JOINs</td><td>Embedded documents or references</td></tr>
+      <tr><td>Scalability</td><td>Vertical</td><td>Horizontal</td></tr>
+      <tr><td>Transactions</td><td>Full ACID</td><td>CAP theorem</td></tr>
+    </table></div>
+    <div class="two-col">
+      <div class="card"><strong>Use SQL when:</strong> Complex relationships, JOINs, transactions required. Financial systems requiring strict ACID.</div>
+      <div class="card"><strong>Use MongoDB when:</strong> Flexible schema, hierarchical data. Unstructured or semi-structured data (logs, catalog, events).</div>
+    </div>
+  </section>
+
+  <!-- ===================== GIT ===================== -->
+  <section id="git">
+    <h2><span class="sec-num">30A</span> Git &amp; Version Control</h2>
+    <pre><code># Daily workflow
+git status && git add . && git commit -m "feat: add user endpoint"
+git push origin feature/user-api
+
+# Branching
+git checkout -b feature/payment  # create + switch
+git merge feature/payment        # merge into current branch
+git branch -d feature/payment    # delete merged branch
+
+# Syncing
+git fetch origin && git pull origin main
+
+# Undoing
+git restore --staged src/Service.cs  # unstage
+git restore src/Service.cs            # discard working dir changes
+git reset --soft HEAD~1               # undo last commit, keep changes
+git revert abc1234                    # safe: creates new undo commit</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>Branch</th><th>Purpose</th></tr>
+      <tr><td><code>main</code></td><td>Always production-ready. Only via PR.</td></tr>
+      <tr><td><code>develop</code></td><td>Integration branch for completed features.</td></tr>
+      <tr><td><code>feature/xyz</code></td><td>New feature. Branch from develop, merge back.</td></tr>
+      <tr><td><code>hotfix/xyz</code></td><td>Emergency production fix. Branch from main.</td></tr>
+    </table></div>
+    <div class="danger-box"><strong>Rule</strong> Never force push (<code>git push --force</code>) to shared branch like <code>main</code>. It rewrites history for everyone. Use <code>git revert</code> instead.</div>
+  </section>
+
+  <!-- ===================== ASP.NET MVC ===================== -->
+  <section id="aspnet-mvc">
+    <h2><span class="sec-num">30B</span> ASP.NET MVC Deep Dive</h2>
+    <div class="flow">
+      <div class="flow-step">Browser Request</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Route Table</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Controller</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Model Binding</div><div class="flow-arrow">→</div>
+      <div class="flow-step">Action Method</div><div class="flow-arrow">→</div>
+      <div class="flow-step">View (Razor)</div><div class="flow-arrow">→</div>
+      <div class="flow-step">HTML Response</div>
+    </div>
+
+    <pre><code>// ViewModel with Data Annotations
+public class RegisterViewModel
+{
+    [Required][StringLength(100, MinimumLength = 2)]
+    public string Name { get; set; }
+    [Required][EmailAddress]
+    public string Email { get; set; }
+}
+
+// Controller
+[HttpPost]
+public IActionResult Register(RegisterViewModel model)
+{
+    if (!ModelState.IsValid) return View(model);
+    return RedirectToAction("Login");
+}
+
+// Razor View — Tag Helpers
+&lt;form asp-action="Create" method="post"&gt;
+    &lt;input asp-for="Name" class="form-control" /&gt;
+    &lt;span asp-validation-for="Name"&gt;&lt;/span&gt;
+    &lt;button type="submit"&gt;Save&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>ASP.NET MVC</th><th>Razor Pages</th><th>Web API</th></tr>
+      <tr><td>Returns</td><td>HTML Views</td><td>HTML Pages (1 file per page)</td><td>JSON / XML</td></tr>
+      <tr><td>Best for</td><td>Multi-page enterprise apps</td><td>Simple CRUD pages</td><td>APIs for SPA/Mobile</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== AUTH BASICS ===================== -->
+  <section id="auth-basics">
+    <h2><span class="sec-num">31</span> Authentication — Basic Auth &amp; OAuth2</h2>
+
+    <h3>OAuth 2.0 Grant Types</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Grant Type</th><th>When to Use</th><th>Real Example</th></tr>
+      <tr><td><strong>Authorization Code + PKCE</strong></td><td>Web &amp; mobile apps (most secure)</td><td>"Login with Google" in Angular app</td></tr>
+      <tr><td><strong>Client Credentials</strong></td><td>Machine-to-machine, no user</td><td>Background service calling internal API</td></tr>
+      <tr><td><strong>Implicit</strong> (deprecated)</td><td>DO NOT use — insecure</td><td>Legacy apps only</td></tr>
+    </table></div>
+
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>Basic Auth</th><th>JWT</th><th>OAuth2 / OIDC</th></tr>
+      <tr><td>Password exposed?</td><td>Every request</td><td>Never (after login)</td><td>Never — delegated</td></tr>
+      <tr><td>Third-party login</td><td>❌</td><td>❌</td><td>✅ Core purpose</td></tr>
+      <tr><td>Best for</td><td>Internal M2M</td><td>Your own API / SPA</td><td>Enterprise SSO, social login</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== CI/CD ===================== -->
+  <section id="cicd">
+    <h2><span class="sec-num">32</span> CI/CD Pipeline — Jenkins &amp; Azure DevOps</h2>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">Step 1 — Trigger</div>Push to main/release → webhook triggers pipeline.</div>
+      <div class="card-sm"><div class="card-label">Step 2 — Restore &amp; Build</div>Restore NuGet, compile. Fail fast on errors.</div>
+      <div class="card-sm"><div class="card-label">Step 3 — Tests</div>Run unit + integration tests. Block on failure.</div>
+      <div class="card-sm"><div class="card-label">Step 4 — Quality Gate</div>SonarQube, 70% coverage minimum.</div>
+      <div class="card-sm"><div class="card-label">Step 5 — Docker Image</div>Build + push to Azure Container Registry with commit SHA tag.</div>
+      <div class="card-sm"><div class="card-label">Step 6 — Deploy Staging</div>Auto-deploy + smoke tests.</div>
+      <div class="card-sm"><div class="card-label">Step 7 — Manual Gate</div>Lead approves production deploy.</div>
+      <div class="card-sm"><div class="card-label">Step 8 — Production</div>Blue-green deploy, monitor error rate 10 mins.</div>
+    </div>
+    <pre><code># azure-pipelines.yml skeleton
+trigger: { branches: { include: [main, release/*] } }
+stages:
+- stage: Build
+  jobs:
+  - job: BuildAndTest
+    steps:
+    - script: dotnet restore && dotnet build --configuration Release
+    - script: dotnet test --no-build --logger trx
+    - task: Docker@2
+      inputs: { command: buildAndPush, repository: myacr.azurecr.io/myapp, tags: $(Build.BuildId) }
+
+- stage: DeployProd
+  dependsOn: DeployStaging
+  jobs:
+  - deployment: DeployToProduction
+    environment: production  # requires approval gate
+    strategy: { runOnce: { deploy: { steps: [{ script: "kubectl set image ..." }] } } }</code></pre>
+    <div class="tip"><strong>Power Line</strong> "I reduced deployments from 2-hour manual processes to 8-minute fully automated ones. When a deployment failed, the pipeline auto-rolled back using the previous image tag."</div>
+  </section>
+
+  <!-- ===================== THIRD PARTY ===================== -->
+  <section id="third-party">
+    <h2><span class="sec-num">33</span> 3rd Party Integration — Stripe &amp; Payment Gateways</h2>
+    <pre><code>// .NET 8 — Stripe Payment Intent
+public async Task&lt;string&gt; CreatePaymentIntentAsync(decimal amount, string currency = "usd")
+{
+    var options = new PaymentIntentCreateOptions {
+        Amount = (long)(amount * 100),  // Stripe uses cents
+        Currency = currency,
+        PaymentMethodTypes = new List&lt;string&gt; { "card" },
+        Metadata = new Dictionary&lt;string, string&gt; { { "OrderId", "ORD-123" } }
+    };
+    var service = new PaymentIntentService();
+    var intent = await service.CreateAsync(options);
+    return intent.ClientSecret;  // send to frontend
+}
+
+// Polly — Retry + Circuit Breaker for 3rd party API
+builder.Services.AddHttpClient("StripeClient")
+    .AddTransientHttpErrorPolicy(p =&gt; p.WaitAndRetryAsync(3, _ =&gt; TimeSpan.FromSeconds(2)))
+    .AddTransientHttpErrorPolicy(p =&gt; p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));</code></pre>
+    <div class="tip"><strong>Power Line</strong> "We wrapped Stripe and PayU behind an <code>IPaymentGateway</code> interface. All webhook endpoints verified signatures. We never once double-charged a customer thanks to idempotency keys."</div>
+  </section>
+
+  <!-- ===================== NEW PROJECT ===================== -->
+  <section id="new-project">
+    <h2><span class="sec-num">34</span> Strategy: Starting a New Project</h2>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">Phase 1 — Discovery</div>Understand domain, identify non-functional requirements (scale, SLA, GDPR), map integrations.</div>
+      <div class="card-sm"><div class="card-label">Phase 2 — Architecture</div>Clean Architecture layers, DB design, Auth from day 1, CI/CD pipeline setup, Logging baseline.</div>
+      <div class="card-sm"><div class="card-label">Phase 3 — Standards</div>Coding conventions, naming, base classes, reference implementation, test coverage targets.</div>
+      <div class="card-sm"><div class="card-label">Key Rule</div>First 2 weeks = zero feature code. Setup pays dividends through the entire project lifecycle.</div>
+    </div>
+    <div class="tip"><strong>Power Line</strong> "When I led SRX Cloud, the first two weeks had zero feature code — CI/CD, architecture, logging, JWT auth, coding standards. When the team started features in week 3, we never had structural PR review issues. That investment saved hundreds of hours of refactoring."</div>
+  </section>
+
+  <!-- ===================== DB DESIGN ===================== -->
+  <section id="db-design">
+    <h2><span class="sec-num">35</span> Strategy: DB Design</h2>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">1. ERD First</div>Map entities and relationships before writing SQL. Use dbdiagram.io or Lucidchart.</div>
+      <div class="card-sm"><div class="card-label">2. Normalize to 3NF</div>Eliminate data redundancy. Denormalize only for performance with justification.</div>
+      <div class="card-sm"><div class="card-label">3. Audit Columns</div>Every table: CreatedAt, CreatedBy, ModifiedAt, IsDeleted. Soft deletes always.</div>
+      <div class="card-sm"><div class="card-label">4. Safe Migrations</div>Add column as NULL → backfill → add NOT NULL. Never big-bang migrations in production.</div>
+    </div>
+  </section>
+
+  <!-- ===================== NEW FEATURE ===================== -->
+  <section id="new-feature">
+    <h2><span class="sec-num">36</span> Strategy: New Feature in Existing Project</h2>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">1. Read First</div>Understand existing patterns before writing. Does a similar feature exist to extend?</div>
+      <div class="card-sm"><div class="card-label">2. Feature Branch</div><code>feature/JIRA-123-add-discount</code>. One PR per logical unit.</div>
+      <div class="card-sm"><div class="card-label">3. DB Migration First</div>Non-destructive. Test on dev and staging.</div>
+      <div class="card-sm"><div class="card-label">4. Feature Flag</div>Deploy disabled, enable for 10% of users, monitor, roll out.</div>
+    </div>
+  </section>
+
+  <!-- ===================== TASK MANAGEMENT ===================== -->
+  <section id="task-management">
+    <h2><span class="sec-num">36B</span> How Do You Manage Tasks?</h2>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">Tooling</div>Azure DevOps Boards / Jira. Every piece of work has a ticket with acceptance criteria. Nothing outside the board.</div>
+      <div class="card-sm"><div class="card-label">Sprint Planning</div>Tasks of 1–3 days max. Plan at 80% velocity. 20% buffer for bugs, reviews, surprises.</div>
+      <div class="card-sm"><div class="card-label">Daily Standup</div>15 mins. What done? What today? Blockers? Act on blockers same day.</div>
+      <div class="card-sm"><div class="card-label">Scope Creep</div>Make trade-off explicit. "We can add X if we drop Y or extend by 2 days. Which?"</div>
+    </div>
+    <div class="tip"><strong>Power Line</strong> "I reduced sprint miss rate from 40% to under 10% by disciplined planning, clear acceptance criteria, and protecting the team from mid-sprint interruptions."</div>
+  </section>
+
+  <!-- ===================== CLIENT DELIVERY ===================== -->
+  <section id="client-delivery">
+    <h2><span class="sec-num">36C</span> How Do You Deliver to a Client?</h2>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">1. Requirement Clarity</div>Clear acceptance criteria before coding. Ask: "What does done look like?"</div>
+      <div class="card-sm"><div class="card-label">2. Demo-Driven</div>Working demo every sprint. Client sees progress, gives early feedback.</div>
+      <div class="card-sm"><div class="card-label">3. Staging First</div>Every feature to staging. Client reviews, QA signs off. Only then production.</div>
+      <div class="card-sm"><div class="card-label">4. Release Notes + Rollback</div>Every production release has release notes and a documented rollback plan.</div>
+    </div>
+    <div class="tip"><strong>Power Line</strong> "In 2 years of this process, we've had zero emergency rollbacks — because we catch issues on staging, not in production."</div>
+  </section>
+
+  <!-- ===================== CRISIS ===================== -->
+  <section id="crisis">
+    <h2><span class="sec-num">37</span> Crisis Management</h2>
+
+    <h3>Critical Bug — Deadline in 1 Hour</h3>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">Step 1 — Assess (5 mins)</div>Complete blocker or partial? Quick workaround possible?</div>
+      <div class="card-sm"><div class="card-label">Step 2 — Communicate Now</div>Tell manager/client in first 10 minutes with options. Never stay silent.</div>
+      <div class="card-sm"><div class="card-label">Step 3 — Present Options</div>A: Ship with workaround. B: Delay feature, ship rest. C: Small extension. Let stakeholder decide.</div>
+      <div class="card-sm"><div class="card-label">Step 4 — Post-Mortem</div>Blameless root cause analysis. Add test to prevent recurrence.</div>
+    </div>
+    <div class="warn-box"><strong>Never Do This</strong> Do NOT silently stay at your desk trying to fix it until the last minute. Communication is the most important action in a crisis.</div>
+    <div class="tip"><strong>Lead Mental Model</strong> Communicate first. Think in trade-offs. Protect the team. Own accountability. Blameless post-mortem. Reduce bus factor.</div>
+  </section>
+
+  <!-- ===================== .NET PERFORMANCE ===================== -->
+  <section id="performance">
+    <h2><span class="sec-num">38</span> .NET Performance Optimization</h2>
+    <pre><code>// Use Span&lt;T&gt; for zero-allocation slicing
+ReadOnlySpan&lt;char&gt; span = "Hello World".AsSpan();
+var hello = span.Slice(0, 5); // NO allocation
+
+// ArrayPool — reuse arrays, avoid GC pressure
+var buffer = ArrayPool&lt;byte&gt;.Shared.Rent(1024);
+try { /* use buffer */ }
+finally { ArrayPool&lt;byte&gt;.Shared.Return(buffer); }
+
+// Parallel async — run independent tasks concurrently
+var (users, products) = await Task.WhenAll(
+    _userService.GetAllAsync(),
+    _productService.GetAllAsync()
+);
+
+// EF Core — compiled queries for hot paths
+private static readonly Func&lt;AppDbContext, int, Task&lt;User?&gt;&gt; _getUserById =
+    EF.CompileAsyncQuery((AppDbContext db, int id) =&gt;
+        db.Users.FirstOrDefault(u =&gt; u.Id == id));</code></pre>
+    <div class="tip"><strong>Power Line</strong> "Profiling with MiniProfiler revealed an N+1 query. Fixed with .Include() — response dropped from 8s to 180ms. Performance optimization: measure first, then fix."</div>
+  </section>
+
+  <!-- ===================== RESILIENCE ===================== -->
+  <section id="resilience">
+    <h2><span class="sec-num">39</span> Resilience — Polly, Retry, Circuit Breaker</h2>
+    <pre><code>// .NET 8 — Microsoft.Extensions.Resilience (Polly v8)
+builder.Services.AddHttpClient("StripeClient")
+    .AddResilienceHandler("stripe-pipeline", builder =&gt;
+    {
+        // Retry: 3 attempts, exponential backoff
+        builder.AddRetry(new HttpRetryStrategyOptions {
+            MaxRetryAttempts = 3,
+            Delay = TimeSpan.FromSeconds(2),
+            BackoffType = DelayBackoffType.Exponential
+        });
+
+        // Circuit Breaker: open after 50% failure rate in 10s window
+        builder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions {
+            FailureRatio = 0.5,
+            SamplingDuration = TimeSpan.FromSeconds(10),
+            BreakDuration = TimeSpan.FromSeconds(30)
+        });
+
+        // Timeout: cancel after 10 seconds
+        builder.AddTimeout(TimeSpan.FromSeconds(10));
+    });</code></pre>
+    <div class="tip"><strong>Power Line</strong> "When Stripe had a 2-minute outage, our users saw 'payment processing, please wait' instead of 500 errors. Our circuit breaker queued orders to Service Bus. Zero failed orders."</div>
+  </section>
+
+  <!-- ===================== BACKGROUND JOBS ===================== -->
+  <section id="bg-jobs">
+    <h2><span class="sec-num">40</span> Background Jobs &amp; Hosted Services</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Option</th><th>Persistence</th><th>Best For</th></tr>
+      <tr><td>IHostedService / BackgroundService</td><td>None — in-memory</td><td>Simple recurring tasks</td></tr>
+      <tr><td>Hangfire</td><td>✅ SQL / Redis</td><td>Scheduled jobs, delayed, retries, dashboard UI</td></tr>
+      <tr><td>Quartz.NET</td><td>✅ With store</td><td>Complex cron scheduling</td></tr>
+      <tr><td>Azure Functions (Timer)</td><td>✅ Azure Storage</td><td>Serverless scheduled jobs</td></tr>
+    </table></div>
+    <pre><code>// Hangfire — fire-and-forget, delayed, recurring
+BackgroundJob.Enqueue(() =&gt; emailService.SendWelcomeEmailAsync(userId));
+BackgroundJob.Schedule(() =&gt; emailService.SendReminderAsync(userId), TimeSpan.FromHours(24));
+RecurringJob.AddOrUpdate("daily-report", () =&gt; reportService.GenerateAsync(), Cron.Daily(8));</code></pre>
+  </section>
+
+  <!-- ===================== SIGNALR ===================== -->
+  <section id="signalr">
+    <h2><span class="sec-num">41</span> SignalR — Real-Time Communication</h2>
+    <pre><code>// Hub
+public class OrderHub : Hub
+{
+    public async Task JoinOrderRoom(int orderId)
+        =&gt; await Groups.AddToGroupAsync(Context.ConnectionId, $"order-{orderId}");
+}
+
+// Push from any service
+await _hubContext.Clients.Group($"order-{orderId}")
+    .SendAsync("OrderStatusChanged", new { orderId, newStatus });
+
+// Angular client
+const connection = new signalR.HubConnectionBuilder()
+  .withUrl('/hubs/orders', { accessTokenFactory: () =&gt; getJwtToken() })
+  .withAutomaticReconnect().build();
+
+connection.on('OrderStatusChanged', (data) =&gt; {
+    this.orderStatus = data.newStatus;
+});
+await connection.start();</code></pre>
+  </section>
+
+  <!-- ===================== SYSTEM DESIGN ===================== -->
+  <section id="system-design">
+    <h2><span class="sec-num">42</span> System Design — Senior Interview Patterns</h2>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">1. Clarify Requirements</div>Expected users? Peak QPS? Read-heavy or write-heavy? Consistency vs availability?</div>
+      <div class="card-sm"><div class="card-label">2. Estimate Scale</div>"1M users, 10% active = 100K DAU. 5 requests each = 500K/day = ~6 req/sec avg."</div>
+      <div class="card-sm"><div class="card-label">3. High-Level Design</div>Client → CDN → LB → API → Cache → DB → Queue → Workers.</div>
+      <div class="card-sm"><div class="card-label">4. Deep Dive</div>Pick the hardest component. Show depth on caching, consistency, failure modes.</div>
+      <div class="card-sm"><div class="card-label">5. Trade-offs</div>Always state what you traded away. Interviewers love this.</div>
+      <div class="card-sm"><div class="card-label">CAP Theorem</div>P is mandatory. Choose CP (banks) or AP (social media). You can't have all three.</div>
+    </div>
+  </section>
+
+  <!-- ===================== SCALABILITY ===================== -->
+  <section id="scalability">
+    <h2><span class="sec-num">43</span> Scalability Strategies</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Requirement for Horizontal Scaling</th><th>Solution</th></tr>
+      <tr><td>Session state</td><td>Redis distributed cache — not in-memory</td></tr>
+      <tr><td>File uploads</td><td>Azure Blob Storage / S3 — not local disk</td></tr>
+      <tr><td>Background jobs</td><td>Azure Service Bus / Hangfire with SQL backend</td></tr>
+      <tr><td>SignalR across instances</td><td>Azure SignalR Service backplane</td></tr>
+      <tr><td>Distributed locks</td><td>Redlock (Redis distributed lock)</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== MESSAGE QUEUES ===================== -->
+  <section id="message-queues">
+    <h2><span class="sec-num">44</span> Message Queues — Azure Service Bus &amp; RabbitMQ</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Pattern</th><th>Consumers</th><th>Use When</th></tr>
+      <tr><td>Queue (Point-to-Point)</td><td>One processes each message</td><td>Order processing — one worker per order</td></tr>
+      <tr><td>Topic (Pub/Sub)</td><td>Multiple subscribers each get a copy</td><td>OrderPlaced → Email + Inventory + Analytics</td></tr>
+    </table></div>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">Dead Letter Queue</div>Messages failing after max retries. Monitor DLQ in production. Alert when DLQ count > 0.</div>
+      <div class="card-sm"><div class="card-label">Idempotent Consumer</div>Service Bus may deliver twice. Check message ID before processing to prevent double-actions.</div>
+      <div class="card-sm"><div class="card-label">Competing Consumers</div>Multiple instances listen to same queue. Service Bus delivers each message to only ONE — auto load balancing.</div>
+      <div class="card-sm"><div class="card-label">Message TTL</div>Set expiry. A payment retry after 24h is useless. Expired → DLQ automatically.</div>
+    </div>
+  </section>
+
+  <!-- ===================== ANGULAR DEEP ===================== -->
+  <section id="angular-deep">
+    <h2><span class="sec-num">45</span> Angular Core — Deep Dive</h2>
+    <pre><code>// Smart Container + Dumb Presentational Pattern
+@Component({ selector: 'app-order-list-container', template: `
+  &lt;app-order-list [orders]="orders$ | async" (orderSelected)="onSelect($event)"&gt;&lt;/app-order-list&gt;
+`})
+export class OrderListContainerComponent {
+    orders$ = this._orderService.getOrders();
+    onSelect(id: number) { this._router.navigate(['/orders', id]); }
+}
+
+@Component({
+    selector: 'app-order-list',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    template: `&lt;div *ngFor="let o of orders; trackBy: trackById" (click)="orderSelected.emit(o.id)"&gt;{{o.id}}&lt;/div&gt;`
+})
+export class OrderListComponent {
+    @Input() orders: Order[];
+    @Output() orderSelected = new EventEmitter&lt;number&gt;();
+    trackById = (i: number, o: Order) =&gt; o.id;
+}</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>Question</th><th>Answer</th></tr>
+      <tr><td>JIT vs AOT</td><td>JIT: browser compiles at runtime (dev). AOT: compiled at build time — faster startup, smaller bundle, catches template errors early (production).</td></tr>
+      <tr><td>*ngIf vs [hidden]</td><td>*ngIf removes from DOM (better for heavy components). [hidden] = display:none, stays in DOM (better for frequent toggling).</td></tr>
+      <tr><td>Pure vs Impure pipe</td><td>Pure (default): runs only when input reference changes — fast. Impure: every CD cycle — needed for mutable changes but expensive.</td></tr>
+      <tr><td>Memory leak prevention</td><td>Always unsubscribe in ngOnDestroy. Use takeUntil(destroy$), async pipe, or takeUntilDestroyed() (Angular 16+).</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== RXJS ===================== -->
+  <section id="rxjs">
+    <h2><span class="sec-num">46</span> RxJS &amp; Observables</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Feature</th><th>Promise</th><th>Observable</th></tr>
+      <tr><td>Values</td><td>Single, one-time</td><td>Stream of multiple values over time</td></tr>
+      <tr><td>Cancellable?</td><td>❌ No</td><td>✅ Yes — unsubscribe()</td></tr>
+      <tr><td>Lazy?</td><td>❌ Executes immediately</td><td>✅ Only when subscribed</td></tr>
+    </table></div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Operator</th><th>Purpose</th><th>Use For</th></tr>
+      <tr><td><code>switchMap</code></td><td>Cancel previous, use latest</td><td>Search autocomplete — cancel old HTTP calls</td></tr>
+      <tr><td><code>mergeMap</code></td><td>Run all concurrently</td><td>Parallel uploads, independent requests</td></tr>
+      <tr><td><code>concatMap</code></td><td>Queue, execute one at a time</td><td>Sequential operations where order matters</td></tr>
+      <tr><td><code>debounceTime</code></td><td>Wait ms after last emission</td><td>Search input — avoid API call per keystroke</td></tr>
+      <tr><td><code>distinctUntilChanged</code></td><td>Skip if same as previous</td><td>Avoid duplicate API calls</td></tr>
+      <tr><td><code>takeUntil</code></td><td>Complete when signal emits</td><td>Auto-unsubscribe on component destroy</td></tr>
+    </table></div>
+    <div class="warn-box"><strong>Memory Leak Trap</strong> Never subscribe without unsubscribing. Use takeUntil(this.destroy$) pattern or the async pipe. Leaked subscriptions keep old components alive.</div>
+  </section>
+
+  <!-- ===================== ANGULAR PERFORMANCE ===================== -->
+  <section id="angular-perf">
+    <h2><span class="sec-num">47</span> Angular Performance</h2>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">OnPush Change Detection</div>Apply to all dumb components. Reduces change detection cycles by 60-80%.</div>
+      <div class="card-sm"><div class="card-label">TrackBy in *ngFor</div>Without: re-renders entire list on any change. With: only re-renders changed items.</div>
+      <div class="card-sm"><div class="card-label">Lazy Loading</div>Feature modules loaded on demand. Initial bundle size shrinks dramatically.</div>
+      <div class="card-sm"><div class="card-label">Virtual Scrolling</div>10,000-item list renders only ~20 visible rows. Massive DOM memory savings.</div>
+      <div class="card-sm"><div class="card-label">Async Pipe</div>Auto-subscribes, auto-unsubscribes, triggers OnPush. Use instead of manual subscribe.</div>
+      <div class="card-sm"><div class="card-label">Preloading Strategy</div>PreloadAllModules: load lazy modules in background after initial load. Subsequent navigation instant.</div>
+    </div>
+  </section>
+
+  <!-- ===================== AGILE ===================== -->
+  <section id="agile">
+    <h2><span class="sec-num">48</span> Agile &amp; Scrum</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Ceremony</th><th>Duration</th><th>Purpose</th></tr>
+      <tr><td>Sprint Planning</td><td>2–4 hrs</td><td>Select backlog items, break into tasks, commit to sprint goal</td></tr>
+      <tr><td>Daily Standup</td><td>15 min max</td><td>What done? What today? Blockers?</td></tr>
+      <tr><td>Sprint Review</td><td>1–2 hrs</td><td>Demo completed work to stakeholders</td></tr>
+      <tr><td>Retrospective</td><td>1–1.5 hrs</td><td>What went well? What to improve? Action items.</td></tr>
+      <tr><td>Backlog Refinement</td><td>1–2 hrs/week</td><td>Estimate, clarify, prioritize upcoming items</td></tr>
+    </table></div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Dysfunction</th><th>Fix</th></tr>
+      <tr><td>Sprint overcommitment</td><td>Track velocity (last 3 sprints avg). Plan at 80% velocity. Buffer matters.</td></tr>
+      <tr><td>Standup = status report</td><td>Peer-to-peer collaboration, not manager check-in.</td></tr>
+      <tr><td>Scope creep mid-sprint</td><td>Add new item → remove equal-sized item. Or goes to next sprint.</td></tr>
+    </table></div>
+    <div class="tip"><strong>Power Line</strong> "My team went from consistently missing sprints to 90%+ completion rate. Biggest change: discipline in backlog refinement — 90 minutes mid-sprint so planning takes 45 minutes instead of 3 hours."</div>
+  </section>
+
+  <!-- ===================== BEHAVIORAL ===================== -->
+  <section id="behavioral">
+    <h2><span class="sec-num">49</span> Behavioral Interview Questions — STAR Method</h2>
+    <div class="card">
+      <strong>STAR Framework:</strong> <strong>S</strong>ituation (context, team, timeline) → <strong>T</strong>ask (YOUR responsibility) → <strong>A</strong>ction (what YOU specifically did) → <strong>R</strong>esult (quantified outcome)
+    </div>
+
+    <h4>"Tell me about a time you disagreed with a technical decision."</h4>
+    <div class="card">Architect proposed Stored Procedure-heavy approach (200+ SPs). I disagreed — untestable and tightly coupled. I prepared a comparison document showing coverage metrics and maintenance cost. Presented objectively in architecture review. Team voted for Clean Architecture. We delivered with 72% unit test coverage and zero architecture-related production incidents.</div>
+
+    <h4>"Tell me about a time you failed."</h4>
+    <div class="card">Underestimated a DB migration by 3 days — missed 2M records with inconsistent date formats. Fixed it overnight after rollback. Lesson: always profile data before estimating migrations. I now have a data profiling checklist for every migration. No similar failures since.</div>
+
+    <h4>"Greatest professional achievement."</h4>
+    <div class="card">Led SRX Cloud — 12 microservices, 5 developers, 8 months, Azure + .NET 8 + Angular. Defined Clean Architecture standard, set up CI/CD, mentored 2 juniors to mid-level. Delivered 2 weeks early. System handled 3x projected traffic at launch with zero downtime. Client renewed for Phase 2.</div>
+
+    <h3>30-Second Self-Introduction</h3>
+    <div class="card">
+      <em>"I'm Taher Tinwala, a Full Stack .NET Developer and Tech Lead with 7+ years building enterprise web applications. I specialize in .NET 8, Clean Architecture, CQRS, Angular, and SQL Server. Most recently I led a team of 5 on SRX Cloud — a multi-tenant SaaS platform on Azure using microservices. I'm known for building scalable, well-tested systems and mentoring teams to ship with quality and confidence."</em>
+    </div>
+  </section>
+
+  <!-- ===================== SALARY ===================== -->
+  <section id="salary">
+    <h2><span class="sec-num">50</span> Salary Negotiation</h2>
+    <div class="card-grid">
+      <div class="card-sm"><div class="card-label">Know Your Market Rate</div>Research Glassdoor, LinkedIn Salary, AmbitionBox, Levels.fyi. Senior .NET Lead India: ₹20–45 LPA. Remote/product: ₹35–80 LPA.</div>
+      <div class="card-sm"><div class="card-label">Total Compensation</div>Base + variable + bonus + ESOPs + benefits. A lower base with RSUs may be better total comp.</div>
+      <div class="card-sm"><div class="card-label">Your Anchor</div>"I'm targeting ₹X based on market research." Never say "whatever is standard."</div>
+      <div class="card-sm"><div class="card-label">Counter Scripts</div>"Could we revisit the variable / signing bonus / 6-month review?" Always leave an opening.</div>
+    </div>
+    <div class="card">
+      <strong>When asked expected salary:</strong> <em>"Based on my research, I'm targeting ₹[X–Y] LPA. I'm flexible if total compensation and growth align. What's your budgeted range?"</em><br><br>
+      <strong>When you receive an offer:</strong> <em>"Thank you — I'm excited about this role. I was hoping to be closer to ₹[X]. Given my [specific experience], that's fair market rate. Is there flexibility?"</em>
+    </div>
+  </section>
+
+  <!-- ===================== QUESTIONS TO ASK ===================== -->
+  <section id="questions-to-ask">
+    <h2><span class="sec-num">51</span> Questions to Ask the Interviewer</h2>
+    <div class="card-grid">
+      <div class="card-sm">"What's the biggest technical challenge the team is facing right now?"</div>
+      <div class="card-sm">"How does the team handle technical debt? Is there dedicated refactoring time?"</div>
+      <div class="card-sm">"What does the CI/CD pipeline look like? How long from merge to production?"</div>
+      <div class="card-sm">"What monitoring tools do you use? How do you know when something breaks?"</div>
+      <div class="card-sm">"What does the code review process look like? How many reviewers?"</div>
+      <div class="card-sm">"What's the biggest challenge for someone coming into this role in the first 90 days?"</div>
+    </div>
+    <div class="warn-box"><strong>Never Ask First</strong> "What does the company do?" (research it), "How many vacation days?" (save for after offer), "Is overtime expected?" (signals wrong priorities).</div>
+  </section>
+
+  <!-- ===================== POWER LINES ===================== -->
+  <section id="powerlines">
+    <h2><span class="sec-num">28</span> Interview Power Lines</h2>
+    <div class="tip"><strong>Senior Answer Formula</strong> 1. Definition &nbsp; 2. Why needed &nbsp; 3. Code Example &nbsp; 4. Real-World Usage &nbsp; 5. Tradeoffs</div>
+
+    <div class="card"><h4>On Caching</h4>"I implemented distributed caching with Redis to reduce database load by 80% on our product catalog using Cache-Aside pattern with sliding expiration and invalidation on writes."</div>
+    <div class="card"><h4>On Architecture</h4>"We adopted Clean Architecture because it made our domain logic testable without infrastructure dependencies. We could swap SQL Server for PostgreSQL by changing only the Infrastructure layer."</div>
+    <div class="card"><h4>On Performance</h4>"I identified N+1 queries using EF Core logging and fixed them with eager loading and projections, reducing DB calls from 150 to 2 per request — API response went from 8s to 180ms."</div>
+    <div class="card"><h4>On Security</h4>"I found a broken access control issue — users could view other users' documents by guessing IDs. I added ownership filters to every query and API-level tests that verify cross-user access is always blocked."</div>
+    <div class="card"><h4>On CQRS</h4>"We implemented CQRS in our reporting module to separate read and write models. Read queries use denormalized views with no-tracking, giving us 10x faster report generation."</div>
+    <div class="tip"><strong>Senior Mindset</strong> Always mention Benefits, Drawbacks, When to use, and When NOT to use. Interviewers love tradeoffs.</div>
+  </section>
+
+  <!-- ===================== TRAPS ===================== -->
+  <section id="traps">
+    <h2><span class="sec-num">29</span> Common Interview Traps</h2>
+    <div class="danger-box"><strong>⚠ Trap 1</strong> Scoped inside Singleton — captive dependency causes stale data. Use IServiceScopeFactory.</div>
+    <div class="danger-box"><strong>⚠ Trap 2</strong> IEnumerable for DB filtering — loads entire table into memory. Use IQueryable.</div>
+    <div class="danger-box"><strong>⚠ Trap 3</strong> Missing await — method returns a Task nobody awaits; exception swallowed silently.</div>
+    <div class="danger-box"><strong>⚠ Trap 4</strong> async void — exceptions unobservable, crash the process. Always use async Task.</div>
+    <div class="danger-box"><strong>⚠ Trap 5</strong> SELECT * — fetches unnecessary columns, breaks on schema change. Always select specific columns.</div>
+    <div class="danger-box"><strong>⚠ Trap 6</strong> No CancellationToken — long operations run even after client disconnects.</div>
+    <div class="danger-box"><strong>⚠ Trap 7</strong> Lazy loading in APIs — silent N+1 queries. Use eager loading with Include().</div>
+    <div class="danger-box"><strong>⚠ Trap 8</strong> NOT IN with NULL subquery — silently returns zero rows. Use NOT EXISTS.</div>
+  </section>
+
+  <!-- ===================== CHEAT SHEET ===================== -->
+  <section id="cheatsheet">
+    <h2><span class="sec-num">30</span> Quick Revision Cheat Sheet</h2>
+
+    <h3>DI Lifetimes</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Lifetime</th><th>New Instance</th><th>Use For</th></tr>
+      <tr><td>Transient</td><td>Every injection</td><td>Stateless, lightweight</td></tr>
+      <tr><td>Scoped</td><td>Per HTTP request</td><td>DbContext, business services</td></tr>
+      <tr><td>Singleton</td><td>App startup</td><td>Cache, config, HttpClientFactory</td></tr>
+    </table></div>
+
+    <h3>EF Core Quick Reference</h3>
+    <div class="chip-row">
+      <span class="chip">AsNoTracking() → Read-only, faster</span>
+      <span class="chip">.Include() → Eager load</span>
+      <span class="chip">.Select(new Dto{}) → Project columns</span>
+      <span class="chip">IQueryable → Filter in DB</span>
+      <span class="chip">IEnumerable → Avoid on DbSets</span>
+    </div>
+
+    <h3>HTTP Status Codes</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Code</th><th>Meaning</th><th>When</th></tr>
+      <tr><td>200</td><td>OK</td><td>GET, PUT, PATCH success</td></tr>
+      <tr><td>201</td><td>Created</td><td>POST creates resource</td></tr>
+      <tr><td>204</td><td>No Content</td><td>DELETE success</td></tr>
+      <tr><td>400</td><td>Bad Request</td><td>Validation failed</td></tr>
+      <tr><td>401</td><td>Unauthorized</td><td>No/invalid token</td></tr>
+      <tr><td>403</td><td>Forbidden</td><td>Authenticated, wrong role</td></tr>
+      <tr><td>404</td><td>Not Found</td><td>Resource doesn't exist</td></tr>
+      <tr><td>409</td><td>Conflict</td><td>Duplicate, concurrency conflict</td></tr>
+      <tr><td>422</td><td>Unprocessable</td><td>Business rule violation</td></tr>
+      <tr><td>429</td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+      <tr><td>500</td><td>Internal Error</td><td>Unexpected server error</td></tr>
+    </table></div>
+
+    <h3>Middleware Order</h3>
+    <div class="flow">
+      <div class="flow-step">UseExceptionHandler</div><div class="flow-arrow">→</div>
+      <div class="flow-step">UseHttpsRedirection</div><div class="flow-arrow">→</div>
+      <div class="flow-step">UseRouting</div><div class="flow-arrow">→</div>
+      <div class="flow-step">UseCors</div><div class="flow-arrow">→</div>
+      <div class="flow-step">UseAuthentication</div><div class="flow-arrow">→</div>
+      <div class="flow-step">UseAuthorization</div><div class="flow-arrow">→</div>
+      <div class="flow-step">MapControllers</div>
+    </div>
+
+    <div class="tip" style="margin-top:28px; font-size:14px; padding:18px 22px;">
+      <strong>Final Confidence Reminder</strong>
+      You have 7+ years of real production experience with .NET, CQRS, Clean Architecture, and Microservices.
+      Polish your delivery, think in scalability/performance/tradeoffs, and speak with concrete examples from your projects
+      (Catina, ICM, SRX Cloud). That's what separates Developer → Senior → Tech Lead. 🚀
+    </div>
+  </section>
+
+</div><!-- end main-content -->
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<script>
+// ─────────────────────────────────────────────
+// SIDEBAR TOGGLE
+// ─────────────────────────────────────────────
+const sidebar       = document.getElementById('sidebar');
+const mainContent   = document.getElementById('mainContent');
+const sidebarToggle = document.getElementById('sidebarToggle');
+let sidebarOpen = true;
+
+function setSidebar(open) {
+  sidebarOpen = open;
+  sidebar.classList.toggle('collapsed', !open);
+  mainContent.classList.toggle('sidebar-collapsed', !open);
+  localStorage.setItem('sidebarOpen', open);
+}
+
+sidebarToggle.addEventListener('click', () => setSidebar(!sidebarOpen));
+
+// Restore from localStorage
+const savedSidebar = localStorage.getItem('sidebarOpen');
+if (savedSidebar === 'false') setSidebar(false);
+
+// Mobile: close sidebar when clicking outside
+document.addEventListener('click', (e) => {
+  if (window.innerWidth <= 640 && sidebarOpen) {
+    if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+      setSidebar(false);
+    }
+  }
+});
+
+// ─────────────────────────────────────────────
+// THEME TOGGLE
+// ─────────────────────────────────────────────
+const html        = document.documentElement;
+const themeToggle = document.getElementById('themeToggle');
+const themeLabel  = document.getElementById('themeLabel');
+
+function setTheme(theme) {
+  html.setAttribute('data-theme', theme);
+  themeLabel.textContent = theme === 'dark' ? 'Light' : 'Dark';
+  localStorage.setItem('theme', theme);
+}
+
+themeToggle.addEventListener('click', () => {
+  const current = html.getAttribute('data-theme');
+  setTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+// Restore theme
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme) setTheme(savedTheme);
+else if (window.matchMedia('(prefers-color-scheme: light)').matches) setTheme('light');
+
+// ─────────────────────────────────────────────
+// READ PROGRESS
+// ─────────────────────────────────────────────
+const progressBar = document.getElementById('readProgress');
+window.addEventListener('scroll', () => {
+  const doc  = document.documentElement;
+  const scrolled = doc.scrollTop;
+  const total    = doc.scrollHeight - doc.clientHeight;
+  progressBar.style.width = Math.min(100, (scrolled / total) * 100) + '%';
+}, { passive: true });
+
+// ─────────────────────────────────────────────
+// BACK TO TOP
+// ─────────────────────────────────────────────
+const backBtn = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  backBtn.classList.toggle('visible', window.scrollY > 400);
+}, { passive: true });
+backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+// ─────────────────────────────────────────────
+// ACTIVE SIDEBAR LINK ON SCROLL
+// ─────────────────────────────────────────────
+const sections = document.querySelectorAll('section[id]');
+const tocLinks = document.querySelectorAll('.toc-link');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      tocLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
+      if (active) {
+        active.classList.add('active');
+        // Auto-scroll sidebar to keep active link visible
+        active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+  });
+}, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
+
+sections.forEach(s => observer.observe(s));
+
+// ─────────────────────────────────────────────
+// COPY CODE BUTTON
+// ─────────────────────────────────────────────
+document.querySelectorAll('pre').forEach(pre => {
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copy';
+  btn.addEventListener('click', () => {
+    const code = pre.querySelector('code') ? pre.querySelector('code').innerText : pre.innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+    });
+  });
+  pre.appendChild(btn);
+});
+
+// ─────────────────────────────────────────────
+// SEARCH
+// ─────────────────────────────────────────────
+const searchInput = document.getElementById('searchInput');
+let searchTimeout;
+let highlights = [];
+
+function clearHighlights() {
+  highlights.forEach(el => {
+    const parent = el.parentNode;
+    parent.replaceChild(document.createTextNode(el.textContent), el);
+    parent.normalize();
+  });
+  highlights = [];
+}
+
+function highlightText(root, term) {
+  if (!term || term.length < 2) return;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+
+  nodes.forEach(node => {
+    if (['SCRIPT','STYLE','CODE','PRE'].includes(node.parentElement?.tagName)) return;
+    const text = node.textContent;
+    const idx = text.toLowerCase().indexOf(term.toLowerCase());
+    if (idx === -1) return;
+
+    const span = document.createElement('mark');
+    span.className = 'search-highlight';
+    span.textContent = text.slice(idx, idx + term.length);
+
+    const before = document.createTextNode(text.slice(0, idx));
+    const after  = document.createTextNode(text.slice(idx + term.length));
+    const parent = node.parentNode;
+
+    parent.insertBefore(before, node);
+    parent.insertBefore(span, node);
+    parent.insertBefore(after, node);
+    parent.removeChild(node);
+    highlights.push(span);
+  });
+}
+
+searchInput.addEventListener('input', () => {
+  clearTimeout(searchTimeout);
+  const term = searchInput.value.trim();
+
+  clearHighlights();
+
+  if (term.length < 2) return;
+
+  searchTimeout = setTimeout(() => {
+    highlightText(mainContent, term);
+
+    // Scroll to first match
+    if (highlights.length > 0) {
+      highlights[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 300);
+});
+
+// Escape clears search
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    searchInput.value = '';
+    clearHighlights();
+  }
+  // Ctrl/Cmd+K focuses search
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+    searchInput.select();
+  }
+});
+</script>
+</body>
+</html>
