@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backend Interview Audio Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --card: #1a2235;
+    --border: #1e3a5f33;
+    --accent: #3b82f6;
+    --accent2: #06b6d4;
+    --gold: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 20%, #1e3a5f18 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, #06b6d415 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    padding: 40px 0 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #1e3a5f, #0ea5e9);
+    color: #7dd3fc;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: clamp(24px, 5vw, 38px);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #e2e8f0 0%, #3b82f6 50%, #06b6d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    font-family: var(--mono);
+  }
+
+  /* Main Player */
+  .player-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 0 60px #0000004d;
+  }
+
+  .now-playing-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .now-playing-label::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .now-playing-label.paused::before { animation: none; background: var(--muted); }
+
+  #trackTitle {
+    font-size: clamp(16px, 3vw, 22px);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  #trackSubtitle {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* Waveform visualizer */
+  .waveform {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 48px;
+    margin-bottom: 20px;
+  }
+
+  .bar {
+    width: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: height 0.1s ease;
+    opacity: 0.7;
+  }
+
+  .bar.playing {
+    animation: wave var(--dur, 0.8s) ease-in-out infinite alternate;
+  }
+
+  @keyframes wave {
+    from { height: 4px; opacity: 0.4; }
+    to   { height: var(--h, 40px); opacity: 1; }
+  }
+
+  /* Progress */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .time {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    min-width: 38px;
+    text-align: center;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: #1e2d45;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 4px;
+    transition: width 0.5s linear;
+    width: 0%;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 8px;
+  }
+
+  .btn:hover { color: var(--text); transform: scale(1.1); }
+
+  .btn-play {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    border-radius: 50%;
+    font-size: 22px;
+    box-shadow: 0 0 24px #3b82f640;
+    transition: all 0.2s;
+  }
+
+  .btn-play:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 36px #3b82f660;
+    color: white;
+  }
+
+  .btn-play:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn svg { width: 22px; height: 22px; }
+  .btn-play svg { width: 24px; height: 24px; }
+
+  /* Settings row */
+  .settings-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .setting-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #0d1628;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .setting-group label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .setting-group select,
+  .setting-group input[type=range] {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .setting-group select option { background: var(--surface); }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    height: 3px;
+    border-radius: 3px;
+    background: #1e3a5f;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+
+  .speed-val {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    min-width: 30px;
+    text-align: right;
+  }
+
+  /* Track list */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  .track-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .track-item {
+    background: var(--card);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .track-item:hover {
+    border-color: var(--border);
+    background: #1e2d45;
+  }
+
+  .track-item.active {
+    border-color: var(--accent);
+    background: #1a2e4a;
+    box-shadow: 0 0 20px #3b82f620;
+  }
+
+  .track-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .track-item.active .track-num {
+    color: var(--accent);
+  }
+
+  .track-info { flex: 1; }
+
+  .track-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .track-item.active .track-name { color: var(--accent2); }
+
+  .track-desc {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .track-dur {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* Current text display */
+  .transcript-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 24px;
+  }
+
+  .transcript-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  #transcriptText {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #94a3b8;
+    max-height: 160px;
+    overflow-y: auto;
+  }
+
+  #transcriptText .highlight {
+    color: var(--text);
+    background: #1e3a5f55;
+    border-radius: 3px;
+    padding: 0 3px;
+  }
+
+  /* status bar */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .status-pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: #0d1628;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .status-pill.speaking {
+    border-color: var(--green);
+    color: var(--green);
+    background: #0d1a12;
+  }
+
+  .status-pill.error {
+    border-color: var(--red);
+    color: var(--red);
+    background: #1a0d0d;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .settings-row { flex-direction: column; }
+    .setting-group { width: 100%; }
+    .controls { gap: 10px; }
+  }
+
+  .no-support {
+    background: #1a0d0d;
+    border: 1px solid var(--red);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">🎧 Audio Interview Prep</div>
+    <h1>Backend Developer<br>Interview Audio Guide</h1>
+    <p class="subtitle">Senior / TL / Architect — Listen & Learn</p>
+  </header>
+
+  <div class="no-support" id="noSupport">
+    <p style="color:var(--red);font-weight:700;margin-bottom:8px;">⚠ Speech not supported</p>
+    <p style="font-size:13px;color:var(--muted);">Please open this file in Chrome, Edge, or Safari for audio playback.</p>
+  </div>
+
+  <!-- Main Player -->
+  <div class="player-card">
+    <div class="now-playing-label paused" id="nowPlayingLabel">Now Playing</div>
+    <div id="trackTitle">Select a topic to begin</div>
+    <div id="trackSubtitle">22 topics · Full backend interview preparation</div>
+
+    <!-- Waveform -->
+    <div class="waveform" id="waveform"></div>
+
+    <!-- Progress -->
+    <div class="progress-row">
+      <span class="time" id="timeElapsed">0:00</span>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="time" id="timeTotal">--:--</span>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button class="btn" id="btnPrev" title="Previous">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+      </button>
+      <button class="btn" id="btnRewind" title="Rewind paragraph">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6 8.5 6V6l-8.5 6z"/></svg>
+      </button>
+      <button class="btn btn-play" id="btnPlay" disabled>
+        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <button class="btn" id="btnForward" title="Forward paragraph">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
+      </button>
+      <button class="btn" id="btnNext" title="Next topic">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </button>
+    </div>
+
+    <!-- Settings -->
+    <div class="settings-row">
+      <div class="setting-group">
+        <label>Speed</label>
+        <input type="range" id="speedSlider" min="0.6" max="1.8" step="0.1" value="0.9">
+        <span class="speed-val" id="speedVal">0.9×</span>
+      </div>
+      <div class="setting-group">
+        <label>Voice</label>
+        <select id="voiceSelect"></select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transcript -->
+  <div class="transcript-card">
+    <div class="transcript-label">📄 Current Text</div>
+    <div id="transcriptText">Press play on any topic to start listening...</div>
+  </div>
+
+  <!-- Track list -->
+  <div style="margin-top:28px;">
+    <div class="section-label">📚 All Topics</div>
+    <div class="track-list" id="trackList"></div>
+  </div>
+
+  <div class="status-bar">
+    <span class="status-pill" id="statusPill">Ready</span>
+    <span style="font-family:var(--mono);font-size:11px;color:var(--muted)">Web Speech API</span>
+  </div>
+</div>
+
+<script>
+// ─── CONTENT ────────────────────────────────────────────────────────────────
+const TRACKS = [
+  {
+    title: "ASP.NET Core Request Lifecycle",
+    desc: "Pipeline, Kestrel, middleware order",
+    text: `Welcome to your backend interview audio guide. This is topic one: The ASP.NET Core Request Lifecycle.
+
+Understanding the full request pipeline is the most foundational concept in backend development. When an interviewer asks "what happens when an HTTP request hits your API", this is what you say.
+
+Here is the complete flow:
+
+A client sends an HTTP request. Kestrel, the built-in web server, receives the raw TCP connection. The request then enters the Middleware Pipeline. Think of middleware as a chain of functions — each one can inspect the request, do some work, pass it along, and then do more work on the way back out.
+
+The middleware order in Program dot cs matters enormously. The correct order is: Exception Handler first — because it needs to wrap everything else. Then HTTPS Redirection. Then Static Files. Then Routing. Then CORS — this must come before authentication. Then Authentication — verifying who you are. Then Authorization — checking what you can access. Then Rate Limiter. Finally, Map Controllers.
+
+After middleware, the Router matches the URL to a specific Controller Action. Model Binding maps the JSON body or query string to your C sharp objects. Then Action Filters run — these are like middleware but specifically for the MVC pipeline. Then your Controller Action executes, calls the Service Layer, which calls the Repository, which talks to the database.
+
+The response bubbles back up through all the same middleware in reverse order.
+
+Real world example: A request to GET /api/products flows like this. One — request enters Kestrel. Two — LoggingMiddleware records the start time. Three — AuthMiddleware validates the Bearer token. Four — RateLimitMiddleware checks the user's quota. Five — Router finds ProductsController dot GetAll. Six — Controller calls ProductService dot GetAllAsync. Seven — Service calls repository. Eight — Repository runs: SELECT Id, Name, Price FROM Products WHERE IsActive equals 1. Nine — Data returns, gets serialized to JSON, and a 200 OK response is sent.
+
+Interview power line: "I always register exception handling middleware first because it needs to catch exceptions from everything that runs after it. Getting the order wrong is a common source of bugs in production."
+
+Key trap to remember: If you forget to call underscore next in your middleware, the pipeline stops. The request never reaches the controller. This is intentional for auth failures, but catastrophic if done by accident.`
+  },
+  {
+    title: "Dependency Injection & Lifetimes",
+    desc: "Transient, Scoped, Singleton + captive dependency trap",
+    text: `Topic two: Dependency Injection and Lifetimes. This is one of the most tested topics in senior interviews. Know this cold.
+
+Dependency Injection means you declare what your class needs in the constructor, and the framework provides it. You never use the new keyword for services. This gives you loose coupling, testability, and maintainability.
+
+There are three lifetimes. Know the difference deeply.
+
+First: Transient. A new instance is created every single time it is requested — whether from a controller, a service, or anywhere. Use this for lightweight, stateless operations like an email formatter, a calculator, a validator. Registered like this: services dot AddTransient of IEmailService, EmailService.
+
+Second: Scoped. One instance per HTTP request. Every class that gets this service within the same request shares the same instance. This is correct for DbContext, business services, and repositories. The instance is disposed at the end of the request. Registered like this: services dot AddScoped of IUserService, UserService.
+
+Third: Singleton. One instance for the entire lifetime of the application. Every request, every user, every thread shares this same object. Use for caching, configuration, HTTP client factory, and logging. Registered like this: services dot AddSingleton of ICacheService, RedisCacheService.
+
+Now the most important interview trap: Captive Dependency. Never inject a Scoped service into a Singleton. Here is why. The Singleton lives forever — it gets created once at startup. The Scoped service is supposed to live only per request. But if a Singleton holds a reference to it, the Scoped service gets trapped — it lives forever too. This causes stale data, shared state bugs, and with DbContext it causes the error: "Cannot consume scoped service from singleton."
+
+The fix: inject IServiceScopeFactory into your Singleton. Then whenever you need a scoped service, call factory dot CreateScope, and get the service from that scope. Always dispose the scope when done.
+
+Constructor injection is always preferred over property injection or service locator. Declare all dependencies in the constructor — this makes them explicit, required, and testable.
+
+Interview power line: "We had a production bug where a background service, which was a Singleton, was holding a DbContext. After several hours, queries started returning stale or incorrect data. The fix was using IServiceScopeFactory to create a fresh scope for each operation."`
+  },
+  {
+    title: "Async / Await & Task Parallel Library",
+    desc: "Non-blocking I/O, Task.WhenAll, CancellationToken",
+    text: `Topic three: Async, Await, and the Task Parallel Library.
+
+Async and await are about non-blocking I/O. Without async, a thread sits and waits while your database query runs. With async, that thread is released back to the thread pool and can handle other requests. When the database responds, any available thread picks up where you left off.
+
+Here is the key mental model. Imagine a busy restaurant. Without async: the waiter takes your order, then stands by the kitchen doing nothing while the chef cooks. With async: the waiter takes your order, then goes and serves other tables. When the food is ready, any available waiter brings it to you. Async is how you serve more customers with the same number of waiters.
+
+Always use async all the way down. If your controller is async, your service should be async, your repository should be async, and your database call should use ToListAsync or FirstOrDefaultAsync — not ToList or FirstOrDefault.
+
+The most important mistakes to avoid:
+
+First: Never use dot Result or dot Wait on a Task. This blocks the thread and can cause deadlocks. Always use await.
+
+Second: Never use async void. If an exception is thrown in an async void method, it cannot be caught — it will crash your process. The only exception is event handlers. Always return async Task.
+
+Third: Always pass and honor CancellationToken. When a client disconnects from your API, without CancellationToken, the server keeps running the query and wasting resources. With CancellationToken, the database query is cancelled when the client disconnects.
+
+Fourth: Run independent operations in parallel using Task.WhenAll. If you need to fetch users, products, and orders that do not depend on each other, start all three tasks first, then await Task dot WhenAll. The total time becomes the maximum of the three, not the sum.
+
+Here is the parallel pattern: var usersTask equals GetUsersAsync. var productsTask equals GetProductsAsync. var ordersTask equals GetOrdersAsync. Then await Task.WhenAll of usersTask, productsTask, ordersTask. Then get the results from each awaited task.
+
+Interview power line: "We reduced our dashboard API response time from 1.8 seconds to 600 milliseconds by running 4 independent data fetches in parallel with Task.WhenAll instead of sequentially awaiting each one."`
+  },
+  {
+    title: "Entity Framework Core",
+    desc: "IQueryable vs IEnumerable, tracking, loading strategies, N+1",
+    text: `Topic four: Entity Framework Core. There are several critical concepts here that every senior developer must know.
+
+First: IQueryable versus IEnumerable. This is the most common performance mistake in EF Core.
+
+IQueryable means the filter happens in the database. When you write context dot Users dot Where of x goes to x dot IsActive, EF Core translates this to SQL: SELECT * FROM Users WHERE IsActive equals 1. Only the matching rows come back.
+
+IEnumerable means the filter happens in memory. If you call dot ToList first and then dot Where, EF Core runs SELECT * FROM Users — all rows come back — and then C sharp filters them in memory. For a table with a million users, you just pulled a million rows for no reason.
+
+The rule: never call ToList before your Where clause. Keep it as IQueryable until you are done filtering, sorting, and projecting.
+
+Second: Tracking versus No Tracking. By default, EF Core tracks every entity you load. The change tracker watches for modifications so SaveChanges knows what to update. This costs memory and processing time. For read-only queries in GET endpoints, you do not need tracking. Use AsNoTracking to skip it. This is noticeably faster for large result sets.
+
+Third: Loading Strategies. Eager Loading with dot Include fetches related data in one SQL query with a JOIN. Use this when you know you always need the related data. Lazy Loading loads related data on first access automatically — but this causes N plus 1 queries silently and is generally avoided in production APIs. Projection with dot Select is the best approach for APIs — you select only the exact fields you need into a DTO.
+
+Fourth: The N plus 1 problem. This is a classic interview question. It happens when you load a list of entities and then access a navigation property in a loop. For 100 orders, you get 1 query for orders plus 100 queries for customers — 101 total queries. The fix is eager loading with Include, or better yet, projection with Select that fetches everything in one optimized query.
+
+Interview power line: "I always use projection with dot Select and AsNoTracking for read endpoints. This gives us smaller data transfer, no change tracking overhead, and a single optimized SQL query. We reduced some dashboard queries from 150 database calls to 2 by eliminating N plus 1 with proper eager loading."`
+  },
+  {
+    title: "SQL Optimization",
+    desc: "Indexes, pagination, ACID, isolation levels",
+    text: `Topic five: SQL Optimization. Database performance is where many APIs live or die.
+
+Indexes are the most important tool. Understand the difference between clustered and non-clustered indexes.
+
+A clustered index physically sorts the table's data pages by the index key. You can only have one per table. It is almost always your primary key — the integer Id column.
+
+A non-clustered index is a separate data structure that points back to the table rows. You can have many per table. Add them on foreign key columns, columns used in WHERE clauses, columns used in JOINs, and columns used in ORDER BY.
+
+A covering index includes extra columns so the database can answer a query entirely from the index without touching the main table. This is called an index-only scan and is extremely fast.
+
+Important rules for writing good SQL queries:
+
+Never use SELECT star in production. Name every column you need. SELECT star fetches unnecessary data, wastes network bandwidth, and breaks if you add a column.
+
+Use parameterized queries always. In EF Core, LINQ queries are always parameterized. In raw SQL with Dapper, use the at symbol for parameters. Never concatenate user input into SQL strings — this is SQL injection.
+
+For pagination, use OFFSET FETCH in SQL or Skip and Take in EF Core. Always include an ORDER BY — pagination without ordering is non-deterministic.
+
+Avoid functions on indexed columns in WHERE clauses. Writing WHERE YEAR of CreatedAt equals 2024 prevents the index from being used. Instead, write WHERE CreatedAt is greater than or equal to '2024-01-01' AND CreatedAt is less than '2025-01-01'.
+
+ACID properties: Atomicity means all-or-nothing. Consistency means data always follows rules. Isolation means concurrent transactions do not interfere. Durability means committed data survives crashes.
+
+Transaction isolation levels from least to most strict: Read Uncommitted, Read Committed which is the default, Repeatable Read, and Serializable. Higher isolation means fewer concurrency anomalies but lower throughput.
+
+Interview power line: "We had an API slowing from 100 milliseconds to 5 seconds under load. Investigation showed a missing index on Orders dot CustomerId — a column used in every query but never indexed. Adding the index brought response time back to 80 milliseconds."`
+  },
+  {
+    title: "Authentication & JWT",
+    desc: "JWT flow, refresh tokens, roles, policies",
+    text: `Topic six: Authentication and Authorization.
+
+Authentication answers: who are you? Authorization answers: what can you access? They are distinct concepts. Authentication happens before Authorization.
+
+The JWT flow works like this. The client sends a POST to /auth/login with email and password. The server validates the credentials against the database, using bcrypt to compare the password hash. If valid, it generates a JWT — a JSON Web Token — which contains claims like the user's ID, email, role, and expiration time. The server signs this token with a secret key using HMAC SHA 256. The client receives the token and stores it. On every subsequent request, the client sends the token in the Authorization header as a Bearer token. The server's middleware validates the signature, checks the expiration, and extracts the claims into the User identity object.
+
+A JWT has three parts separated by dots: the header, the payload, and the signature. The payload is just Base64 encoded — it is not encrypted. Never put sensitive data like passwords in a JWT.
+
+The Refresh Token pattern solves the problem of short token lifetimes. Access tokens expire in 15 to 60 minutes — this limits damage if a token is stolen. But you do not want users to log in every hour. The solution: issue a long-lived refresh token, stored securely in the database. When the access token expires, the client silently sends the refresh token to get a new access token. When a refresh token is used, invalidate it and issue a new one — this is called token rotation.
+
+For authorization, Role-Based Access Control is simplest: decorate controllers with Authorize with Roles equals "Admin". Policy-Based is more flexible: define policies in Program dot cs that can check multiple claims, roles, or custom requirements together.
+
+The most important security rules: Use a strong secret key — at least 256 bits. Always validate issuer, audience, lifetime, and signing key. Store secrets in environment variables or a Key Vault, never in source code. Use HTTPS always — a JWT sent over plain HTTP can be intercepted.
+
+Interview power line: "We implemented short-lived access tokens of 30 minutes combined with rotating refresh tokens. When we detected a refresh token being used twice — which indicates theft — we immediately revoked all tokens for that user and sent a security alert."`
+  },
+  {
+    title: "Caching Strategies",
+    desc: "Cache-Aside, Redis distributed cache, invalidation",
+    text: `Topic seven: Caching Strategies.
+
+Caching stores the result of expensive operations — database queries, HTTP calls, computations — closer to the consumer. The goal is to reduce latency and database load.
+
+The most common pattern is Cache-Aside, also called Lazy Loading. The logic is: check the cache first. If the data is there — cache hit — return it immediately. If not — cache miss — fetch from the database, store in cache, then return. This is the pattern you implement in your service layer.
+
+Important cache settings: Absolute expiration sets a hard deadline after which the entry is always evicted, regardless of usage. Sliding expiration resets the clock every time the entry is accessed — good for frequently used data. Always set at least one of these. A cache with no expiration is a memory leak.
+
+In-Memory cache with IMemoryCache is built into ASP.NET Core. It is fast and simple but only lives on one server. If you have multiple instances of your API behind a load balancer, each server has its own cache — they can serve different data for the same key.
+
+Distributed cache with Redis solves this. Redis is an in-memory data store that all your servers share. Every server reads from and writes to the same Redis instance, so the cache is consistent across all nodes. Redis also survives application restarts — the data persists.
+
+Cache invalidation is the hardest part. When you update or delete data in the database, you must remove the corresponding cache entry. Otherwise clients see stale data. The pattern: update the database, then immediately remove the cache key.
+
+Write-Through caching updates both cache and database together on every write. This ensures consistency but adds write latency. Cache-Aside with manual invalidation is more common.
+
+When NOT to cache: data that changes frequently, data that is user-specific and rarely reused, or data where stale values cause incorrect behavior like inventory counts during checkout.
+
+Interview power line: "We implemented Redis caching for our product catalog. Cache hit rate reached 94 percent, reducing database load by 80 percent. We used event-driven cache invalidation — when a product was updated, we published a message that all services used to evict their local and distributed cache entries."`
+  },
+  {
+    title: "Clean Architecture",
+    desc: "Layers, dependency rule, domain entities",
+    text: `Topic eight: Clean Architecture.
+
+Clean Architecture organizes your code into concentric layers where dependencies always point inward. Outer layers depend on inner layers. Inner layers never know about outer layers.
+
+The four layers from inside to outside:
+
+Domain is the innermost layer and has zero dependencies on anything else. It contains your core business entities like User, Order, and Product. Value Objects like Money, Address, and Email. Domain events. Business rules encoded directly in the entities. Exceptions specific to your domain. This layer is pure C sharp — no EF Core, no HTTP, no JSON.
+
+Application is the second layer. It depends only on Domain. It contains Commands — write operations. Queries — read operations. Data Transfer Objects — DTOs. Interfaces that define what Infrastructure must provide, like IEmailService and ICacheService. Pipeline behaviors for cross-cutting concerns. Business logic that coordinates multiple domain objects.
+
+Infrastructure is the outer-inner layer. It depends on Application and Domain. It implements the interfaces defined in Application. This is where EF Core lives, where your DbContext and Repositories are, where your EmailService and Redis cache implementations live, and where your connections to external systems are.
+
+Presentation is the outermost layer. It contains Controllers, Middleware, and Filters. It depends on Application — it calls commands and queries through MediatR. It never directly talks to Infrastructure.
+
+The Dependency Rule in practice: your Application layer defines an interface like IUserRepository. Your Infrastructure layer implements it with EfCoreUserRepository. Your Application never imports from Infrastructure. The Dependency Injection container wires them together at runtime. This is how you can swap SQL Server for PostgreSQL by only changing Infrastructure — Application and Domain are untouched.
+
+Interview power line: "Clean Architecture made our codebase independently testable. We can unit test every handler in the Application layer with no database, no HTTP, no external services — just mock interfaces. And when we migrated our payment provider, we only changed one class in Infrastructure. Zero changes to business logic."`,
+  },
+  {
+    title: "CQRS & MediatR",
+    desc: "Commands, Queries, Pipeline Behaviors",
+    text: `Topic nine: CQRS and MediatR.
+
+CQRS stands for Command Query Responsibility Segregation. The core idea is: separate operations that change state from operations that read state.
+
+A Command changes state and returns minimal data. Examples: CreateOrderCommand, UpdateUserCommand, DeleteProductCommand. Commands go through validation, business rules, and persistence. They should return only the new ID or nothing — not the full updated object.
+
+A Query reads state and never changes anything. Examples: GetOrderByIdQuery, GetUserListQuery, SearchProductsQuery. Queries can be highly optimized for reading — using projections, no-tracking queries, even raw SQL or separate read databases if needed.
+
+MediatR is the library that implements the Mediator pattern for routing. Your controller never directly calls a service. Instead, it sends a command or query through the mediator: var id equals await mediator dot Send of command. MediatR finds the registered handler and executes it.
+
+Pipeline Behaviors are the power feature of MediatR. They are like middleware but for your command and query pipeline. You can add a ValidationBehavior that runs FluentValidation on every command before the handler executes — so handlers never receive invalid data. You can add a LoggingBehavior that times every handler. You can add a CachingBehavior that caches query results automatically. These are registered once and run for every request automatically.
+
+The real benefit: each handler is a small, focused class with one responsibility. Testing a handler means testing one unit with clear inputs and outputs. There are no large service classes with 20 methods — just small handlers.
+
+Trade-offs to mention in an interview: CQRS adds more files and complexity. It is overkill for simple CRUD applications. It shines in complex domains with business rules, multiple read patterns, and high read-write ratio differences.
+
+Interview power line: "We implemented CQRS in our order management system. Read models used denormalized projections directly from the database with no domain logic overhead — report generation went from 8 seconds to 600 milliseconds. Write operations went through strict validation and domain logic without affecting read performance."`
+  },
+  {
+    title: "Repository Pattern & Unit of Work",
+    desc: "Generic repo, transactions, coordination",
+    text: `Topic ten: Repository Pattern and Unit of Work.
+
+The Repository Pattern abstracts your data access logic behind an interface. Instead of calling DbContext directly from your service or handler, you call IUserRepository dot GetByIdAsync. This means you can swap EF Core for Dapper, or an SQL database for a NoSQL database, without changing your business logic. It also makes testing much easier — you mock the repository interface instead of mocking DbContext.
+
+A generic repository defines operations that work for any entity: GetByIdAsync, GetAllAsync, FindAsync with a predicate, Add, Update, Remove. Specific repositories can extend the generic one and add domain-specific methods like GetActiveOrdersByCustomerIdAsync.
+
+The Unit of Work pattern coordinates multiple repositories under a single database transaction. Imagine placing an order: you need to create the order, reserve inventory items, and create a payment record. These three operations must all succeed or all fail together — that is atomicity from ACID. The Unit of Work holds references to all repositories and provides a single SaveChangesAsync that commits everything in one transaction.
+
+In practice with EF Core: the DbContext itself acts as a Unit of Work. All your repositories share the same DbContext instance — because it is Scoped, one instance per request. Calling SaveChangesAsync on the context commits all tracked changes as one transaction.
+
+For explicit transaction control across operations: use BeginTransactionAsync before, commit on success, rollback on exception. Always wrap explicit transactions in try-catch.
+
+Interview power line: "The Repository pattern allowed us to add caching transparently using the Decorator pattern. We created a CachedUserRepository that wrapped our EF Core repository. The application layer code never changed — it only knew about IUserRepository. We got caching for free."`
+  },
+  {
+    title: "Microservices Architecture",
+    desc: "Communication, sagas, API gateway, resilience",
+    text: `Topic eleven: Microservices Architecture.
+
+Microservices decompose a large application into small, independently deployable services. Each service owns its data, has its own database, and is responsible for one business capability.
+
+The most important question interviewers ask: when should you NOT use microservices? The answer: when you have a small team, a small application, limited DevOps maturity, or unclear domain boundaries. Start with a monolith, identify natural seam boundaries, then extract services when scale demands it.
+
+Service communication has two flavors. Synchronous: REST over HTTP or gRPC. One service directly calls another and waits for the response. Simple to implement, but if the downstream service is slow or down, your service fails too. Use resilience patterns: retry with exponential backoff, circuit breaker.
+
+Asynchronous: message queues like RabbitMQ or Azure Service Bus. Service A publishes an event. Services B, C, and D consume that event independently. Service A does not wait. This decouples services in time — if the email service is down, the order still succeeds. The email is just delayed until the service recovers.
+
+The Saga pattern solves distributed transactions — the fact that you cannot use a database transaction across two different services. Choreography sagas: services react to each other's events in a chain. No central coordinator. Orchestration sagas: a central Saga orchestrator sends commands to each service and handles compensation on failure.
+
+An API Gateway is the single entry point for all clients. It handles authentication, rate limiting, SSL termination, request routing, and can aggregate responses from multiple services. Tools: YARP which is Yet Another Reverse Proxy by Microsoft, Ocelot, or Azure API Management.
+
+Resilience patterns every microservice needs: Retry with exponential backoff for transient failures. Circuit Breaker — after 5 failures in 30 seconds, stop trying and fail fast. Timeout — never let a service call run forever. Bulkhead — isolate failures so one slow service does not consume all your thread pool.
+
+Interview power line: "We extracted our order processing from the monolith as the first microservice because it had the highest independent scaling need during sales events. We used the strangler fig pattern — routing some traffic to the new service while keeping the monolith running — which gave us zero-downtime migration."`
+  },
+  {
+    title: "Docker & Containerization",
+    desc: "Multi-stage builds, Docker Compose, production patterns",
+    text: `Topic twelve: Docker and Containerization.
+
+Docker packages your application along with all its dependencies — runtime, libraries, configuration — into a container. This container runs identically on your laptop, the CI server, and production. It eliminates "works on my machine" problems.
+
+Key Docker concepts: An Image is a read-only template. A Container is a running instance of an image. A Dockerfile is the recipe to build an image. Docker Compose orchestrates multiple containers locally.
+
+The most important production technique: Multi-stage builds. You use one image to build and compile your code — this image has the full SDK and is large. Then you copy only the compiled output into a small runtime image that has no SDK. The result is a production image that might be 100 megabytes instead of 800 megabytes. Smaller images mean faster deployments and smaller attack surface.
+
+For .NET: use the SDK image as the build stage. Run dotnet restore and dotnet publish. Then use the much smaller aspnet runtime image as the final stage. Copy only the published output. Set the entrypoint to dotnet MyApi dot dll.
+
+Security best practices in Docker: Run as a non-root user — add a user in the Dockerfile and switch to it before the entrypoint. Never store secrets in the Dockerfile or the image — pass them as environment variables at runtime, or use Docker secrets, or a secrets manager like Azure Key Vault. Keep base images updated.
+
+Docker Compose for local development: define your API, a SQL Server container, and a Redis container in one docker-compose dot yml file. Run docker compose up and your entire stack starts in seconds. Volumes persist database data between restarts.
+
+Interview power line: "Docker transformed our development workflow. New developers go from zero to running the full application stack in under 10 minutes with docker compose up. Our CI pipeline builds the multi-stage image, runs integration tests against it in a compose stack, and only pushes to the registry if all tests pass."`
+  },
+  {
+    title: "System Design & Scalability",
+    desc: "Scaling patterns, CAP theorem, rate limiting, health checks",
+    text: `Topic thirteen: System Design and Scalability.
+
+Scalability is the ability to handle growing load without performance degrading. There are two directions. Vertical scaling means making the server bigger — more CPU, more RAM. This has a ceiling and gets expensive. Horizontal scaling means adding more server instances. This requires your application to be stateless — any request can be handled by any instance.
+
+For horizontal scaling to work: store session state in Redis or a database, not in application memory. Use distributed caching, not in-memory caching. Coordinate background jobs with a database-backed scheduler so only one instance runs each job.
+
+Load balancing distributes requests across multiple instances. Common strategies: Round Robin sends requests in rotation. Least Connections sends to the instance with fewest active requests. Sticky Sessions always routes a user to the same instance — avoid this if possible as it prevents even distribution.
+
+CAP Theorem states that in a distributed system, you can only guarantee two of three properties: Consistency — all nodes see the same data. Availability — the system always responds. Partition Tolerance — the system works even if the network between nodes breaks. Since network partitions always happen in distributed systems, you must choose between Consistency and Availability for partition scenarios.
+
+Banks choose Consistency over Availability: they return an error rather than show potentially stale data. Shopping carts choose Availability over Consistency: they show slightly stale inventory counts but never fail to load.
+
+Rate Limiting protects your API from abuse and ensures fair use. Fixed Window limits to N requests per time window, resetting completely at the window boundary. Sliding Window is smoother — it looks at the last N seconds continuously. Per-user rate limiting based on User ID or API key is better than per-IP since multiple users can share an IP.
+
+Health checks expose an endpoint your load balancer and Kubernetes use to determine if an instance is healthy. Return 200 when everything is good. Return 503 when a dependency is down. Check your database connection, Redis, and any critical external services in your health check.
+
+Interview power line: "We designed the system to scale horizontally from day one. No server-side session state, distributed Redis cache, database-backed Hangfire for background jobs. When traffic spiked 10x during a promotion, we scaled from 3 to 12 instances in 2 minutes with zero code changes."`
+  },
+  {
+    title: "API Design Best Practices",
+    desc: "REST rules, versioning, error responses, status codes",
+    text: `Topic fourteen: API Design Best Practices.
+
+Good API design is about consistency, predictability, and developer experience. Here are the rules that separate junior from senior developers.
+
+Use nouns not verbs in URLs. The HTTP method is the verb. GET /users is correct. GET /getUsers is wrong. POST /users creates a user. DELETE /users/42 deletes user 42. GET /users/42/orders gets orders for user 42 — this is resource nesting.
+
+Use plural nouns consistently. Always /users, /products, /orders — never /user or /product.
+
+HTTP methods have specific semantics. GET retrieves, is idempotent, and safe. POST creates, is not idempotent. PUT replaces completely, is idempotent. PATCH updates partially. DELETE removes, is idempotent.
+
+Versioning prevents breaking existing clients. URL versioning is most common and visible: /api/v1/users and /api/v2/users. Header versioning keeps URLs clean but is less discoverable. Always version from day one — adding versioning later is painful.
+
+Status codes must be used correctly. 200 OK for successful GET and PUT. 201 Created for successful POST that creates a resource — include a Location header pointing to the new resource. 204 No Content for successful DELETE. 400 Bad Request for invalid input. 401 Unauthorized when the token is missing or invalid. 403 Forbidden when authenticated but not permitted. 404 Not Found when the resource does not exist. 409 Conflict for duplicates or optimistic concurrency failures. 422 Unprocessable Entity for business rule violations. 429 Too Many Requests for rate limit exceeded. 500 Internal Server Error for unexpected exceptions.
+
+Use the Problem Details format from RFC 7807 for all error responses. It is a standardized JSON structure with type, title, status, detail, instance, and traceId fields. This gives API consumers consistent error parsing across all endpoints.
+
+Always include correlation IDs in responses so that a specific request can be traced across logs and services.
+
+Interview power line: "I introduced Problem Details RFC 7807 responses across our API. Before, every team returned errors in different formats — some used 'message', others used 'error', others used 'errors'. Standardizing this reduced client-side error handling code by 40 percent."`
+  },
+  {
+    title: "Security & OWASP",
+    desc: "SQL injection, password hashing, CORS, secrets management",
+    text: `Topic fifteen: Security. Every senior developer must think about security proactively.
+
+SQL Injection is still in the OWASP Top 10 because developers still make the mistake of building SQL queries with string concatenation. If someone inputs a single quote followed by OR 1 equals 1 as their username, a concatenated query returns all users. The fix: always use parameterized queries. In EF Core, every LINQ query is parameterized automatically. In Dapper, use the at-sign parameter syntax. Never concatenate user input into SQL.
+
+Password storage: Never store passwords in plain text. Never store them with a simple hash like MD5 or SHA1 — these are too fast and can be brute-forced. Use bcrypt, scrypt, or Argon2 — algorithms specifically designed to be slow for security. ASP.NET Core Identity's PasswordHasher uses PBKDF2 with a random salt — use it. On login, compare the input against the stored hash using the hasher's VerifyHashedPassword method.
+
+CORS — Cross-Origin Resource Sharing — controls which websites can make requests to your API from a browser. Never use AllowAnyOrigin in production. Always specify exact origins. This prevents malicious websites from making authenticated requests on behalf of your users.
+
+Secrets management: Never hardcode secrets in your source code. Never commit them to Git. Use User Secrets for local development. Use environment variables in staging. Use Azure Key Vault or AWS Secrets Manager in production. Rotate secrets regularly and have a process for emergency rotation if a secret is compromised.
+
+Authorization checks must verify resource ownership. If user 1 requests GET /orders/999, and order 999 belongs to user 2, you must return 403 or 404. Never rely only on the ID being unknown — always verify the authenticated user owns or has access to the resource they are requesting.
+
+HTTPS is non-negotiable. All production traffic must be encrypted. Use certificate auto-renewal. Redirect all HTTP to HTTPS.
+
+Interview power line: "We do mandatory security reviews for all pull requests that touch authentication, authorization, or data access. We also run OWASP Zap scans in our CI pipeline against a staging environment. We found and fixed a broken object level authorization issue where users could access other users' documents just by guessing the document ID."`
+  },
+  {
+    title: "Logging & Observability",
+    desc: "Serilog, structured logging, distributed tracing, 3 pillars",
+    text: `Topic sixteen: Logging and Observability.
+
+Observability is the ability to understand what is happening inside your system from the outside. The three pillars are Logs, Metrics, and Traces.
+
+Logs tell you what happened — specific events, errors, state changes. Metrics tell you how the system is performing — request count, error rate, response time, CPU usage. Traces show you where time is spent — following a request through multiple services.
+
+Structured logging is fundamental. Never use string interpolation in log messages. Write logger dot LogInformation of "Processing order {OrderId} for user {UserId}", order dot Id, user dot Id. This looks the same in the console but stores OrderId and UserId as separate searchable fields in your log aggregator. You can then search for all log entries where OrderId equals 42, or find every slow query for a specific user.
+
+Serilog is the most popular logging library for .NET. Configure it to write to console in development and to Seq, Application Insights, or the ELK stack in production. Use enrichers to automatically add machine name, thread ID, and request properties to every log entry.
+
+Log levels should be used correctly. Trace is for very detailed flow information — usually disabled. Debug is for development troubleshooting. Information is for normal application events — user logged in, order placed. Warning is for unexpected but handled situations — payment retry attempt. Error is for failures that were caught and handled. Critical is for failures that require immediate attention.
+
+Correlation IDs connect log entries across a distributed system. When a request enters your API gateway, generate a GUID correlation ID. Pass it as a header to every downstream service. Every log entry includes this ID. When something goes wrong, you search for the correlation ID and see every log entry from every service for that specific user request.
+
+Health checks, application performance monitoring, and alerting complete the observability picture. Set up alerts for error rate spikes, response time degradation, and resource exhaustion before your users notice.
+
+Interview power line: "We moved from console logs with string interpolation to structured Serilog with Seq. A production incident that previously took 3 hours to diagnose — because we were grepping through unstructured logs — took 8 minutes with structured logs. We searched for the correlation ID and immediately saw the exact sequence of events across 4 services."`
+  },
+  {
+    title: "Design Patterns for Backend",
+    desc: "Strategy, Decorator, Factory, Observer, Mediator",
+    text: `Topic seventeen: Design Patterns. Know these cold — they come up constantly at the senior level.
+
+The Strategy Pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. Real example: payment processing. You have an IPaymentStrategy interface. CreditCardPayment, PayPalPayment, and BankTransfer all implement it. The PaymentService receives a list of all strategies via DI, and at runtime picks the correct one based on the payment method. Adding a new payment method means adding a new class — no changes to existing code. This is the Open-Closed Principle.
+
+The Decorator Pattern adds behavior to an object without modifying its class. Real example: caching on a repository. Your CachedProductRepository implements IProductRepository and wraps a real ProductRepository. When GetByIdAsync is called, the cached version checks the cache, and if there is a miss, delegates to the inner repository and caches the result. The application layer never knows about the caching — it just calls IProductRepository. Register with Scrutor's Decorate method.
+
+The Factory Pattern creates objects based on runtime decisions. Real example: a NotificationSenderFactory that creates an EmailSender, SmsSender, or PushSender based on notification type. The factory encapsulates the creation logic and uses the service provider to resolve the correct implementation.
+
+The Observer Pattern allows objects to subscribe to and react to events. In Clean Architecture, domain entities raise Domain Events. After SaveChanges commits the database transaction, the domain events are dispatched through MediatR. Multiple independent handlers react: one sends an email, one updates a cache, one publishes a message to a queue. The entity does not know about any of these handlers.
+
+The Mediator Pattern centralizes communication between objects. MediatR is the implementation. Controllers never call services directly. They send commands and queries through the mediator. This decouples the presentation layer from the application layer and enables pipeline behaviors.
+
+Interview power line: "When we needed to add response caching to our read endpoints, we used the Decorator pattern to wrap all repository implementations with caching versions. Zero changes to handlers, services, or controllers. The change was entirely in the Infrastructure layer and the DI configuration."`
+  },
+  {
+    title: "Testing Strategy",
+    desc: "Unit tests, integration tests, WebApplicationFactory, Moq",
+    text: `Topic eighteen: Testing Strategy.
+
+The testing pyramid has three levels. Unit tests at the base: fast, isolated, test one class at a time with dependencies mocked. Should be 70 percent or more of your tests. Integration tests in the middle: test multiple layers together, often with a real database. Slower but catch wiring issues. End-to-end tests at the top: test full user flows through HTTP. Slowest, fewest, but highest confidence.
+
+Unit tests with xUnit and Moq: Create a mock of every dependency using Mock of IUserRepository. Set up return values with Setup and ReturnsAsync. Create the class under test with mock dot Object. Call the method. Assert with FluentAssertions — it reads like English. Verify mock calls with Verify.
+
+The Arrange, Act, Assert pattern structures every test. Arrange: set up your data and mocks. Act: call the method under test. Assert: verify the result. Keep tests small — if a test needs 50 lines of setup, your class probably has too many responsibilities.
+
+Integration tests with WebApplicationFactory: This spins up your entire ASP.NET Core application in memory. You can replace services — swap EF Core for an in-memory database, or use TestContainers to spin up a real SQL Server Docker container. Make real HTTP requests with HttpClient. Test the full stack from HTTP request to database and back.
+
+Test naming matters: use the pattern MethodName underscore Condition underscore ExpectedResult. For example: GetUser underscore WhenUserExists underscore Returns200. This makes failing test names self-explanatory.
+
+Test for both happy path and edge cases. What happens when the resource does not exist? When validation fails? When the database throws an exception? When a required dependency is unavailable?
+
+For services with complex orchestration, test each scenario as a separate test. Avoid test methods that test multiple scenarios — if it fails, you do not know which scenario broke.
+
+Interview power line: "We targeted 80 percent code coverage with a hard rule: every bug fix must come with a test that would have caught it. This created a safety net that let us refactor confidently. Our regression rate dropped to near zero after 6 months of this discipline."`
+  },
+  {
+    title: "Performance Optimization",
+    desc: "Memory, Span<T>, ArrayPool, response compression, profiling",
+    text: `Topic nineteen: Performance Optimization.
+
+Performance optimization should always start with measurement. Profile first, optimize second. Never guess where the bottleneck is — you will almost always be wrong. Use dotnet trace, BenchmarkDotNet, Application Insights, or a profiler to find the actual hot paths.
+
+Common bottlenecks in order of frequency: Database queries — missing indexes, N plus 1 queries, loading too much data. Serialization — converting large object graphs to JSON repeatedly. Missing caching — hitting the database for data that rarely changes. Excessive allocations — creating many short-lived objects that pressure the garbage collector.
+
+Span of T is a powerful tool for zero-allocation operations. A Span is a view into a contiguous region of memory — an array, a stack allocation, or a string. You can slice it, process it, and pass it around without copying. ReadOnlySpan of char is particularly useful for string parsing operations that would otherwise allocate many substrings.
+
+ArrayPool lets you rent and return arrays instead of allocating new ones. Useful when you need a temporary buffer for encoding, hashing, or processing. Always return the array to the pool in a finally block.
+
+For string concatenation in loops, use StringBuilder. String concatenation in a loop creates a new string object on every iteration — this is O of N squared in time and memory. StringBuilder appends into a growing buffer and converts to string once at the end.
+
+Response compression with Brotli or GZip reduces bandwidth by 60 to 80 percent for typical JSON responses. Enable it in Program dot cs and make sure to enable it for HTTPS too — the CRIME attack concern is not an issue for API endpoints.
+
+Minimal APIs have measurably lower overhead than controller-based APIs for high-throughput endpoints. Use them for performance-critical paths.
+
+Always use AsNoTracking for read-only queries. Use projection with Select to fetch only the columns you need. Use indexed views in SQL for complex aggregation queries that run frequently.
+
+Interview power line: "We used BenchmarkDotNet to identify that our product search was allocating 140 kilobytes per request due to building large intermediary objects. By switching to streaming with IAsyncEnumerable and projection directly to DTOs, we reduced per-request allocation to 8 kilobytes and improved throughput by 3x under load."`
+  },
+  {
+    title: "Real-World Scenarios",
+    desc: "Order system, race conditions, debugging production issues",
+    text: `Topic twenty: Real-World Scenarios. Interviewers love these — they reveal how you think in practice.
+
+Scenario one: High-traffic order placement.
+
+Naive approach: the API endpoint does everything synchronously — validates inventory, processes payment, reduces stock, sends confirmation email, notifies the warehouse. This takes 8 to 15 seconds. Users leave.
+
+Better approach: the API does only what must happen synchronously for the user — validates the basket and creates the order in Draft status. This takes under 100 milliseconds. Return success to the user. Then publish an OrderCreated event. Multiple consumers react asynchronously: the inventory service reserves stock, the payment service initiates the charge, the email service sends confirmation. If payment fails, a compensating event cancels the reservation.
+
+Scenario two: Performance degrading over time.
+
+An API that starts fast and degrades over hours or days. Investigation steps: check slow query logs in SQL Server — look for queries over 100 milliseconds. Enable EF Core query logging in development to see every SQL statement. Check memory usage for leaks. Check connection pool exhaustion.
+
+Common causes: Missing index on a growing table — the query plan changes as the table grows. N plus 1 queries that become expensive as data grows. Cache entries without expiration — memory fills up, .NET GC pauses increase. Unclosed database connections or HttpClient instances not reused.
+
+Scenario three: Race conditions with concurrent requests.
+
+Two users simultaneously buy the last item in stock. Both read stock equals 1, both pass the check, both decrement, stock goes to -1.
+
+Solutions: Optimistic concurrency with a RowVersion column in EF Core — SaveChanges throws DbUpdateConcurrencyException if another transaction modified the row between your read and write. Catch this exception and retry or return a conflict error. Database atomic update — run a single SQL UPDATE statement that decrements stock only where stock is greater than 0. Check rows affected — if zero, the item was sold out. Pessimistic locking — SELECT with UPDLOCK in SQL Server acquires a lock that prevents other reads until your transaction commits. Use sparingly — it reduces concurrency.
+
+Interview power line: "We had a flash sale where 50,000 users tried to buy 1,000 limited items simultaneously. We used database-level atomic decrements with a check on stock greater than 0, and returned a 409 Conflict to users who lost the race. Zero oversells. The key was treating it as a set-based database operation rather than a read-modify-write in application code."`
+  },
+  {
+    title: "Interview Power Lines & Senior Mindset",
+    desc: "Formulas, traps, architect thinking",
+    text: `Topic twenty-one and final: Interview Power Lines and the Senior Mindset.
+
+First, the answer formula. For every technical question, follow this structure: Definition — what is it. Why — what problem does it solve. Example — concrete code or scenario. Real-world — how you used it or would use it. Trade-offs — benefits and drawbacks. Interviewers at the Senior and Architect level are not just checking if you know the answer — they are checking how you think.
+
+The most common interview traps — know these and never fall into them:
+
+Scoped service inside a Singleton — captive dependency. The Scoped service gets captured and lives forever, causing stale data and threading bugs.
+
+Using IEnumerable for database filtering — loads the entire table into memory before filtering. Always keep it as IQueryable until you call ToListAsync.
+
+Using dot Result or dot Wait instead of await — blocks the thread and can cause deadlocks in ASP.NET Core.
+
+Using async void — exceptions are unobservable and crash the process. Always use async Task.
+
+No CancellationToken propagation — long-running operations continue even after the client disconnects, wasting server resources.
+
+SELECT star in production queries — fetches unnecessary data and breaks if the schema changes.
+
+Missing indexes on foreign key columns — silent table scans that become catastrophically slow as the table grows.
+
+The Senior and Architect mindset is characterized by these questions you ask yourself before any technical decision: Will this scale to 10 times the current load? What happens if this service is down — does the whole system fail? How will we debug this in production when something goes wrong? What is the operational overhead of this approach? Are we choosing this for the right reasons, or for novelty?
+
+Document Architecture Decision Records — short documents explaining why you made a technical decision. Future team members, including yourself six months from now, will thank you.
+
+Prefer boring, proven technology over clever or novel technology for production systems. PostgreSQL over a new NoSQL database you have no operational experience with. Redis over a custom in-memory solution. Boring technology has known failure modes, community knowledge, and operational tooling.
+
+Always measure before optimizing. Profile the actual running system. The bottleneck is almost never where you think it is.
+
+Final power lines to internalize: "I optimize for maintainability and testability first, performance second — premature optimization wastes time and creates bugs." "I think about failure modes before success paths — what happens when this external service is down, when the database is slow, when the message queue is full?" "My job is not just to write code that works today — it is to write code that a team can understand, modify, and operate six months from now."
+
+You are now ready. Review each topic, practice saying answers out loud, and remember: confidence comes from understanding the why behind every concept, not just memorizing definitions. Good luck with your interview!`
+  }
+];
+
+// ─── WEB SPEECH API PLAYER ─────────────────────────────────────────────────
+let currentTrack = -1;
+let isPlaying = false;
+let isPaused = false;
+let utterance = null;
+let voices = [];
+let currentSentenceIndex = 0;
+let sentences = [];
+let startTime = null;
+let elapsed = 0;
+let timerInterval = null;
+let speedRate = 0.9;
+
+// Build waveform bars
+const waveform = document.getElementById('waveform');
+const BAR_COUNT = 40;
+const barHeights = Array.from({length: BAR_COUNT}, () => Math.random() * 35 + 5);
+for (let i = 0; i < BAR_COUNT; i++) {
+  const bar = document.createElement('div');
+  bar.className = 'bar';
+  bar.style.setProperty('--h', barHeights[i] + 'px');
+  bar.style.setProperty('--dur', (0.5 + Math.random() * 0.8) + 's');
+  bar.style.animationDelay = (Math.random() * 0.5) + 's';
+  waveform.appendChild(bar);
+}
+
+function setWaveformPlaying(playing) {
+  document.querySelectorAll('.bar').forEach((b, i) => {
+    if (playing) {
+      b.classList.add('playing');
+    } else {
+      b.classList.remove('playing');
+      b.style.height = '4px';
+    }
+  });
+}
+
+// Check support
+const synth = window.speechSynthesis;
+if (!synth) {
+  document.getElementById('noSupport').style.display = 'block';
+}
+
+// Load voices
+function loadVoices() {
+  voices = synth.getVoices().filter(v => v.lang.startsWith('en'));
+  const sel = document.getElementById('voiceSelect');
+  sel.innerHTML = '';
+  if (voices.length === 0) {
+    sel.innerHTML = '<option>Loading...</option>';
+    return;
+  }
+  voices.forEach((v, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = v.name.length > 22 ? v.name.slice(0,22)+'…' : v.name;
+    if (v.name.includes('Daniel') || v.name.includes('Google US') || v.name.includes('Alex')) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+synth.onvoiceschanged = loadVoices;
+loadVoices();
+setTimeout(loadVoices, 500);
+
+// Build track list
+function buildTrackList() {
+  const list = document.getElementById('trackList');
+  list.innerHTML = '';
+  TRACKS.forEach((track, i) => {
+    const item = document.createElement('div');
+    item.className = 'track-item';
+    item.id = 'track-' + i;
+    item.innerHTML = `
+      <div class="track-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="track-info">
+        <div class="track-name">${track.title}</div>
+        <div class="track-desc">${track.desc}</div>
+      </div>
+      <div class="track-dur">~${Math.ceil(track.text.split(' ').length / 140)} min</div>
+    `;
+    item.addEventListener('click', () => loadTrack(i));
+    list.appendChild(item);
+  });
+}
+
+buildTrackList();
+
+// Format time
+function fmt(secs) {
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+// Load track
+function loadTrack(index) {
+  stopPlayback();
+
+  currentTrack = index;
+  const track = TRACKS[index];
+
+  // Sentence split
+  sentences = track.text.match(/[^.!?]+[.!?]+/g) || [track.text];
+  currentSentenceIndex = 0;
+
+  document.getElementById('trackTitle').textContent = track.title;
+  document.getElementById('trackSubtitle').textContent = track.desc + ' · ' + Math.ceil(track.text.split(' ').length / 140) + ' min';
+  document.getElementById('transcriptText').textContent = track.text;
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('timeElapsed').textContent = '0:00';
+
+  const wordCount = track.text.split(' ').length;
+  const estSecs = Math.ceil(wordCount / (140 * speedRate));
+  document.getElementById('timeTotal').textContent = fmt(estSecs);
+
+  // Highlight active track
+  document.querySelectorAll('.track-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('track-' + index)?.classList.add('active');
+
+  document.getElementById('btnPlay').disabled = false;
+  setStatus('Ready — press play', false);
+
+  // Scroll track into view
+  document.getElementById('track-' + index)?.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// Play
+function startPlayback() {
+  if (!synth || currentTrack < 0) return;
+
+  const track = TRACKS[currentTrack];
+  const sel = document.getElementById('voiceSelect');
+  const voice = voices[parseInt(sel.value)] || null;
+
+  utterance = new SpeechSynthesisUtterance(track.text);
+  utterance.rate = speedRate;
+  utterance.pitch = 1.0;
+  utterance.volume = 1.0;
+  if (voice) utterance.voice = voice;
+
+  utterance.onstart = () => {
+    isPlaying = true;
+    isPaused = false;
+    setWaveformPlaying(true);
+    document.getElementById('nowPlayingLabel').classList.remove('paused');
+    document.getElementById('playIcon').innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+    setStatus('Speaking…', true);
+    startTimer();
+  };
+
+  utterance.onboundary = (e) => {
+    const total = track.text.length;
+    const pct = Math.min((e.charIndex / total) * 100, 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    // Highlight current sentence in transcript
+    const upTo = track.text.slice(0, e.charIndex + e.charLength);
+    const sentIdx = (upTo.match(/[.!?]+/g) || []).length;
+    currentSentenceIndex = sentIdx;
+    highlightSentence(sentIdx, track.text);
+  };
+
+  utterance.onend = () => {
+    isPlaying = false;
+    isPaused = false;
+    setWaveformPlaying(false);
+    document.getElementById('nowPlayingLabel').classList.add('paused');
+    document.getElementById('playIcon').innerHTML = '<path d="M8 5v14l11-7z"/>';
+    document.getElementById('progressFill').style.width = '100%';
+    setStatus('Finished', false);
+    stopTimer();
+
+    // Auto-advance
+    if (currentTrack < TRACKS.length - 1) {
+      setTimeout(() => loadTrack(currentTrack + 1), 800);
+    }
+  };
+
+  utterance.onerror = (e) => {
+    if (e.error === 'interrupted' || e.error === 'canceled') return;
+    isPlaying = false;
+    setWaveformPlaying(false);
+    document.getElementById('playIcon').innerHTML = '<path d="M8 5v14l11-7z"/>';
+    setStatus('Error: ' + e.error, false, true);
+    stopTimer();
+  };
+
+  synth.speak(utterance);
+}
+
+function highlightSentence(idx, text) {
+  const sents = text.match(/[^.!?]+[.!?]+/g) || [text];
+  const el = document.getElementById('transcriptText');
+  const highlighted = sents.map((s, i) =>
+    i === idx ? `<span class="highlight">${s}</span>` : s
+  ).join(' ');
+  el.innerHTML = highlighted;
+
+  // Scroll highlighted into view
+  const hl = el.querySelector('.highlight');
+  if (hl) hl.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function stopPlayback() {
+  synth.cancel();
+  isPlaying = false;
+  isPaused = false;
+  setWaveformPlaying(false);
+  document.getElementById('nowPlayingLabel').classList.add('paused');
+  document.getElementById('playIcon').innerHTML = '<path d="M8 5v14l11-7z"/>';
+  stopTimer();
+  elapsed = 0;
+  document.getElementById('timeElapsed').textContent = '0:00';
+}
+
+function startTimer() {
+  stopTimer();
+  startTime = Date.now() - elapsed * 1000;
+  timerInterval = setInterval(() => {
+    elapsed = (Date.now() - startTime) / 1000;
+    document.getElementById('timeElapsed').textContent = fmt(elapsed);
+  }, 500);
+}
+
+function stopTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function setStatus(msg, speaking, error) {
+  const pill = document.getElementById('statusPill');
+  pill.textContent = msg;
+  pill.className = 'status-pill' + (speaking ? ' speaking' : error ? ' error' : '');
+}
+
+// Button handlers
+document.getElementById('btnPlay').addEventListener('click', () => {
+  if (currentTrack < 0) return;
+  if (isPlaying) {
+    synth.pause();
+    isPlaying = false;
+    isPaused = true;
+    setWaveformPlaying(false);
+    document.getElementById('nowPlayingLabel').classList.add('paused');
+    document.getElementById('playIcon').innerHTML = '<path d="M8 5v14l11-7z"/>';
+    setStatus('Paused', false);
+    stopTimer();
+  } else if (isPaused) {
+    synth.resume();
+    isPlaying = true;
+    isPaused = false;
+    setWaveformPlaying(true);
+    document.getElementById('nowPlayingLabel').classList.remove('paused');
+    document.getElementById('playIcon').innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+    setStatus('Speaking…', true);
+    startTimer();
+  } else {
+    startPlayback();
+  }
+});
+
+document.getElementById('btnPrev').addEventListener('click', () => {
+  if (currentTrack > 0) loadTrack(currentTrack - 1);
+});
+
+document.getElementById('btnNext').addEventListener('click', () => {
+  if (currentTrack < TRACKS.length - 1) loadTrack(currentTrack + 1);
+});
+
+document.getElementById('btnRewind').addEventListener('click', () => {
+  if (currentTrack >= 0) {
+    stopPlayback();
+    document.getElementById('progressFill').style.width = '0%';
+    setTimeout(() => startPlayback(), 100);
+  }
+});
+
+document.getElementById('btnForward').addEventListener('click', () => {
+  if (currentTrack < TRACKS.length - 1) {
+    stopPlayback();
+    setTimeout(() => loadTrack(currentTrack + 1), 100);
+  }
+});
+
+// Speed control
+document.getElementById('speedSlider').addEventListener('input', (e) => {
+  speedRate = parseFloat(e.target.value);
+  document.getElementById('speedVal').textContent = speedRate.toFixed(1) + '×';
+  if (isPlaying || isPaused) {
+    stopPlayback();
+    setTimeout(() => startPlayback(), 100);
+  }
+  // Update estimated time
+  if (currentTrack >= 0) {
+    const wordCount = TRACKS[currentTrack].text.split(' ').length;
+    const estSecs = Math.ceil(wordCount / (140 * speedRate));
+    document.getElementById('timeTotal').textContent = fmt(estSecs);
+  }
+});
+
+// Auto-load first track
+loadTrack(0);
+
+// Handle page unload
+window.addEventListener('beforeunload', () => synth.cancel());
+</script>
+</body>
+</html>
